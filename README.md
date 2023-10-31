@@ -88,12 +88,6 @@ WanderingPhilosopher
 
  Website: https://brainwalletx.github.io/
 
-## All Private Keys & crypto puzzles
-
- Telegram group: https://t.me/privatekeyfinderio
-
- Website: https://privatekeyfinder.io/
-
  # TeamHunter GUI
 
 https://github.com/Mizogg/TeamHunter/assets/88630056/758347d8-2591-4643-bba4-f4c77a0aeb51
