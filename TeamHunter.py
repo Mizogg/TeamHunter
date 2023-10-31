@@ -21,13 +21,12 @@ TITLE_ICON = "webfiles/css/images/main/titlebig.png"
 BC_ICON = "webfiles/css/images/main/logobc.png"
 MIZ_ICON = "webfiles/css/images/main/mizogg-eyes.png"
 LOYCE_ICON = "webfiles/css/images/main/loyce.png"
-ALBERTO_ICON = "webfiles/css/images/main/alberto.jpeg"
 BLACK_ICON = "webfiles/css/images/main/python-snake-black.png"
 RED_ICON = "webfiles/css/images/main/python-snake-red.png"
 image_folder = "webfiles/css/images"
 image_files = [os.path.join(image_folder, filename) for filename in os.listdir(image_folder) if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
 
-version = '0.5'
+version = '0.6'
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -37,7 +36,6 @@ class MainWindow(QMainWindow):
         self.setGeometry(50, 50, 1600, 900)
 
         self.tab_widget = QTabWidget(self)
-        self.tab_widget.setObjectName("QTabWidget")
         self.setCentralWidget(self.tab_widget)
 
         self.tabmain = QWidget()
@@ -131,7 +129,6 @@ class MainWindow(QMainWindow):
         iconbc = QIcon(QPixmap(BC_ICON))
         iconmiz = QIcon(QPixmap(MIZ_ICON))
         iconloyce = QIcon(QPixmap(LOYCE_ICON))
-        iconalberto = QIcon(QPixmap(ALBERTO_ICON))
         iconblack = QIcon(QPixmap(BLACK_ICON))
         iconred = QIcon(QPixmap(RED_ICON))
 
@@ -237,7 +234,6 @@ class MainWindow(QMainWindow):
 
         for info in labels_info:
             label = QLabel(info["text"])
-            label.setObjectName(info["object_name"])
             credit_label.addWidget(label)
             if dot_labels:
                 dot_label = dot_labels.pop(0)
@@ -447,6 +443,9 @@ class MainWindow(QMainWindow):
 
     def open_telegram(self):
         webbrowser.open("https://t.me/CryptoCrackersUK")
+
+    def privatekeyfinder_check(self):
+        webbrowser.open("https://privatekeyfinder.io/")
 
     def blockchain_check(self):
         webbrowser.open("https://www.blockchain.com/")
