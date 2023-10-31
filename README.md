@@ -1,6 +1,7 @@
 # Team-Hunter GUI
 
-![titlebig](https://github.com/Mizogg/TeamHunter/assets/88630056/c5e3338c-11c3-4d2e-b462-10f3fcb81772)
+![titlebig](https://github.com/Mizogg/TeamHunter/assets/88630056/393f60cb-fe1a-4547-8e1b-58ff4696c3d4)
+
 
 This Python application, named "Team Hunter GUI," provides a user-friendly interface for various cryptocurrency-related tools and functions.
 Users can access tools for Bitcoin-related operations, including BitCrack, KeyHunt, Vanbitcracken, Iceland2k14 Secp256k1, and conversion tools.
@@ -12,7 +13,8 @@ Team Mizogg is cooking up something big in the crypto world, and it's so secret 
 
 Stay tuned for our crypto concoctions that will have you laughing all the way to the blockchain!
 
-![_c87420ff-3a34-461c-bbed-e2a30d84922f](https://github.com/Mizogg/TeamHunter/assets/88630056/6b632c2a-b3da-4c0c-a60d-d5fb29d9c5db)
+![_c87420ff-3a34-461c-bbed-e2a30d84922f](https://github.com/Mizogg/TeamHunter/assets/88630056/33c458b2-ef30-449c-bde6-a5002e409c8c)
+
 
 # Requirements 
 
@@ -94,6 +96,7 @@ WanderingPhilosopher
 
  # TeamHunter GUI
 
-https://github.com/Mizogg/TeamHunter/assets/88630056/4affd8b3-ebfe-410c-9c85-538530f07260
+https://github.com/Mizogg/TeamHunter/assets/88630056/758347d8-2591-4643-bba4-f4c77a0aeb51
+
 
 
