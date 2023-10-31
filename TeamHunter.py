@@ -18,7 +18,6 @@ from config import *
 
 ICO_ICON = "webfiles/css/images/main/miz.ico"
 TITLE_ICON = "webfiles/css/images/main/titlebig.png"
-PKF_ICON = "webfiles/css/images/main/logopkf.png"
 BC_ICON = "webfiles/css/images/main/logobc.png"
 MIZ_ICON = "webfiles/css/images/main/mizogg-eyes.png"
 LOYCE_ICON = "webfiles/css/images/main/loyce.png"
@@ -129,20 +128,12 @@ class MainWindow(QMainWindow):
         self.div_mode_button.clicked.connect(self.range_check)
 
         icon_size = QSize(32, 32)
-        iconpkf = QIcon(QPixmap(PKF_ICON))
         iconbc = QIcon(QPixmap(BC_ICON))
         iconmiz = QIcon(QPixmap(MIZ_ICON))
         iconloyce = QIcon(QPixmap(LOYCE_ICON))
         iconalberto = QIcon(QPixmap(ALBERTO_ICON))
         iconblack = QIcon(QPixmap(BLACK_ICON))
         iconred = QIcon(QPixmap(RED_ICON))
-
-        self.pkeysfinder_mode_button = QPushButton(self)
-        self.pkeysfinder_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">PrivateKeyFinder.io (Private Keys Database)</span>')
-        self.pkeysfinder_mode_button.setStyleSheet("font-size: 16pt;")
-        self.pkeysfinder_mode_button.setIconSize(icon_size)
-        self.pkeysfinder_mode_button.setIcon(iconpkf)
-        self.pkeysfinder_mode_button.clicked.connect(self.privatekeyfinder_check)
 
         self.blockchain_mode_button = QPushButton(self)
         self.blockchain_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">Blockchain.com (Relentlessly building the future of finance since 2011)</span>')
@@ -212,7 +203,6 @@ class MainWindow(QMainWindow):
         self.toggle_theme()
 
         dark_mode_layout = QHBoxLayout()
-        dark_mode_layout.addWidget(self.pkeysfinder_mode_button)
         dark_mode_layout.addWidget(self.blockchain_mode_button)
         dark_mode_layout.addWidget(self.mizogg_mode_button)
         dark_mode_layout.addWidget(self.loyce_mode_button)
@@ -457,9 +447,6 @@ class MainWindow(QMainWindow):
 
     def open_telegram(self):
         webbrowser.open("https://t.me/CryptoCrackersUK")
-
-    def privatekeyfinder_check(self):
-        webbrowser.open("https://privatekeyfinder.io/")
 
     def blockchain_check(self):
         webbrowser.open("https://www.blockchain.com/")
