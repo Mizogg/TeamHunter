@@ -107,4 +107,7 @@ WanderingPhilosopher
 https://github.com/Mizogg/TeamHunter/assets/88630056/758347d8-2591-4643-bba4-f4c77a0aeb51
 
 
+![image](https://github.com/Mizogg/TeamHunter/assets/88630056/b4ae2abf-d9fc-4ee2-9a8f-9b1ed0d7abeb)
+
+![image](https://github.com/Mizogg/TeamHunter/assets/88630056/5a6503a9-ac24-471b-9d61-bd88268c9b1b)
 
