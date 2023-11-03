@@ -1,3 +1,7 @@
+"""
+
+@author: Team Mizogg
+"""
 import json
 from PyQt6.QtCore import QSettings
 
@@ -14,10 +18,7 @@ WINNER_FOLDER = settings.value("Paths/WINNER_FOLDER", defaultValue="found", type
 BTC_BF_FILE = f"{INPUT_FOLDER}/{settings.value('Paths/BTC_BF_FILE', defaultValue='btc.bf', type=str)}"
 BTC_TXT_FILE = f"{INPUT_FOLDER}/{settings.value('Paths/BTC_TXT_FILE', defaultValue='btc.txt', type=str)}"
 
-WINNER_COMPRESSED = f"{WINNER_FOLDER}/{settings.value('Paths/WINNER_COMPRESSED', defaultValue='foundcaddr.txt', type=str)}"
-WINNER_UNCOMPRESSED = f"{WINNER_FOLDER}/{settings.value('Paths/WINNER_UNCOMPRESSED', defaultValue='founduaddr.txt', type=str)}"
-WINNER_P2SH = f"{WINNER_FOLDER}/{settings.value('Paths/WINNER_P2SH', defaultValue='foundp2sh.txt', type=str)}"
-WINNER_BECH32 = f"{WINNER_FOLDER}/{settings.value('Paths/WINNER_BECH32', defaultValue='foundbech32.txt', type=str)}"
+WINNER_FOUND = f"{WINNER_FOLDER}/{settings.value('Paths/WINNER_FOUND', defaultValue='found.txt', type=str)}"
 
 START_ADDRESS_KEY = 'Addresses/START_ADDRESS'
 END_ADDRESS_KEY = 'Addresses/END_ADDRESS'
