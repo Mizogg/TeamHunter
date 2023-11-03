@@ -7,7 +7,6 @@ import webbrowser
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
-from PyQt6.QtWebEngineWidgets import QWebEngineView
 import qdarktheme
 from libs import set_settings, create_setting
 from funct import (range_div_gui, about_gui, ice_gui, bitcrack_gui, keyhunt_gui, vanbit_gui, up_bloom_gui, grid_16x16, mnemonic_gui, snake_gui, miz_mnemonic)
@@ -31,7 +30,7 @@ version = '0.6'
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Team Hunter GUI")
+        self.setWindowTitle("Team Hunter GUI Basic")
         self.setWindowIcon(QIcon(f"{ICO_ICON}"))
         self.setGeometry(50, 50, 1600, 900)
 
@@ -45,11 +44,7 @@ class MainWindow(QMainWindow):
         self.tab4 = QWidget()
         self.tab5 = QWidget()
         self.tab6 = QWidget()
-        self.tab7 = QWidget()
-        self.tab8 = QWidget()
-        self.tab9 = QWidget()
         self.tab10 = QWidget()
-        self.tab11 = QWidget()
         self.tab12 = QWidget()
 
         self.tab_widget.addTab(self.tabmain, "Welcome")
@@ -59,11 +54,7 @@ class MainWindow(QMainWindow):
         self.tab_widget.addTab(self.tab4, "C-Sharp-Mnemonic")
         self.tab_widget.addTab(self.tab5, "Iceland2k14 Secp256k1")
         self.tab_widget.addTab(self.tab6, "Miz Mnemonic")
-        self.tab_widget.addTab(self.tab7, "Conversion Tools / BrainWallet")
-        self.tab_widget.addTab(self.tab8, "Menmonics Tools")
-        self.tab_widget.addTab(self.tab9, "Mizogg's Tools")
         self.tab_widget.addTab(self.tab10, "BTC Snake Game")
-        self.tab_widget.addTab(self.tab11, "Race Game")
         self.tab_widget.addTab(self.tab12, "Art Work")
         self.process = None
         self.scanning = False
@@ -87,7 +78,6 @@ class MainWindow(QMainWindow):
         qdarktheme.setup_theme("light")
 
     def initUI(self):
-        self.init_webviews()
         menubar = self.menuBar()
         def add_menu_action(menu, text, function):
             action = QAction(text, self)
@@ -108,20 +98,20 @@ class MainWindow(QMainWindow):
 
         main_layout = QVBoxLayout()
         self.dark_mode_button = QPushButton(self)
-        self.dark_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Switch Between Dark and Light Theme</span>')
-        self.dark_mode_button.setStyleSheet("font-size: 16px;")
+        self.dark_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">Switch Between Dark and Light Theme</span>')
+        self.dark_mode_button.setStyleSheet("font-size: 16pt;")
         self.dark_mode_button.clicked.connect(self.toggle_theme)
         self.dark_mode_button.setChecked(True if self.get_theme_preference() == "dark" else False)
 
         self.grid_mode_button = QPushButton(self)
-        self.grid_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Run 16x16 Grid Hunter</span>')
-        self.grid_mode_button.setStyleSheet("font-size: 16px;")
+        self.grid_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">Run 16x16 Grid Hunter</span>')
+        self.grid_mode_button.setStyleSheet("font-size: 16pt;")
         self.grid_mode_button.setText("🏁")
         self.grid_mode_button.clicked.connect(self.load_16x16)
 
         self.div_mode_button = QPushButton(self)
-        self.div_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Range Divsion in HEX </span>')
-        self.div_mode_button.setStyleSheet("font-size: 16px;")
+        self.div_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">Range Divsion in HEX </span>')
+        self.div_mode_button.setStyleSheet("font-size: 16pt;")
         self.div_mode_button.setText("📊")
         self.div_mode_button.clicked.connect(self.range_check)
 
@@ -133,64 +123,64 @@ class MainWindow(QMainWindow):
         iconred = QIcon(QPixmap(RED_ICON))
 
         self.blockchain_mode_button = QPushButton(self)
-        self.blockchain_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Blockchain.com (Relentlessly building the future of finance since 2011)</span>')
-        self.blockchain_mode_button.setStyleSheet("font-size: 16px;")
+        self.blockchain_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">Blockchain.com (Relentlessly building the future of finance since 2011)</span>')
+        self.blockchain_mode_button.setStyleSheet("font-size: 16pt;")
         self.blockchain_mode_button.setIconSize(icon_size)
         self.blockchain_mode_button.setIcon(iconbc)
         self.blockchain_mode_button.clicked.connect(self.blockchain_check)
 
         self.mizogg_mode_button = QPushButton(self)
-        self.mizogg_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Mizogg.co.uk (Come Meet Mizogg Check out my Website and other programs)</span>')
-        self.mizogg_mode_button.setStyleSheet("font-size: 16px;")
+        self.mizogg_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">Mizogg.co.uk (Come Meet Mizogg Check out my Website and other programs)</span>')
+        self.mizogg_mode_button.setStyleSheet("font-size: 16pt;")
         self.mizogg_mode_button.setIconSize(icon_size)
         self.mizogg_mode_button.setIcon(iconmiz)
         self.mizogg_mode_button.clicked.connect(self.open_website)
 
         self.loyce_mode_button = QPushButton(self)
-        self.loyce_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">LOYCE.CLUB (Bitcoin Data)</span>')
-        self.loyce_mode_button.setStyleSheet("font-size: 16px;")
+        self.loyce_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">LOYCE.CLUB (Bitcoin Data)</span>')
+        self.loyce_mode_button.setStyleSheet("font-size: 16pt;")
         self.loyce_mode_button.setIconSize(icon_size)
         self.loyce_mode_button.setIcon(iconloyce)
         self.loyce_mode_button.clicked.connect(self.loyce_check)
 
         self.alberto_mode_button = QPushButton(self)
-        self.alberto_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">GitHub Alertobsd Keyhunt About</span>')
-        self.alberto_mode_button.setStyleSheet("font-size: 16px;")
+        self.alberto_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">GitHub Alertobsd Keyhunt About</span>')
+        self.alberto_mode_button.setStyleSheet("font-size: 16pt;")
         self.alberto_mode_button.setIconSize(icon_size)
         self.alberto_mode_button.setIcon(iconblack)
         self.alberto_mode_button.clicked.connect(self.alberto_git)
 
         self.XopMC_mode_button = QPushButton(self)
-        self.XopMC_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">GitHub Михаил Х. XopMC C#-Mnemonic About</span>')
-        self.XopMC_mode_button.setStyleSheet("font-size: 16px;")
+        self.XopMC_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">GitHub Михаил Х. XopMC C#-Mnemonic About</span>')
+        self.XopMC_mode_button.setStyleSheet("font-size: 16pt;")
         self.XopMC_mode_button.setIconSize(icon_size)
         self.XopMC_mode_button.setIcon(iconred)
         self.XopMC_mode_button.clicked.connect(self.XopMC_git)
 
         self.bitcrack_mode_button = QPushButton(self)
-        self.bitcrack_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">GitHub brichard19 BitCrack About</span>')
-        self.bitcrack_mode_button.setStyleSheet("font-size: 16px;")
+        self.bitcrack_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">GitHub brichard19 BitCrack About</span>')
+        self.bitcrack_mode_button.setStyleSheet("font-size: 16pt;")
         self.bitcrack_mode_button.setIconSize(icon_size)
         self.bitcrack_mode_button.setIcon(iconblack)
         self.bitcrack_mode_button.clicked.connect(self.bitcrack_git)
 
         self.vanbit_mode_button = QPushButton(self)
-        self.vanbit_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">GitHub WanderingPhilosopher VanBitCracken Random About</span>')
-        self.vanbit_mode_button.setStyleSheet("font-size: 16px;")
+        self.vanbit_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">GitHub WanderingPhilosopher VanBitCracken Random About</span>')
+        self.vanbit_mode_button.setStyleSheet("font-size: 16pt;")
         self.vanbit_mode_button.setIconSize(icon_size)
         self.vanbit_mode_button.setIcon(iconred)
         self.vanbit_mode_button.clicked.connect(self.vanbit_git)
 
         self.iceland_mode_button = QPushButton(self)
-        self.iceland_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">GitHub Iceland iceland2k14 Python Secp256k1 About</span>')
-        self.iceland_mode_button.setStyleSheet("font-size: 16px;")
+        self.iceland_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">GitHub Iceland iceland2k14 Python Secp256k1 About</span>')
+        self.iceland_mode_button.setStyleSheet("font-size: 16pt;")
         self.iceland_mode_button.setIconSize(icon_size)
         self.iceland_mode_button.setIcon(iconblack)
         self.iceland_mode_button.clicked.connect(self.iceland_git)
 
         self.miz_git_mode_button = QPushButton(self)
-        self.miz_git_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">GitHub Mizogg About</span>')
-        self.miz_git_mode_button.setStyleSheet("font-size: 16px;")
+        self.miz_git_mode_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">GitHub Mizogg About</span>')
+        self.miz_git_mode_button.setStyleSheet("font-size: 16pt;")
         self.miz_git_mode_button.setIconSize(icon_size)
         self.miz_git_mode_button.setIcon(iconred)
         self.miz_git_mode_button.clicked.connect(self.miz_git)
@@ -248,11 +238,7 @@ class MainWindow(QMainWindow):
         self.tab4_layout = QVBoxLayout()
         self.tab5_layout = QVBoxLayout()
         self.tab6_layout = QVBoxLayout()
-        self.tab7_layout = QVBoxLayout()
-        self.tab8_layout = QVBoxLayout()
-        self.tab9_layout = QVBoxLayout()
         self.tab10_layout = QVBoxLayout()
-        self.tab11_layout = QVBoxLayout()
         self.tab12_layout = QVBoxLayout()
 
         self.centralWidget = QWidget(self)
@@ -274,11 +260,7 @@ class MainWindow(QMainWindow):
         self.tab4_layout.addWidget(XopMC_tool)
         self.tab5_layout.addWidget(ice_tool)
         self.tab6_layout.addWidget(MIZ_tool)
-        self.tab7_layout.addWidget(self.webview_con)
-        self.tab8_layout.addWidget(self.webview_bip39)
-        self.tab9_layout.addWidget(self.webview_miz)
         self.tab10_layout.addWidget(snake_frame)
-        self.tab11_layout.addWidget(self.webview_race)
         self.tab12_layout = self.picture_tab()
 
         self.tabmain.setLayout(self.tabmain_layout)
@@ -288,11 +270,7 @@ class MainWindow(QMainWindow):
         self.tab4.setLayout(self.tab4_layout)
         self.tab5.setLayout(self.tab5_layout)
         self.tab6.setLayout(self.tab6_layout)
-        self.tab7.setLayout(self.tab7_layout)
-        self.tab8.setLayout(self.tab8_layout)
-        self.tab9.setLayout(self.tab9_layout)
         self.tab10.setLayout(self.tab10_layout)
-        self.tab11.setLayout(self.tab11_layout)
         self.tab12.setLayout(self.tab12_layout)
         self.setCentralWidget(self.centralWidget)
 
@@ -303,8 +281,7 @@ class MainWindow(QMainWindow):
     def create_tab_buttons(self):
         buttons_layout = QGridLayout()
 
-        tabs = ["BitCrack", "KeyHunt", "Vanbitcracken", "C-Sharp-Mnemonic", "Iceland2k14 Secp256k1", "Miz Mnemonic", "Conversion Tools / BrainWallet",
-                "Menmonics Tools", "Mizogg's Tools", "BTC Snake Game", "Race Game", "Art Work"]
+        tabs = ["BitCrack", "KeyHunt", "Vanbitcracken", "C-Sharp-Mnemonic", "Iceland2k14 Secp256k1", "Miz Mnemonic", "BTC Snake Game", "Art Work"]
 
         for i, tab_name in enumerate(tabs):
             row = i // 4
@@ -363,21 +340,6 @@ class MainWindow(QMainWindow):
         def switch():
             self.tab_widget.setCurrentIndex(tab_index)
         return switch
-
-    def init_webviews(self):
-        self.webview_con = self.setup_webview("/webfiles/conversion.html")
-        self.webview_bip39 = self.setup_webview("/webfiles/bip39.html")
-        self.webview_miz = self.setup_webview("http://109.205.181.6/")
-        self.webview_race = self.setup_webview("/webfiles/Race/race.html")
-
-    def setup_webview(self, url):
-        webview = QWebEngineView(self)
-        if url.startswith("http:") or url.startswith("https:"):
-            webview.setUrl(QUrl(url))
-        else:
-            local_url = QUrl.fromLocalFile(url)
-            webview.setUrl(QUrl(local_url))
-        return webview
 
     def picture_tab(self):
         picture_layout = QHBoxLayout()
@@ -477,7 +439,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def new_window(self):
-        python_cmd = f'start cmd /c "{sys.executable}" TeamHunter.py'
+        python_cmd = f'start cmd /c "{sys.executable}" TeamHunter_basic.py'
         subprocess.Popen(python_cmd, shell=True)
 
 if __name__ == "__main__":
