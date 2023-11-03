@@ -42,8 +42,8 @@ class VanbitFrame(QMainWindow):
         
         main_layout = QVBoxLayout()
 
-        bitcrack_config = self.create_vanbitGroupBox()
-        main_layout.addWidget(bitcrack_config)
+        vanbit_config = self.create_vanbitGroupBox()
+        main_layout.addWidget(vanbit_config)
         
         Keysapce_config = self.create_keyspaceGroupBox()
         main_layout.addWidget(Keysapce_config)
@@ -178,7 +178,7 @@ class VanbitFrame(QMainWindow):
 
     def create_vanbitGroupBox(self):
         vanbitGroupBox = QGroupBox(self)
-        vanbitGroupBox.setTitle("BitCrack OpenCL and Cuda Configuration")
+        vanbitGroupBox.setTitle("VanBitCracken Cuda Configuration")
         vanbitGroupBox.setStyleSheet("QGroupBox { border: 3px solid #E7481F; padding: 5px; }")
         self.vanbitLayout = QVBoxLayout(vanbitGroupBox)
         self.deviceLayout_van = QHBoxLayout()
@@ -210,7 +210,7 @@ class VanbitFrame(QMainWindow):
         self.deviceLayout_van.addWidget(self.gpuIdLabel_van)
         self.gpuIdLineEdit_van = QLineEdit("0", vanbitGroupBox)
         self.gpuIdLineEdit_van.setPlaceholderText('0, 1, 2')
-        self.gpuIdLineEdit_van.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Use device with ID equal to N </span>')
+        self.gpuIdLineEdit_van.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Use device with ID equal to N  (Example = 0 for main or for more than 1GPU = 0, 1, 2)</span>')
         self.deviceLayout_van.addWidget(self.gpuIdLineEdit_van)
         self.vanbitLayout.addLayout(self.deviceLayout_van)
         return vanbitGroupBox

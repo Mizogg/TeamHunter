@@ -2,7 +2,7 @@
 
 @author: Team Mizogg
 """
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPlainTextEdit, QPushButton, QHBoxLayout
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPlainTextEdit, QPushButton, QHBoxLayout, QLabel, QComboBox
 from PyQt6.QtCore import Qt, pyqtSlot
 
 class ConsoleWindow(QWidget):
@@ -39,14 +39,29 @@ class ConsoleWindow(QWidget):
             )
         button_layout.addWidget(self.copyButton)
 
+        self.thresholdLabel = QLabel("Console Threshold:", self)
+        self.thresholdDropdown = QComboBox(self)
+        self.thresholdDropdown.addItems(["2", "5", "10", "100", "500", "1000", "5000"])
+        self.thresholdDropdown.setCurrentIndex(3)  # Default value is 100
+        button_layout.addWidget(self.thresholdLabel)
+        button_layout.addWidget(self.thresholdDropdown)
         self.layout.addWidget(button_widget)
 
         self.clearButton.clicked.connect(self.clear_console)
         self.selectAllButton.clicked.connect(self.select_all)
         self.copyButton.clicked.connect(self.copy_text)
+        self.thresholdDropdown.currentIndexChanged.connect(self.update_threshold)
+        
+        self.threshold = int(self.thresholdDropdown.currentText())  # Initialize threshold here
+
+    def set_output(self, output):
+        self.consoleOutput.setPlainText(output)
 
     def append_output(self, output):
         self.consoleOutput.appendPlainText(output)
+        line_count = self.consoleOutput.document().blockCount()
+        if line_count > self.threshold:
+            self.consoleOutput.clear()
 
     @pyqtSlot()
     def clear_console(self):
@@ -62,3 +77,7 @@ class ConsoleWindow(QWidget):
         selected_text = cursor.selectedText()
         clipboard = QApplication.clipboard()
         clipboard.setText(selected_text)
+
+    @pyqtSlot()
+    def update_threshold(self):
+        self.threshold = int(self.thresholdDropdown.currentText())

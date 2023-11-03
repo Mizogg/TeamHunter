@@ -163,14 +163,9 @@ class MnemonicFrame(QMainWindow):
         derivationPathsLabel = QLabel('Derivation Paths:', self)
         div_button_layout.addWidget(derivationPathsLabel)
         self.derivationPathsLineEdit = QLineEdit(self)
-        self.derivationPathsLineEdit.setPlaceholderText('e.g., 44\'/0\'/0\'/0/0 for BTC, 44\'/60\'/0\'/0/0 for ETH')
-        self.derivationPathsLineEdit.setToolTip('<span style="font-size: 12pt; font-weight; bold; color: black;">Specify derivation paths</span>')
+        self.derivationPathsLineEdit.setPlaceholderText('paths.txt')
+        self.derivationPathsLineEdit.setToolTip('<span style="font-size: 12pt; font-weight; bold; color: black;">Specify derivation paths to load from file make sure it is stored in the input folder </span>')
         div_button_layout.addWidget(self.derivationPathsLineEdit)
-
-        loadPathsButton = QPushButton("Load from File", self)
-        loadPathsButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">Load derivation paths from a file</span>')
-        loadPathsButton.clicked.connect(self.load_derivation_paths_from_file)
-        div_button_layout.addWidget(loadPathsButton)
 
         self.debugCheckBox = QCheckBox("Debug Mode", self)
         self.debugCheckBox.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">Enable debug mode for lower speed</span>')
@@ -196,14 +191,6 @@ class MnemonicFrame(QMainWindow):
 
     def found_prog(self):
         self.read_and_display_file('found.txt', "Mnemonic GUI File found. Check of Winners 😀 .", "No Winners Yet 😞")
-
-    def load_derivation_paths_from_file(self):
-        file_dialog = QFileDialog(self)
-        file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
-        file_dialog.setNameFilter("Text Files (*.txt);;All Files (*.*)")
-        if file_dialog.exec():
-            file_path = file_dialog.selectedFiles()[0]
-            self.derivationPathsLineEdit.setText(file_path)
 
     def browse_input_file(self):
         file_dialog = QFileDialog(self)
@@ -244,7 +231,9 @@ class MnemonicFrame(QMainWindow):
             command.extend(["-lang", self.languageComboBox.currentText()])
 
         if self.derivationPathsLineEdit.text():
-            command.extend(["-P", self.derivationPathsLineEdit.text()])
+            div_file = self.derivationPathsLineEdit.text()
+            div_file_relative_path = f"input/{div_file}"
+            command.extend(["-PATH", div_file_relative_path])
 
         if file:
             input_files = file.split(',')  # Split the comma-separated list into individual files

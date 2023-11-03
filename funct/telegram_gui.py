@@ -5,6 +5,10 @@
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtCore import Qt
+import sys
+sys.path.extend(['libs', 'config', 'funct'])
+
+from config import *
 
 ICO_ICON = "webfiles/css/images/main/miz.ico"
 TITLE_ICON = "webfiles/css/images/main/title.png"
@@ -12,11 +16,15 @@ TITLE_ICON = "webfiles/css/images/main/title.png"
 class Settings_telegram_Dialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
+        # Load and populate the settings if they exist in config.json
+        config_data = self.load_config()
+        telegram_config = config_data.get("Telegram", {})
+        token = telegram_config.get("token", "")
+        chat_id = telegram_config.get("chatid", "")
         self.setWindowTitle("Telegram Settings")
         self.setWindowIcon(QIcon(f"{ICO_ICON}"))
         self.setMinimumSize(640, 440)
         pixmap = QPixmap(f"{TITLE_ICON}")
-        # Create a QLabel and set the pixmap as its content
         title_label = QLabel()
         title_label.setPixmap(pixmap)
         title_label.setFixedSize(pixmap.size())
@@ -27,6 +35,9 @@ class Settings_telegram_Dialog(QDialog):
         self.chatid_label = QLabel("Chat ID:")
         self.chatid_edit = QLineEdit()
         
+        self.token_edit.setText(token)
+        self.chatid_edit.setText(chat_id)
+
         self.save_button = QPushButton("Save")
         self.save_button.setStyleSheet(
                 "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
@@ -49,25 +60,28 @@ class Settings_telegram_Dialog(QDialog):
         
         self.setLayout(layout)
         
-        self.save_button.clicked.connect(self.save_settings)
+        self.save_button.clicked.connect(self.update_config_address)
         self.cancel_button.clicked.connect(self.reject)
     
-    def save_settings(self):
-        # Get the entered token and chatid
-        token = self.token_edit.text()
-        chatid = self.chatid_edit.text()
-        if self.parent().dark_mode == True:
-            theme = "dark"
-        else:
-            theme = "light"
-        # Write the settings to the settings.txt file
-        with open('settings.txt', 'w') as file:
-            file.write(
-f'''// Choose default theme [light] / [dark]
-theme={theme}
+    def load_config(self):
+        try:
+            with open(CONFIG_FILE, "r") as file:
+                return json.load(file)
+        except FileNotFoundError:
+            return {}
 
-// Telegram Settings
-token={token}
-chatid={chatid}'''
-            )
-        self.accept()  # Close the dialog
+    def save_config(self, config_data):
+        with open(CONFIG_FILE, "w") as file:
+            json.dump(config_data, file, indent=4)
+
+    def update_config_address(self):
+        token = self.token_edit.text()
+        chat_id = self.chatid_edit.text()
+        config_data = self.load_config()
+        config_data["Telegram"] = {
+            "token": token,
+            "chatid": chat_id
+        }
+        self.save_config(config_data)
+
+        self.accept()

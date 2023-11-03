@@ -5,7 +5,10 @@
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtCore import Qt
+import sys
+sys.path.extend(['libs', 'config', 'funct'])
 
+from config import *
 ICO_ICON = "webfiles/css/images/main/miz.ico"
 TITLE_ICON = "webfiles/css/images/main/title.png"
 
@@ -15,6 +18,10 @@ class Settings_discord_Dialog(QDialog):
         self.setWindowTitle("Discord Settings")
         self.setWindowIcon(QIcon(f"{ICO_ICON}"))
         self.setMinimumSize(640, 440)
+        config_data = self.load_config()
+        discord_config = config_data.get("Discord", {})
+        webhookurl = discord_config.get("webhook_url", "")
+
         pixmap = QPixmap(f"{TITLE_ICON}")
         # Create a QLabel and set the pixmap as its content
         title_label = QLabel()
@@ -24,7 +31,7 @@ class Settings_discord_Dialog(QDialog):
 
         self.webhook_url_label = QLabel("Discord webhook_url:")
         self.webhook_url_edit = QLineEdit()
-        
+        self.webhook_url_edit.setText(webhookurl)
         self.save_button = QPushButton("Save")
         self.save_button.setStyleSheet(
                 "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
@@ -44,23 +51,26 @@ class Settings_discord_Dialog(QDialog):
         
         self.setLayout(layout)
         
-        self.save_button.clicked.connect(self.save_settings)
+        self.save_button.clicked.connect(self.update_config_address)
         self.cancel_button.clicked.connect(self.reject)
     
-    def save_settings(self):
-        # Get the entered token and chatid
-        webhook_url = self.webhook_url_edit.text()
-        if self.parent().dark_mode == True:
-            theme = "dark"
-        else:
-            theme = "light"
-        # Write the settings to the settings.txt file
-        with open('settings.txt', 'w') as file:
-            file.write(
-f'''// Choose default theme [light] / [dark]
-theme={theme}
+    def load_config(self):
+        try:
+            with open(CONFIG_FILE, "r") as file:
+                return json.load(file)
+        except FileNotFoundError:
+            return {}
 
-// Discord Settings
-webhook_url={webhook_url}'''
-            )
-        self.accept()  # Close the dialog
+    def save_config(self, config_data):
+        with open(CONFIG_FILE, "w") as file:
+            json.dump(config_data, file, indent=4)
+
+    def update_config_address(self):
+        webhookurl = self.webhook_url_edit.text()
+        config_data = self.load_config()
+        config_data["Discord"] = {
+            "webhook_url": webhookurl,
+        }
+        self.save_config(config_data)
+
+        self.accept()

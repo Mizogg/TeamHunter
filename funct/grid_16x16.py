@@ -22,7 +22,6 @@ sys.path.extend(['libs', 'funct'])
 from config import *
 addfind = load_bloom.load_bloom_filter()
 ICO_ICON = "webfiles/css/images/main/miz.ico"
-TITLE_ICON = "webfiles/css/images/main/titlesmall.png"
 FOUND_FILE = "found/found.txt"
 # Set system locale
 locale.setlocale(locale.LC_ALL, "")
@@ -257,7 +256,7 @@ class GridFrame(QMainWindow):
         super().__init__(parent)
         self.setWindowTitle("GRID 16x16")
         self.setWindowIcon(QIcon(f"{ICO_ICON}"))
-        self.setGeometry(50, 50, 640, 620)
+        self.setGeometry(50, 50, 1600, 900)
         self.is_active = False
         self.in_tick = False
         self.cols = GRID_SIZE
@@ -541,8 +540,7 @@ class GridFrame(QMainWindow):
         forward_group_box.setTitle("Forward Scanning Configuration")
         forward_group_box.setStyleSheet("QGroupBox { border: 2px solid #E7481F; padding: 3px; }")
         forward_button_layout = QHBoxLayout(forward_group_box)
-        self.forward_scaning = QComboBox(self)
-        self.forward_scaning.addItems(['1', '10', '100', '1000', '10000', '100000', '1000000'])
+        self.forward_scaning = QLineEdit("1", self)
         forward_button_layout.addWidget(self.forward_scaning)
         self.start_button_forward = QPushButton('Start Forward', self)
         self.start_button_forward.setStyleSheet("color: green")
@@ -556,8 +554,7 @@ class GridFrame(QMainWindow):
         backward_group_box.setTitle("Backward Scanning Configuration")
         backward_group_box.setStyleSheet("QGroupBox { border: 2px solid #E7481F; padding: 3px; }")
         backward_button_layout = QHBoxLayout(backward_group_box)
-        self.backwards_scaning = QComboBox(self)
-        self.backwards_scaning.addItems(['1', '10', '100', '1000', '10000', '100000', '1000000'])
+        self.backwards_scaning = QLineEdit("1", self)
         backward_button_layout.addWidget(self.backwards_scaning)
         self.start_button_backward = QPushButton('Start Backwards', self)
         self.start_button_backward.setStyleSheet("color: green")
@@ -587,7 +584,7 @@ class GridFrame(QMainWindow):
         labels_starting = QHBoxLayout()
         self.add_count_label = QLabel(self.count_addresses(), objectName="count_addlabel", alignment=Qt.AlignmentFlag.AlignLeft)
         self.online_check_box = QCheckBox("🔞Check Balance Online🔞")
-        self.online_check_box.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Check online Balance from grid and scans. (This will hand if on with keyspace scanning) </span>')
+        self.online_check_box.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Check online Balance from grid and scans. (This will hang/crash if on with keyspace scanning) </span>')
         self.online_check_box.setChecked(False)
         right_layout.addWidget(self.add_count_label)
         labels_starting.addWidget(self.online_check_box)
@@ -899,8 +896,12 @@ class GridFrame(QMainWindow):
         self.update_canvas()
      
     def update_keyspace_range(self, value):
-        start_range = hex(2**(value - 1))[2:]
-        end_range = hex(2**value - 1)[2:]
+        if value == 256:
+            start_range = hex(2**(value - 1))[2:]
+            end_range = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140"
+        else:
+            start_range = hex(2**(value - 1))[2:]
+            end_range = hex(2**value - 1)[2:]
         self.keyspaceLineEdit.setText(f"{start_range}:{end_range}")
         self._txt_inputhex.setText(f"{start_range}")
         self.slider_value_display.setText(str(value))
@@ -1027,16 +1028,13 @@ class GridFrame(QMainWindow):
         self.run_forever_timer.start(self.scanning_speed)
 
     def stop_run_forever(self):
-        # Stop the timer to halt the repeated execution of `mnemonic_ran`
         self.run_forever_timer.stop()
 
     def toggle_run_forever(self):
         if self.run_forever_timer.isActive():
-            # Timer is active, stop it
             self.stop_run_forever()
-            self.forever_button.setText("Generate Mnemonic's")
+            self.forever_button.setText("Start Mnemonic's")
         else:
-            # Timer is not active, start it
             self.start_run_forever()
             self.forever_button.setText("Stop Mnemonic's")
 
@@ -1113,7 +1111,7 @@ class GridFrame(QMainWindow):
             self.start_button_forward.setStyleSheet("color: green")
             self.scanning = False
         else:
-            selected_increment = int(self.forward_scaning.currentText())
+            selected_increment = int(self.forward_scaning.text())
             self.jump_forward_active = True
             self.jump_forward_timer.timeout.connect(lambda: self.seed_inc_increment(selected_increment))
             self.jump_forward_timer.start(self.scanning_speed)
@@ -1130,7 +1128,7 @@ class GridFrame(QMainWindow):
             self.start_button_backward.setStyleSheet("color: green")
             self.scanning = False
         else:
-            selected_increment = int(self.backwards_scaning.currentText())
+            selected_increment = int(self.backwards_scaning.text())
             self.jump_backward_active = True
             self.jump_backward_timer.timeout.connect(lambda: self.seed_inc_increment(-selected_increment))
             self.jump_backward_timer.start(self.scanning_speed)
@@ -1359,7 +1357,7 @@ class GridFrame(QMainWindow):
         if self.is_active:
             self.is_active = False
             self.tick()
-            self.btn_start_stop.setText('Start Random Full Scan')
+            self.btn_start_stop.setText('Start Random Scan')
             self.btn_start_stop.setStyleSheet("color: green")
             self.btn_seed.setEnabled(True)
             self.btn_clear.setEnabled(True)
@@ -1367,7 +1365,7 @@ class GridFrame(QMainWindow):
         else:
             self.is_active = True
             self.tick()
-            self.btn_start_stop.setText('🚫Stop Random Full Scan🚫')
+            self.btn_start_stop.setText('Stop Random Scan')
             self.btn_start_stop.setStyleSheet("color: red")
             self.btn_seed.setEnabled(False)
             self.btn_clear.setEnabled(False)

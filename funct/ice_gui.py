@@ -22,6 +22,8 @@ from config import *
 import locale
 
 addfind = load_bloom.load_bloom_filter()
+TEL_ICON = "webfiles/css/images/main/Telegram.png"
+DIS_ICON = "webfiles/css/images/main/Discord.png"
 
 crypto_mapping = {
     "Bitcoin (BTC)": 0,
@@ -142,21 +144,6 @@ class GUIInstance(QMainWindow):
             pass
 
     def initUI(self):
-        menubar = self.menuBar()
-        def add_menu_action(menu, text, function):
-            action = QAction(text, self)
-            action.triggered.connect(function)
-            menu.addAction(action)
-
-        file_menu = menubar.addMenu("Database Option Load/Update")
-        file_menu.addSeparator()
-        add_menu_action(file_menu, "Load New Database", self.onOpen)
-        add_menu_action(file_menu, "Update Database", self.update_action_run)
-        file_menu.addSeparator()
-
-        settings_menu = menubar.addMenu("Reporting Setting Telegram/Discord")
-        add_menu_action(settings_menu, "Telegram", self.open_telegram_settings)
-        add_menu_action(settings_menu, "Discord", self.open_discord_settings)
 
         central_widget = QWidget()
         layout = QVBoxLayout(central_widget)
@@ -172,6 +159,7 @@ class GUIInstance(QMainWindow):
         self.format_combo_box_POWER.addItems(
             ["1", "128", "256", "512", "1024", "2048", "4096", "8192", "16384"]
         )
+        self.format_combo_box_POWER.setCurrentIndex(2)
         crypto_label = QLabel("Type of Crypto ", self)
         crypto_label.setStyleSheet("font-size: 14px; font-weight: bold; color: #E7481F;")
         self.crypto_selector = QComboBox()
@@ -499,15 +487,52 @@ class GUIInstance(QMainWindow):
             self.bech32_checkbox, self.bech32_label, self.bech32_text
         )
 
-        # Create checkbox for custom Telegram credentials
-        self.use_telegram_credentials_checkbox = QCheckBox("Use Custom Telegram Credentials (edit in settings menu)")
+        icon_size = QSize(32, 32)
+        icontel = QIcon(QPixmap(TEL_ICON))
+        icondis = QIcon(QPixmap(DIS_ICON))
+
+        self.telegram_mode_button = QPushButton(self)
+        self.telegram_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Enter Custom Telegram Credentials Settings .</span>')
+        self.telegram_mode_button.setStyleSheet("font-size: 16px;")
+        self.telegram_mode_button.setIconSize(icon_size)
+        self.telegram_mode_button.setIcon(icontel)
+        self.telegram_mode_button.clicked.connect(self.open_telegram_settings)
+        self.use_telegram_credentials_checkbox = QCheckBox("Use Custom Telegram Credentials")
         self.use_telegram_credentials_checkbox.setChecked(False)
-        self.use_discord_credentials_checkbox = QCheckBox("Use Custom Discord Credentials (edit in settings menu)")
+
+        self.discord_mode_button = QPushButton(self)
+        self.discord_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Enter Custom Discord Credentials Settings .</span>')
+        self.discord_mode_button.setStyleSheet("font-size: 16px;")
+        self.discord_mode_button.setIconSize(icon_size)
+        self.discord_mode_button.setIcon(icondis)
+        self.discord_mode_button.clicked.connect(self.open_discord_settings)
+        self.use_discord_credentials_checkbox = QCheckBox("Use Custom Discord Credentials")
         self.use_discord_credentials_checkbox.setChecked(False)
 
+
+        self.load_mode_button = QPushButton("Load New Database from File",self)
+        self.load_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Load New Database from File.</span>')
+        self.load_mode_button.setStyleSheet(
+                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+            )
+        self.load_mode_button.clicked.connect(self.onOpen)
+
+        self.update_mode_button = QPushButton("Update Database from Internet", self)
+        self.update_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Update Database from Internet </span>')
+        self.update_mode_button.setStyleSheet(
+                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+            )
+        self.update_mode_button.clicked.connect(self.update_action_run)
+        
         custom_credentials_layout = QHBoxLayout()
+        custom_credentials_layout.addWidget(self.telegram_mode_button)
         custom_credentials_layout.addWidget(self.use_telegram_credentials_checkbox)
+        custom_credentials_layout.addWidget(self.discord_mode_button)
         custom_credentials_layout.addWidget(self.use_discord_credentials_checkbox)
+        custom_credentials_layout.addWidget(self.load_mode_button)
+        custom_credentials_layout.addWidget(self.update_mode_button)
         layout.addLayout(custom_credentials_layout)
         self.counter = 0
         self.timer = time.time()
@@ -647,8 +672,12 @@ class GUIInstance(QMainWindow):
         try:
             bits = int(text)
             bits = max(0, min(bits, 256))
-            start_range = hex(2 ** bits)
-            end_range = hex(2 ** (bits + 1) - 1)
+            if bits == 256:
+                start_range = hex(2 ** bits)
+                end_range = "0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140"
+            else:
+                start_range = hex(2 ** bits)
+                end_range = hex(2 ** (bits + 1) - 1)
             
             self.keyspace_slider.setValue(bits)
             self.start_edit.setText(start_range)
@@ -658,9 +687,8 @@ class GUIInstance(QMainWindow):
             QMessageBox.information(self, "Range Error", range_message)
 
     def send_to_discord(self, text):
-        settings = set_settings.get_settings()
-        webhook_url = settings.get("webhook_url", "").strip()
-        print(f'Webhook URL: {webhook_url}')
+        settings = self.load_config()  # Load settings from config.json
+        webhook_url = settings.get("Discord", {}).get("webhook_url", "").strip()
         headers = {'Content-Type': 'application/json'}
 
         payload = {
@@ -677,11 +705,17 @@ class GUIInstance(QMainWindow):
         except Exception as e:
             print(f'Error sending message to Discord: {str(e)}')
 
+    def load_config(self):
+        try:
+            with open(CONFIG_FILE, "r") as file:
+                return json.load(file)
+        except FileNotFoundError:
+            return {}
 
     def send_to_telegram(self, text):
-        settings = set_settings.get_settings()
-        apiToken = settings.get("token", "").strip()
-        chatID = settings.get("chatid", "").strip()
+        settings = self.load_config()  # Load settings from config.json
+        apiToken = settings.get("Telegram", {}).get("token", "").strip()
+        chatID = settings.get("Telegram", {}).get("chatid", "").strip()
 
         if not apiToken or not chatID:
             token_message = "No token or ChatID found in CONFIG_FILE"
@@ -858,12 +892,12 @@ class GUIInstance(QMainWindow):
                     WINTEXT = f"\n {caddr} \n Decimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX}  \n"
 
                     try:
-                        with open(WINNER_COMPRESSED, "a") as f:
+                        with open(WINNER_FOUND, "a") as f:
                             f.write(WINTEXT)
                     except FileNotFoundError:
-                        os.makedirs(os.path.dirname(WINNER_COMPRESSED), exist_ok=True)
+                        os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
 
-                        with open(WINNER_COMPRESSED, "w") as f:
+                        with open(WINNER_FOUND, "w") as f:
                             f.write(WINTEXT)
                     if self.use_telegram_credentials_checkbox.isChecked():
                         self.send_to_telegram(WINTEXT)
@@ -883,12 +917,12 @@ class GUIInstance(QMainWindow):
                     WINTEXT = f"\n {uaddr} \n Decimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX}  \n"
 
                     try:
-                        with open(WINNER_UNCOMPRESSED, "a") as f:
+                        with open(WINNER_FOUND, "a") as f:
                             f.write(WINTEXT)
                     except FileNotFoundError:
-                        os.makedirs(os.path.dirname(WINNER_UNCOMPRESSED), exist_ok=True)
+                        os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
 
-                        with open(WINNER_UNCOMPRESSED, "w") as f:
+                        with open(WINNER_FOUND, "w") as f:
                             f.write(WINTEXT)
 
                     if self.use_telegram_credentials_checkbox.isChecked():
@@ -909,12 +943,12 @@ class GUIInstance(QMainWindow):
                     WINTEXT = f"\n {p2sh}\nDecimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX} \n"
 
                     try:
-                        with open(WINNER_P2SH, "a") as f:
+                        with open(WINNER_FOUND, "a") as f:
                             f.write(WINTEXT)
                     except FileNotFoundError:
-                        os.makedirs(os.path.dirname(WINNER_P2SH), exist_ok=True)
+                        os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
 
-                        with open(WINNER_P2SH, "w") as f:
+                        with open(WINNER_FOUND, "w") as f:
                             f.write(WINTEXT)
 
                     if self.use_telegram_credentials_checkbox.isChecked():
@@ -935,12 +969,12 @@ class GUIInstance(QMainWindow):
                     WINTEXT = f"\n {bech32}\n Decimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX} \n"
 
                     try:
-                        with open(WINNER_BECH32, "a") as f:
+                        with open(WINNER_FOUND, "a") as f:
                             f.write(WINTEXT)
                     except FileNotFoundError:
-                        os.makedirs(os.path.dirname(WINNER_BECH32), exist_ok=True)
+                        os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
 
-                        with open(WINNER_BECH32, "w") as f:
+                        with open(WINNER_FOUND, "w") as f:
                             f.write(WINTEXT)
 
                     if self.use_telegram_credentials_checkbox.isChecked():
@@ -963,19 +997,12 @@ class GUIInstance(QMainWindow):
         self.p2sh_text.setText("\n".join(p2sh_keys))
         self.bech32_text.setText("\n".join(bech32_keys))
 
-        def load_config():
-            try:
-                with open(CONFIG_FILE, "r") as file:
-                    return json.load(file)
-            except FileNotFoundError:
-                return {}
-
         def save_config(config_data):
             with open(CONFIG_FILE, "w") as file:
                 json.dump(config_data, file, indent=4)
 
         def update_config_address(start_address, end_address):
-            config_data = load_config()
+            config_data = self.load_config()
             config_data["Addresses"] = {
                 "START_ADDRESS": start_address,
                 "END_ADDRESS": end_address
