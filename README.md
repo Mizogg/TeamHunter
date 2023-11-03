@@ -54,6 +54,10 @@ This Version Requires PyQt6-WebEngine Which some user cannot install
 python TeamHunter_basic.py
 It does not require PyQt6-WebEngine
 
+
+![image](https://github.com/Mizogg/TeamHunter/assets/88630056/a373bd7a-f49e-4ffc-8173-1f372e51a7df)
+![image](https://github.com/Mizogg/TeamHunter/assets/88630056/48ec2637-2cc8-4c33-95c1-0122d71e20e5)
+
 # Credits
 
 ## iceland2k14
