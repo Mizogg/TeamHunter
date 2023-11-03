@@ -23,6 +23,15 @@ https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019
 
 Python 3.11
 https://www.python.org/downloads/
+
+.NET 8.0 Runtime (v8.0.0-rc.2)  This is required for C#-Mnemonic
+https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-8.0.0-rc.2-windows-x64-installer
+
+# pip install.bat 
+
+Run The bat for easier install.
+or 
+
 ```
 PyQt6
 pyqtdarktheme
@@ -35,10 +44,11 @@ simplebloomfilter
 bitarray==1.9.2
 hdwallet
 mnemonic
+numpy
 ```
 # How to Run
 
-python TeamHunter_main.py 
+python TeamHunter.py 
 This Version Requires PyQt6-WebEngine Which some user cannot install
 
 python TeamHunter_basic.py
