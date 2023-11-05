@@ -4,7 +4,6 @@ pip install pyqtdarktheme
 pip install requests
 pip install base58
 pip install ecdsa
-pip install webbrowser
 pip install PyQt6-WebEngine
 pip install simplebloomfilter
 pip install bitarray==1.9.2
