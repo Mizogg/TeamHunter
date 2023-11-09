@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QGroupBox, QTextBrowse
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtCore import Qt
 
-version = '0.6'
+version = '0.7'
 ICO_ICON = "webfiles/css/images/main/miz.ico"
 TITLE_ICON = "webfiles/css/images/main/title.png"
 class AboutDialog(QDialog):

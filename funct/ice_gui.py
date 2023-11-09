@@ -17,7 +17,7 @@ from libs import secp256k1 as ice, load_bloom
 from funct import (bar_gui, win_gui, up_bloom_gui, show_ranges_gui, telegram_gui, discord_gui)
 import sys
 sys.path.extend(['libs', 'config', 'funct'])
-
+from speaker import Speaker
 from config import *
 import locale
 
@@ -231,6 +231,7 @@ class GUIInstance(QMainWindow):
             )
         start_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start scanning (Make sure Range is set) </span>')
         start_button.clicked.connect(self.start)
+        start_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         start_button.setFixedWidth(150)
 
         stop_button = QPushButton("Stop", self)
@@ -240,6 +241,7 @@ class GUIInstance(QMainWindow):
         )
         stop_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Stop scanning </span>')
         stop_button.clicked.connect(self.stop)
+        stop_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         stop_button.setFixedWidth(150)
 
         start_stop_layout = QHBoxLayout()
@@ -287,6 +289,7 @@ class GUIInstance(QMainWindow):
         self.keyspace_slider.setMinimum(1)
         self.keyspace_slider.setMaximum(256)
         self.keyspace_slider.setValue(66)
+        self.keyspace_slider.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.generic_scroll_01), 0.3)
         self.keyspace_slider.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
         keyspacerange_layout = QVBoxLayout()
         keyspacerange_layout.addWidget(self.start_edit)
@@ -536,9 +539,18 @@ class GUIInstance(QMainWindow):
         layout.addLayout(custom_credentials_layout)
         self.counter = 0
         self.timer = time.time()
+        settings = self.load_config()
+        save_start = settings.get("Addresses_start", {}).get("START_ADDRESS", "").strip()
+        save_end = settings.get("Addresses_stop", {}).get("END_ADDRESS", "").strip()
 
-        self.start_edit.setText('20000000000000000')
-        self.end_edit.setText('3ffffffffffffffff')
+        if not save_start:
+            save_start = '0x20000000000000000'
+
+        if not save_end:
+            save_end = '0x3ffffffffffffffff'
+
+        self.start_edit.setText(save_start)
+        self.end_edit.setText(save_end)
 
     def onOpen(self):
         global addfind, BTC_BF_FILE
@@ -662,22 +674,24 @@ class GUIInstance(QMainWindow):
             )
 
     def update_keyspace_range(self, value):
-        start_range = hex(2 ** (value - 1))[2:]
-        end_range = hex(2 ** value - 1)[2:]
+        start_range = hex(2 ** (value - 1))
+        end_range = hex(2 ** value - 1)
         self.start_edit.setText(start_range)
         self.end_edit.setText(end_range)
         self.bitsLineEdit.setText(str(value))
+
 
     def updateSliderAndRanges(self, text):
         try:
             bits = int(text)
             bits = max(0, min(bits, 256))
             if bits == 256:
-                start_range = hex(2 ** bits)
+                start_range = "0x8000000000000000000000000000000000000000000000000000000000000000"
                 end_range = "0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140"
             else:
-                start_range = hex(2 ** bits)
-                end_range = hex(2 ** (bits + 1) - 1)
+                start_range = hex(2 ** (bits - 1))
+                end_range = hex(2 ** bits - 1)
+
             
             self.keyspace_slider.setValue(bits)
             self.start_edit.setText(start_range)
@@ -1001,17 +1015,24 @@ class GUIInstance(QMainWindow):
             with open(CONFIG_FILE, "w") as file:
                 json.dump(config_data, file, indent=4)
 
-        def update_config_address(start_address, end_address):
+        def update_config_start(start_address):
             config_data = self.load_config()
-            config_data["Addresses"] = {
-                "START_ADDRESS": start_address,
-                "END_ADDRESS": end_address
+            config_data["Addresses_start"] = {
+                "START_ADDRESS": f'0x{start_address}'
             }
             save_config(config_data)
+
+        def update_config_stop(end_address):
+            config_data = self.load_config()
+            config_data["Addresses_stop"] = {
+                "END_ADDRESS": f'0x{end_address}'
+            }
+            save_config(config_data)
+
         if self.sequence_button.isChecked():
-            update_config_address(HEX, None)
+            update_config_start(HEX)
         elif self.reverse_button.isChecked():
-            update_config_address(None, HEX)
+            update_config_stop(HEX)
 
     def update_display_random(self, start, end):
         if not self.scanning:

@@ -11,6 +11,7 @@ import platform
 import multiprocessing
 from console_gui import ConsoleWindow
 from command_thread import CommandThread
+from speaker import Speaker
 
 class KeyHuntFrame(QMainWindow):
     def __init__(self):
@@ -60,31 +61,46 @@ class KeyHuntFrame(QMainWindow):
         keyspaceLayout.addWidget(self.keyspaceLineEdit)
         keyspaceMainLayout.addLayout(keyspaceLayout)
         keyspacerange_layout = QHBoxLayout()
-        keyspace_slider = QSlider(Qt.Orientation.Horizontal)
-        keyspace_slider.setMinimum(1)
-        keyspace_slider.setMaximum(256)
-        keyspace_slider.setValue(66)
-        keyspace_slider.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
-        slider_value_display = QLabel(keyspaceGroupBox)
-        keyspacerange_layout.addWidget(keyspace_slider)
-        keyspacerange_layout.addWidget(slider_value_display)
+        self.keyspace_slider = QSlider(Qt.Orientation.Horizontal)
+        self.keyspace_slider.setMinimum(1)
+        self.keyspace_slider.setMaximum(256)
+        self.keyspace_slider.setValue(66)
+        self.keyspace_slider.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.generic_scroll_01), 0.3)
+        self.keyspace_slider.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
+        keyspacerange_layout1 = QHBoxLayout()
+        keyspacerange_layout1.addWidget(self.keyspace_slider)
+        self.keyspace_slider.valueChanged.connect(self.update_keyspace_range)
+        self.bitsLabel = QLabel("Bits:", self)
+        self.bitsLineEdit = QLineEdit(self)
+        self.bitsLineEdit.setText("66")
+        self.bitsLineEdit.textChanged.connect(self.updateSliderAndRanges)
+        keyspacerange_layout1.addWidget(self.bitsLabel)
+        keyspacerange_layout1.addWidget(self.bitsLineEdit)
         keyspaceMainLayout.addLayout(keyspacerange_layout)
-
-        keyspace_slider.valueChanged.connect(lambda value, k=self.keyspaceLineEdit, s=slider_value_display: self.update_keyspace_range(value, k, s))
+        keyspaceMainLayout.addLayout(keyspacerange_layout1)
         return keyspaceGroupBox
 
+    def update_keyspace_range(self, value):
+        start_range = hex(2 ** (value - 1))[2:]
+        end_range = hex(2 ** value - 1)[2:]
+        self.keyspaceLineEdit.setText(f"{start_range}:{end_range}")
+        self.bitsLineEdit.setText(str(value))
 
-    def update_keyspace_range(self, value, keyspaceLineEdit, slider_value_display):
-        if value == 256:
-            start_range = hex(2**(value - 1))[2:]
-            end_range = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140"
+    def updateSliderAndRanges(self, text):
+        try:
+            bits = int(text)
+            bits = max(0, min(bits, 256))
+            if bits == 256:
+                start_range = "8000000000000000000000000000000000000000000000000000000000000000"
+                end_range = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140"
+            else:
+                start_range = hex(2 ** (bits - 1))[2:]
+                end_range = hex(2 ** bits - 1)[2:]
+            self.keyspace_slider.setValue(bits)
             self.keyspaceLineEdit.setText(f"{start_range}:{end_range}")
-            slider_value_display.setText(str(value))
-        else:
-            start_range = hex(2**(value - 1))[2:]
-            end_range = hex(2**value - 1)[2:]
-            self.keyspaceLineEdit.setText(f"{start_range}:{end_range}")
-            slider_value_display.setText(str(value))
+        except ValueError:
+            range_message = "Range should be in Bit 1-256 "
+            QMessageBox.information(self, "Range Error", range_message)
 
     def create_stop_button(self):
         stopButton = QPushButton("Stop ALL", self)
@@ -94,6 +110,7 @@ class KeyHuntFrame(QMainWindow):
             "QPushButton { font-size: 16pt; background-color: #1E1E1E; color: white; }"
             "QPushButton:hover { font-size: 16pt; background-color: #5D6062; color: white; }"
         )
+        stopButton.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         return stopButton
 
     def create_start_button(self):
@@ -104,6 +121,7 @@ class KeyHuntFrame(QMainWindow):
                 "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
             )
         StartButton.clicked.connect(self.run_keyhunt)
+        StartButton.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         return StartButton
 
     def create_outputFileGroupBox(self):
@@ -183,11 +201,6 @@ class KeyHuntFrame(QMainWindow):
         self.row1Layout.addWidget(self.strideLineEdit)
 
         options_layout2 = QHBoxLayout()
-        self.bitsLabel = QLabel("Bits:", self)
-        options_layout2.addWidget(self.bitsLabel)
-        self.bitsLineEdit = QLineEdit(self)
-        options_layout2.addWidget(self.bitsLineEdit)
-        options_layout2.setStretchFactor(self.bitsLineEdit, 1)
 
         self.kValueLabel = QLabel("K Value:", self)
         options_layout2.addWidget(self.kValueLabel)
@@ -282,10 +295,6 @@ class KeyHuntFrame(QMainWindow):
         if stride:
             command.extend(["-I", stride])
 
-        bits = self.bitsLineEdit.text().strip()
-        if bits:
-            command.extend(["-b", bits])
-
         n_value = self.nValueLineEdit.text().strip()
         if n_value:
             command.extend(["-n", n_value])
@@ -297,7 +306,7 @@ class KeyHuntFrame(QMainWindow):
         look = self.lookComboBox.currentText().strip()
         if look:
             command.extend(["-l", look])
-
+            
         return command
 
     def update_movement_mode_options(self):

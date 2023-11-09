@@ -11,6 +11,7 @@ import multiprocessing
 import signal
 from console_gui import ConsoleWindow
 from command_thread import CommandThread
+from speaker import Speaker
 
 class MnemonicFrame(QMainWindow):
     def __init__(self):
@@ -47,6 +48,7 @@ class MnemonicFrame(QMainWindow):
     def create_stop_button(self):
         stopButton = QPushButton("Stop ALL", self)
         stopButton.clicked.connect(self.stop_mnemonic)
+        stopButton.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         stopButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Stop Mnemonic and All Running programs </span>')
         stopButton.setStyleSheet(
             "QPushButton { font-size: 16pt; background-color: #1E1E1E; color: white; }"
@@ -62,6 +64,7 @@ class MnemonicFrame(QMainWindow):
                 "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
             )
         StartButton.clicked.connect(self.run_mnemonic)
+        StartButton.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         return StartButton
 
     def create_outputFileGroupBox(self):
@@ -190,7 +193,7 @@ class MnemonicFrame(QMainWindow):
             self.consoleWindow.append_output(f"An error occurred: {str(e)}")
 
     def found_prog(self):
-        self.read_and_display_file('found.txt', "Mnemonic GUI File found. Check of Winners 😀 .", "No Winners Yet 😞")
+        self.read_and_display_file("found/found.txt", "File found. Check for Winners 😀.", "No Winners Yet 😞")
 
     def browse_input_file(self):
         file_dialog = QFileDialog(self)

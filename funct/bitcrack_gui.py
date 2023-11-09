@@ -10,6 +10,7 @@ import subprocess
 import platform
 from console_gui import ConsoleWindow
 from command_thread import CommandThread
+from speaker import Speaker
 
 class BitcrackFrame(QMainWindow):
     def __init__(self):
@@ -31,8 +32,6 @@ class BitcrackFrame(QMainWindow):
         main_layout.addWidget(output_file_config)
 
         buttonLayout = QHBoxLayout()
-
-        # Button to start BitCrack with OpenCL
         StartButton = QPushButton("Start BitCrack OpenCL", self)
         StartButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start BitCrack OpenCL </span>')
         StartButton.setStyleSheet(
@@ -40,9 +39,8 @@ class BitcrackFrame(QMainWindow):
                 "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
             )
         StartButton.clicked.connect(self.run_gpu_open)
+        StartButton.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         buttonLayout.addWidget(StartButton)
-
-        # Button to start BitCrack with CUDA
         StartButtonc = QPushButton("Start BitCrack Cuda", self)
         StartButtonc.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start BitCrack Cuda </span>')
         StartButtonc.setStyleSheet(
@@ -50,6 +48,7 @@ class BitcrackFrame(QMainWindow):
                 "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
             )
         StartButtonc.clicked.connect(self.run_gpu_cuda)
+        StartButtonc.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         buttonLayout.addWidget(StartButtonc)
 
         main_layout.addLayout(buttonLayout)
@@ -60,6 +59,7 @@ class BitcrackFrame(QMainWindow):
             "QPushButton { font-size: 16pt; background-color: #1E1E1E; color: white; }"
             "QPushButton:hover { font-size: 16pt; background-color: #5D6062; color: white; }"
         )
+        stop_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         main_layout.addWidget(stop_button)
 
         self.consoleWindow = ConsoleWindow(self)
@@ -69,7 +69,6 @@ class BitcrackFrame(QMainWindow):
         container.setLayout(main_layout)
         self.setCentralWidget(container)
 
-    # Function to create the Key Space Configuration GUI
     def create_keyspaceGroupBox(self):
         keyspaceGroupBox = QGroupBox(self)
         keyspaceGroupBox.setTitle("Key Space Configuration")
@@ -84,36 +83,49 @@ class BitcrackFrame(QMainWindow):
         keyspaceLayout.addWidget(self.keyspaceLineEdit)
         keyspaceMainLayout.addLayout(keyspaceLayout)
 
-        # Add slider for key space range
         keyspacerange_layout = QHBoxLayout()
-        keyspace_slider = QSlider(Qt.Orientation.Horizontal)
-        keyspace_slider.setMinimum(1)
-        keyspace_slider.setMaximum(256)
-        keyspace_slider.setValue(66)
-        keyspace_slider.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
-        slider_value_display = QLabel(keyspaceGroupBox)
-        keyspacerange_layout.addWidget(keyspace_slider)
-        keyspacerange_layout.addWidget(slider_value_display)
+        self.keyspace_slider = QSlider(Qt.Orientation.Horizontal)
+        self.keyspace_slider.setMinimum(1)
+        self.keyspace_slider.setMaximum(256)
+        self.keyspace_slider.setValue(66)
+        self.keyspace_slider.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.generic_scroll_01), 0.3)
+        self.keyspace_slider.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
+        keyspacerange_layout1 = QHBoxLayout()
+        keyspacerange_layout1.addWidget(self.keyspace_slider)
+        self.keyspace_slider.valueChanged.connect(self.update_keyspace_range)
+        self.bitsLabel = QLabel("Bits:", self)
+        self.bitsLineEdit = QLineEdit(self)
+        self.bitsLineEdit.setText("66")
+        self.bitsLineEdit.textChanged.connect(self.updateSliderAndRanges)
+        keyspacerange_layout1.addWidget(self.bitsLabel)
+        keyspacerange_layout1.addWidget(self.bitsLineEdit)
         keyspaceMainLayout.addLayout(keyspacerange_layout)
-
-        # Connect slider value change to update_keyspace_range method
-        keyspace_slider.valueChanged.connect(lambda value, k=self.keyspaceLineEdit, s=slider_value_display: self.update_keyspace_range(value, k, s))
+        keyspaceMainLayout.addLayout(keyspacerange_layout1)
         return keyspaceGroupBox
 
-    # Function to update key space range based on slider value
-    def update_keyspace_range(self, value, keyspaceLineEdit, slider_value_display):
-        if value == 256:
-            start_range = hex(2**(value - 1))[2:]
-            end_range = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140"
-            self.keyspaceLineEdit.setText(f"{start_range}:{end_range}")
-            slider_value_display.setText(str(value))
-        else:
-            start_range = hex(2**(value - 1))[2:]
-            end_range = hex(2**value - 1)[2:]
-            self.keyspaceLineEdit.setText(f"{start_range}:{end_range}")
-            slider_value_display.setText(str(value))
 
-    # Function to create the "Stop All" button
+    def update_keyspace_range(self, value):
+        start_range = hex(2 ** (value - 1))[2:]
+        end_range = hex(2 ** value - 1)[2:]
+        self.keyspaceLineEdit.setText(f"{start_range}:{end_range}")
+        self.bitsLineEdit.setText(str(value))
+
+    def updateSliderAndRanges(self, text):
+        try:
+            bits = int(text)
+            bits = max(0, min(bits, 256))
+            if bits == 256:
+                start_range = "8000000000000000000000000000000000000000000000000000000000000000"
+                end_range = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140"
+            else:
+                start_range = hex(2 ** (bits - 1))[2:]
+                end_range = hex(2 ** bits - 1)[2:]
+            self.keyspace_slider.setValue(bits)
+            self.keyspaceLineEdit.setText(f"{start_range}:{end_range}")
+        except ValueError:
+            range_message = "Range should be in Bit 1-256 "
+            QMessageBox.information(self, "Range Error", range_message)
+
     def create_stop_button(self):
         stopButton = QPushButton("Stop ALL", self)
         stopButton.clicked.connect(self.stop_hunt)

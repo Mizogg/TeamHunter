@@ -22,6 +22,7 @@ from command_thread import CommandThread
 from config import *
 import locale
 from mnemonic import Mnemonic
+from speaker import Speaker
 import sys
 sys.path.extend(['libs', 'config', 'funct'])
 
@@ -83,6 +84,7 @@ class GUIInstance(QMainWindow):
             )
         enter_button.setFixedWidth(300)
         enter_button.clicked.connect(self.enter)
+        enter_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         custom_phrase_layout.addWidget(enter_button)
 
         select_power_layout = QHBoxLayout()
@@ -102,6 +104,7 @@ class GUIInstance(QMainWindow):
             )
         start_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start scanning </span>')
         start_button.clicked.connect(self.start)
+        start_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         start_button.setFixedWidth(600)
 
         stop_button = QPushButton("Stop", self)
@@ -111,6 +114,7 @@ class GUIInstance(QMainWindow):
         )
         stop_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Stop scanning </span>')
         stop_button.clicked.connect(self.stop)
+        stop_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         stop_button.setFixedWidth(600)
 
         control_layout = QHBoxLayout()
@@ -198,6 +202,7 @@ class GUIInstance(QMainWindow):
         self.telegram_mode_button.setIconSize(icon_size)
         self.telegram_mode_button.setIcon(icontel)
         self.telegram_mode_button.clicked.connect(self.open_telegram_settings)
+        self.telegram_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         self.use_telegram_credentials_checkbox = QCheckBox("Use Custom Telegram Credentials")
         self.use_telegram_credentials_checkbox.setChecked(False)
 
@@ -207,6 +212,7 @@ class GUIInstance(QMainWindow):
         self.discord_mode_button.setIconSize(icon_size)
         self.discord_mode_button.setIcon(icondis)
         self.discord_mode_button.clicked.connect(self.open_discord_settings)
+        self.discord_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         self.use_discord_credentials_checkbox = QCheckBox("Use Custom Discord Credentials")
         self.use_discord_credentials_checkbox.setChecked(False)
 

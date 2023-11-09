@@ -42,7 +42,7 @@ class ConsoleWindow(QWidget):
         self.thresholdLabel = QLabel("Console Threshold:", self)
         self.thresholdDropdown = QComboBox(self)
         self.thresholdDropdown.addItems(["2", "5", "10", "100", "500", "1000", "5000"])
-        self.thresholdDropdown.setCurrentIndex(3)  # Default value is 100
+        self.thresholdDropdown.setCurrentIndex(4)
         button_layout.addWidget(self.thresholdLabel)
         button_layout.addWidget(self.thresholdDropdown)
         self.layout.addWidget(button_widget)
@@ -52,7 +52,7 @@ class ConsoleWindow(QWidget):
         self.copyButton.clicked.connect(self.copy_text)
         self.thresholdDropdown.currentIndexChanged.connect(self.update_threshold)
         
-        self.threshold = int(self.thresholdDropdown.currentText())  # Initialize threshold here
+        self.threshold = int(self.thresholdDropdown.currentText())
 
     def set_output(self, output):
         self.consoleOutput.setPlainText(output)
