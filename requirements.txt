@@ -1,11 +1,13 @@
 PyQt6
+bit
 pyqtdarktheme
 requests
-base58
-ecdsa
 PyQt6-WebEngine
 simplebloomfilter
 bitarray==1.9.2
 hdwallet
 mnemonic
 numpy
+cryptography
+keyboard
+pygame
