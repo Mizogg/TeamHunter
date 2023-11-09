@@ -20,8 +20,8 @@ BTC_TXT_FILE = f"{INPUT_FOLDER}/{settings.value('Paths/BTC_TXT_FILE', defaultVal
 
 WINNER_FOUND = f"{WINNER_FOLDER}/{settings.value('Paths/WINNER_FOUND', defaultValue='found.txt', type=str)}"
 
-START_ADDRESS_KEY = 'Addresses/START_ADDRESS'
-END_ADDRESS_KEY = 'Addresses/END_ADDRESS'
+START_ADDRESS_KEY = 'Addresses_start/START_ADDRESS'
+END_ADDRESS_KEY = 'Addresses_stop/END_ADDRESS'
 
 START_ADDRESS = settings.value(START_ADDRESS_KEY, defaultValue='', type=str)
 END_ADDRESS = settings.value(END_ADDRESS_KEY, defaultValue='', type=str)
