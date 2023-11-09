@@ -34,17 +34,18 @@ or
 
 ```
 PyQt6
+bit
 pyqtdarktheme
 requests
-base58
-ecdsa
-webbrowser
 PyQt6-WebEngine
 simplebloomfilter
 bitarray==1.9.2
 hdwallet
 mnemonic
 numpy
+cryptography
+keyboard
+pygame
 ```
 # How to Run
 
