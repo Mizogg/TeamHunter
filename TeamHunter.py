@@ -10,10 +10,11 @@ from PyQt6.QtGui import *
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 import qdarktheme
 from libs import set_settings, create_setting
-from funct import (range_div_gui, about_gui, ice_gui, bitcrack_gui, keyhunt_gui, vanbit_gui, up_bloom_gui, grid_16x16, mnemonic_gui, snake_gui, miz_mnemonic)
+from game import snake_gui, Start_game
+from funct import (range_div_gui, about_gui, ice_gui, bitcrack_gui, keyhunt_gui, vanbit_gui, up_bloom_gui, grid_16x16, mnemonic_gui, miz_mnemonic, conversion_gui, balance_gui, wallet_gui)
 import sys
-sys.path.extend(['libs', 'config', 'funct', 'found', 'input'])
-
+sys.path.extend(['libs', 'config', 'funct', 'found', 'input', 'game'])
+from speaker import Speaker
 from config import *
 
 ICO_ICON = "webfiles/css/images/main/miz.ico"
@@ -23,10 +24,18 @@ MIZ_ICON = "webfiles/css/images/main/mizogg-eyes.png"
 LOYCE_ICON = "webfiles/css/images/main/loyce.png"
 BLACK_ICON = "webfiles/css/images/main/python-snake-black.png"
 RED_ICON = "webfiles/css/images/main/python-snake-red.png"
+BAL_ICON = "webfiles/css/images/main/Balance.png"
+COV_ICON = "webfiles/css/images/main/Conversion.png"
+RANGE_ICON = "webfiles/css/images/main/Range.png"
+ICON_16x16 = "webfiles/css/images/main/grid.png"
+SUN_ICON = "webfiles/css/images/main/sun.png"
+MOON_ICON = "webfiles/css/images/main/moon.png"
+WALLET_ICON = "webfiles/css/images/main/walletpic.png"
+TETRIS_ICON = "webfiles/css/images/main/Tetris.png"
 image_folder = "webfiles/css/images"
 image_files = [os.path.join(image_folder, filename) for filename in os.listdir(image_folder) if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
 
-version = '0.6'
+version = '0.7'
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -60,7 +69,7 @@ class MainWindow(QMainWindow):
         self.tab_widget.addTab(self.tab5, "Iceland2k14 Secp256k1")
         self.tab_widget.addTab(self.tab6, "Miz Mnemonic")
         self.tab_widget.addTab(self.tab7, "Conversion Tools / BrainWallet")
-        self.tab_widget.addTab(self.tab8, "Menmonics Tools")
+        self.tab_widget.addTab(self.tab8, "Mnemonic Tools")
         self.tab_widget.addTab(self.tab9, "Mizogg's Tools")
         self.tab_widget.addTab(self.tab10, "BTC Snake Game")
         self.tab_widget.addTab(self.tab11, "Race Game")
@@ -71,12 +80,18 @@ class MainWindow(QMainWindow):
         self.theme_preference = self.get_theme_preference()
         self.dark_mode = self.theme_preference == "dark"
         self.toggle_theme()
+        icon_size = QSize(32, 32)
+        self.dark_mode_button.setIconSize(icon_size)
         if self.theme_preference == "dark":
-            self.dark_mode_button.setText("🌞")
+            iconsun = QIcon(QPixmap(SUN_ICON))
+            pixsun = QPixmap(iconsun)
+            self.dark_mode_button.setIcon(pixsun)
             self.load_dark_mode()
             self.dark_mode = True
         elif self.theme_preference == "light":
-            self.dark_mode_button.setText("🌙")
+            iconmoon = QIcon(QPixmap(MOON_ICON))
+            pixmoon = QPixmap(iconmoon)
+            self.dark_mode_button.setIcon(pixmoon)
             self.load_light_mode()
             self.dark_mode = False
 
@@ -87,6 +102,7 @@ class MainWindow(QMainWindow):
         qdarktheme.setup_theme("light")
 
     def initUI(self):
+        Speaker.play_death()
         self.init_webviews()
         menubar = self.menuBar()
         def add_menu_action(menu, text, function):
@@ -106,38 +122,84 @@ class MainWindow(QMainWindow):
         add_menu_action(help_menu, "About", self.about)
         self.timer = QTimer(self)
 
-        main_layout = QVBoxLayout()
-        self.dark_mode_button = QPushButton(self)
-        self.dark_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Switch Between Dark and Light Theme</span>')
-        self.dark_mode_button.setStyleSheet("font-size: 16px;")
-        self.dark_mode_button.clicked.connect(self.toggle_theme)
-        self.dark_mode_button.setChecked(True if self.get_theme_preference() == "dark" else False)
-
-        self.grid_mode_button = QPushButton(self)
-        self.grid_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Run 16x16 Grid Hunter</span>')
-        self.grid_mode_button.setStyleSheet("font-size: 16px;")
-        self.grid_mode_button.setText("🏁")
-        self.grid_mode_button.clicked.connect(self.load_16x16)
-
-        self.div_mode_button = QPushButton(self)
-        self.div_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Range Divsion in HEX </span>')
-        self.div_mode_button.setStyleSheet("font-size: 16px;")
-        self.div_mode_button.setText("📊")
-        self.div_mode_button.clicked.connect(self.range_check)
-
         icon_size = QSize(32, 32)
         iconbc = QIcon(QPixmap(BC_ICON))
         iconmiz = QIcon(QPixmap(MIZ_ICON))
         iconloyce = QIcon(QPixmap(LOYCE_ICON))
         iconblack = QIcon(QPixmap(BLACK_ICON))
         iconred = QIcon(QPixmap(RED_ICON))
+        iconbal = QIcon(QPixmap(BAL_ICON))
+        iconrange = QIcon(QPixmap(RANGE_ICON))
+        iconcon = QIcon(QPixmap(COV_ICON))
+        icon16x16 = QIcon(QPixmap(ICON_16x16))
+        iconwallet = QIcon(QPixmap(WALLET_ICON))
+        tetrisicon = QIcon(QPixmap(TETRIS_ICON))
 
+        main_layout = QVBoxLayout()
+        dark_label = QLabel("EXTRA TOOLS (16x16 Grid, Range Divsion, Conversion, Balance, Dark/Light)")
+        self.dark_mode_button = QPushButton(self)
+        self.dark_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Switch Between Dark and Light Theme</span>')
+        self.dark_mode_button.setStyleSheet("font-size: 16px;")
+        self.dark_mode_button.clicked.connect(self.toggle_theme)
+        self.dark_mode_button.setChecked(True if self.get_theme_preference() == "dark" else False)
+        self.dark_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
+
+        self.grid_mode_button = QPushButton(self)
+        self.grid_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Run 16x16 Grid Hunter</span>')
+        self.grid_mode_button.setStyleSheet("font-size: 16px;")
+        self.grid_mode_button.setIconSize(icon_size)
+        self.grid_mode_button.setIcon(icon16x16)
+        self.grid_mode_button.clicked.connect(self.load_16x16)
+        self.grid_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
+
+        self.wallet_mode_button = QPushButton(self)
+        self.wallet_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Wallet Recovery (Work in Progress)</span>')
+        self.wallet_mode_button.setStyleSheet("font-size: 16px;")
+        self.wallet_mode_button.setIconSize(icon_size)
+        self.wallet_mode_button.setIcon(iconwallet)
+        self.wallet_mode_button.clicked.connect(self.wallet_check)
+        self.wallet_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
+
+        self.tetris_mode_button = QPushButton(self)
+        self.tetris_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Play The GAME Tetris Bitcoin Finder</span>')
+        self.tetris_mode_button.setStyleSheet("font-size: 16px;")
+        self.tetris_mode_button.setIconSize(icon_size)
+        self.tetris_mode_button.setIcon(tetrisicon)
+        self.tetris_mode_button.clicked.connect(self.tetris_play)
+        self.tetris_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
+
+        self.div_mode_button = QPushButton(self)
+        self.div_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Range Divsion in HEX </span>')
+        self.div_mode_button.setStyleSheet("font-size: 16px;")
+        self.div_mode_button.setIconSize(icon_size)
+        self.div_mode_button.setIcon(iconrange)
+        self.div_mode_button.clicked.connect(self.range_check)
+        self.div_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
+
+        self.cov_mode_button = QPushButton(self)
+        self.cov_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;"> Conversion Tools </span>')
+        self.cov_mode_button.setStyleSheet("font-size: 16px;")
+        self.cov_mode_button.setIconSize(icon_size)
+        self.cov_mode_button.setIcon(iconcon)
+        self.cov_mode_button.clicked.connect(self.conv_check)
+        self.cov_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
+
+        self.bal_mode_button = QPushButton(self)
+        self.bal_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;"> Balance Check BTC </span>')
+        self.bal_mode_button.setStyleSheet("font-size: 16px;")
+        self.bal_mode_button.setIconSize(icon_size)
+        self.bal_mode_button.setIcon(iconbal)
+        self.bal_mode_button.clicked.connect(self.balcheck)
+        self.bal_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
+
+        favs_label = QLabel("Miz Favs")
         self.blockchain_mode_button = QPushButton(self)
         self.blockchain_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Blockchain.com (Relentlessly building the future of finance since 2011)</span>')
         self.blockchain_mode_button.setStyleSheet("font-size: 16px;")
         self.blockchain_mode_button.setIconSize(icon_size)
         self.blockchain_mode_button.setIcon(iconbc)
         self.blockchain_mode_button.clicked.connect(self.blockchain_check)
+        self.blockchain_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
 
         self.mizogg_mode_button = QPushButton(self)
         self.mizogg_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Mizogg.co.uk (Come Meet Mizogg Check out my Website and other programs)</span>')
@@ -145,6 +207,7 @@ class MainWindow(QMainWindow):
         self.mizogg_mode_button.setIconSize(icon_size)
         self.mizogg_mode_button.setIcon(iconmiz)
         self.mizogg_mode_button.clicked.connect(self.open_website)
+        self.mizogg_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
 
         self.loyce_mode_button = QPushButton(self)
         self.loyce_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">LOYCE.CLUB (Bitcoin Data)</span>')
@@ -152,13 +215,16 @@ class MainWindow(QMainWindow):
         self.loyce_mode_button.setIconSize(icon_size)
         self.loyce_mode_button.setIcon(iconloyce)
         self.loyce_mode_button.clicked.connect(self.loyce_check)
+        self.loyce_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
 
+        git_label = QLabel("GitHub Links")
         self.alberto_mode_button = QPushButton(self)
         self.alberto_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">GitHub Alertobsd Keyhunt About</span>')
         self.alberto_mode_button.setStyleSheet("font-size: 16px;")
         self.alberto_mode_button.setIconSize(icon_size)
         self.alberto_mode_button.setIcon(iconblack)
         self.alberto_mode_button.clicked.connect(self.alberto_git)
+        self.alberto_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
 
         self.XopMC_mode_button = QPushButton(self)
         self.XopMC_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">GitHub Михаил Х. XopMC C#-Mnemonic About</span>')
@@ -166,6 +232,7 @@ class MainWindow(QMainWindow):
         self.XopMC_mode_button.setIconSize(icon_size)
         self.XopMC_mode_button.setIcon(iconred)
         self.XopMC_mode_button.clicked.connect(self.XopMC_git)
+        self.XopMC_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
 
         self.bitcrack_mode_button = QPushButton(self)
         self.bitcrack_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">GitHub brichard19 BitCrack About</span>')
@@ -173,6 +240,7 @@ class MainWindow(QMainWindow):
         self.bitcrack_mode_button.setIconSize(icon_size)
         self.bitcrack_mode_button.setIcon(iconblack)
         self.bitcrack_mode_button.clicked.connect(self.bitcrack_git)
+        self.bitcrack_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
 
         self.vanbit_mode_button = QPushButton(self)
         self.vanbit_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">GitHub WanderingPhilosopher VanBitCracken Random About</span>')
@@ -180,6 +248,7 @@ class MainWindow(QMainWindow):
         self.vanbit_mode_button.setIconSize(icon_size)
         self.vanbit_mode_button.setIcon(iconred)
         self.vanbit_mode_button.clicked.connect(self.vanbit_git)
+        self.vanbit_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
 
         self.iceland_mode_button = QPushButton(self)
         self.iceland_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">GitHub Iceland iceland2k14 Python Secp256k1 About</span>')
@@ -187,6 +256,7 @@ class MainWindow(QMainWindow):
         self.iceland_mode_button.setIconSize(icon_size)
         self.iceland_mode_button.setIcon(iconblack)
         self.iceland_mode_button.clicked.connect(self.iceland_git)
+        self.iceland_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
 
         self.miz_git_mode_button = QPushButton(self)
         self.miz_git_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">GitHub Mizogg About</span>')
@@ -194,17 +264,20 @@ class MainWindow(QMainWindow):
         self.miz_git_mode_button.setIconSize(icon_size)
         self.miz_git_mode_button.setIcon(iconred)
         self.miz_git_mode_button.clicked.connect(self.miz_git)
+        self.miz_git_mode_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
 
         self.dark_mode = self.get_theme_preference() == "dark"
         self.load_dark_mode() if self.dark_mode else self.load_light_mode()
         self.toggle_theme()
 
         dark_mode_layout = QHBoxLayout()
+        dark_mode_layout.addWidget(favs_label)
         dark_mode_layout.addWidget(self.blockchain_mode_button)
         dark_mode_layout.addWidget(self.mizogg_mode_button)
         dark_mode_layout.addWidget(self.loyce_mode_button)
         dark_mode_layout.addStretch()
 
+        dark_mode_layout.addWidget(git_label)
         dark_mode_layout.addWidget(self.alberto_mode_button)
         dark_mode_layout.addWidget(self.XopMC_mode_button)
         dark_mode_layout.addWidget(self.bitcrack_mode_button)
@@ -213,8 +286,13 @@ class MainWindow(QMainWindow):
         dark_mode_layout.addWidget(self.miz_git_mode_button)
 
         dark_mode_layout.addStretch()
+        dark_mode_layout.addWidget(dark_label)
         dark_mode_layout.addWidget(self.grid_mode_button)
+        dark_mode_layout.addWidget(self.wallet_mode_button)
+        dark_mode_layout.addWidget(self.tetris_mode_button)
         dark_mode_layout.addWidget(self.div_mode_button)
+        dark_mode_layout.addWidget(self.cov_mode_button)
+        dark_mode_layout.addWidget(self.bal_mode_button)
         dark_mode_layout.addWidget(self.dark_mode_button)
 
         labels_info = [
@@ -305,7 +383,6 @@ class MainWindow(QMainWindow):
 
         tabs = ["BitCrack", "KeyHunt", "Vanbitcracken", "C-Sharp-Mnemonic", "Iceland2k14 Secp256k1", "Miz Mnemonic", "Conversion Tools / BrainWallet",
                 "Menmonics Tools", "Mizogg's Tools", "BTC Snake Game", "Race Game", "Art Work"]
-
         for i, tab_name in enumerate(tabs):
             row = i // 4
             col = i % 4
@@ -318,6 +395,7 @@ class MainWindow(QMainWindow):
             )
             
             button.clicked.connect(self.switch_to_tab(i + 1))
+            button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
             buttons_layout.addWidget(button, row, col)
 
         return buttons_layout
@@ -433,14 +511,19 @@ class MainWindow(QMainWindow):
     def toggle_theme(self):
         self.dark_mode = not self.dark_mode
         self.load_dark_mode() if self.dark_mode else self.load_light_mode()
-        self.dark_mode_button.setText("🌞" if self.dark_mode else "🌙")
+        if self.dark_mode:
+            sun_icon = QIcon(QPixmap(SUN_ICON))
+            self.dark_mode_button.setIcon(sun_icon)
+        else:
+            moon_icon = QIcon(QPixmap(MOON_ICON))
+            self.dark_mode_button.setIcon(moon_icon)
 
     def exit_app(self):
         QApplication.quit()
 
     def about(self):
         about_dialog = about_gui.AboutDialog(self)
-        about_dialog.exec()
+        about_dialog.show()
 
     def open_website(self):
         webbrowser.open("https://mizogg.co.uk")
@@ -474,6 +557,23 @@ class MainWindow(QMainWindow):
 
     def miz_git(self):
         webbrowser.open("https://github.com/Mizogg")
+
+    def conv_check(self):
+        conv_dialog = conversion_gui.ConversionDialog(self)
+        conv_dialog.show()
+
+    def balcheck(self):
+        balance_dialog = balance_gui.BalanceDialog(self)
+        balance_dialog.show()
+
+    def wallet_check(self):
+        self.wallet_dialog = wallet_gui.WalletFrame()
+        self.wallet_dialog.show()
+
+    def tetris_play(self):
+        self.tetris_dialog = Start_game.LauncherWindow()
+        self.tetris_dialog.show()
+
 
     @pyqtSlot()
     def new_window(self):
