@@ -9,8 +9,8 @@ sys.path.append('libs')
 import libs
 from libs import team_balance
 
-ICO_ICON = "webfiles/css/images/main/miz.ico"
-TITLE_ICON = "webfiles/css/images/main/title.png"
+ICO_ICON = "images/main/miz.ico"
+TITLE_ICON = "images/main/title.png"
 
 class BalanceDialog(QDialog):
     def __init__(self, parent=None):

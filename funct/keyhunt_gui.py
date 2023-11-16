@@ -57,7 +57,7 @@ class KeyHuntFrame(QMainWindow):
         keyspaceLabel = QLabel("Key Space:")
         keyspaceLayout.addWidget(keyspaceLabel)
         self.keyspaceLineEdit = QLineEdit("20000000000000000:3ffffffffffffffff")
-        self.keyspaceLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type in your own HEX Range separated with : </span>')
+        self.keyspaceLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type in your own HEX Range separated with : </span>')
         keyspaceLayout.addWidget(self.keyspaceLineEdit)
         keyspaceMainLayout.addLayout(keyspaceLayout)
         keyspacerange_layout = QHBoxLayout()
@@ -66,7 +66,7 @@ class KeyHuntFrame(QMainWindow):
         self.keyspace_slider.setMaximum(256)
         self.keyspace_slider.setValue(66)
         self.keyspace_slider.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.generic_scroll_01), 0.3)
-        self.keyspace_slider.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
+        self.keyspace_slider.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
         keyspacerange_layout1 = QHBoxLayout()
         keyspacerange_layout1.addWidget(self.keyspace_slider)
         self.keyspace_slider.valueChanged.connect(self.update_keyspace_range)
@@ -105,20 +105,20 @@ class KeyHuntFrame(QMainWindow):
     def create_stop_button(self):
         stopButton = QPushButton("Stop ALL", self)
         stopButton.clicked.connect(self.stop_hunt)
-        stopButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Stop Keyhunt and All Running programs </span>')
+        stopButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Stop Keyhunt and All Running programs </span>')
         stopButton.setStyleSheet(
-            "QPushButton { font-size: 16pt; background-color: #1E1E1E; color: white; }"
-            "QPushButton:hover { font-size: 16pt; background-color: #5D6062; color: white; }"
+            "QPushButton { font-size: 12pt; background-color: #1E1E1E; color: white; }"
+            "QPushButton:hover { font-size: 12pt; background-color: #5D6062; color: white; }"
         )
         stopButton.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         return stopButton
 
     def create_start_button(self):
         StartButton = QPushButton("Start KeyHunt", self)
-        StartButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start Keyhunt </span>')
+        StartButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Start Keyhunt </span>')
         StartButton.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         StartButton.clicked.connect(self.run_keyhunt)
         StartButton.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
@@ -135,22 +135,22 @@ class KeyHuntFrame(QMainWindow):
         self.lookComboBox.addItem("compress")
         self.lookComboBox.addItem("uncompress")
         self.lookComboBox.addItem("both")
-        self.lookComboBox.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Search for compressed keys (default). Can be used with also search uncompressed keys  </span>')
+        self.lookComboBox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Search for compressed keys (default). Can be used with also search uncompressed keys  </span>')
         outputFileLayout.addWidget(self.lookComboBox)
         self.inputFileLabel = QLabel("Input File:", self)
         outputFileLayout.addWidget(self.inputFileLabel)
         self.inputFileLineEdit = QLineEdit("btc.txt", self)
         self.inputFileLineEdit.setPlaceholderText('Click browse to find your BTC database')
-        self.inputFileLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
+        self.inputFileLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
         outputFileLayout.addWidget(self.inputFileLineEdit)
         self.inputFileButton = QPushButton("Browse", self)
         self.inputFileButton.setStyleSheet("color: #E7481F;")
         self.inputFileButton.clicked.connect(self.browse_input_file)
-        self.inputFileButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
+        self.inputFileButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
         outputFileLayout.addWidget(self.inputFileButton)
         self.found_progButton = QPushButton("🔥 Check if Found 🔥")
         self.found_progButton.clicked.connect(self.found_prog)
-        self.found_progButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Click Here to See if your a Winner </span>')
+        self.found_progButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Click Here to See if your a Winner </span>')
         outputFileLayout.addWidget(self.found_progButton)
         return outputFileGroupBox
 
@@ -166,7 +166,7 @@ class KeyHuntFrame(QMainWindow):
         for i in range(1, self.cpu_count + 1):
             self.threadComboBox_key.addItem(str(i))
         self.threadComboBox_key.setCurrentIndex(2)
-        self.threadComboBox_key.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Pick Your ammount to CPUs to start scaning with</span>')
+        self.threadComboBox_key.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Pick Your ammount to CPUs to start scaning with</span>')
         self.row1Layout.setStretchFactor(self.threadComboBox_key, 1)
         self.row1Layout.addWidget(self.threadComboBox_key)
         self.cryptoLabel = QLabel("Crypto:", self)
@@ -174,7 +174,7 @@ class KeyHuntFrame(QMainWindow):
         self.cryptoComboBox = QComboBox()
         self.cryptoComboBox.addItem("btc")
         self.cryptoComboBox.addItem("eth")
-        self.cryptoComboBox.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Crypto Scanning Type BTC or ETH (default BTC)</span>')
+        self.cryptoComboBox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Crypto Scanning Type BTC or ETH (default BTC)</span>')
         self.row1Layout.addWidget(self.cryptoComboBox)
         self.modeLabel = QLabel("Mode:", self)
         self.row1Layout.addWidget(self.modeLabel)
@@ -183,21 +183,21 @@ class KeyHuntFrame(QMainWindow):
         self.modeComboBox.addItem("rmd160")
         self.modeComboBox.addItem("xpoint")
         self.modeComboBox.addItem("bsgs")
-        self.modeComboBox.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Keyhunt can work in diferent ways at different speeds. The current availables modes are:</span>')
+        self.modeComboBox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Keyhunt can work in diferent ways at different speeds. The current availables modes are:</span>')
         self.row1Layout.addWidget(self.modeComboBox)
         self.move_modeLabel = QLabel("Movement Mode:", self)
         self.row1Layout.addWidget(self.move_modeLabel)
         self.move_modeEdit = QComboBox(self)
         self.move_modeEdit.addItem("random")
         self.move_modeEdit.addItem("sequential")
-        self.move_modeEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Direction of Scan </span>')
+        self.move_modeEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Direction of Scan </span>')
         self.row1Layout.addWidget(self.move_modeEdit)
         self.modeComboBox.currentIndexChanged.connect(self.update_movement_mode_options)
         self.strideLabel = QLabel("Stride/Jump/Magnitude:", self)
         self.row1Layout.addWidget(self.strideLabel)
         self.strideLineEdit = QLineEdit("1")
         self.strideLineEdit.setPlaceholderText('10000')
-        self.strideLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Increment by NUMBER </span>')
+        self.strideLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Increment by NUMBER </span>')
         self.row1Layout.addWidget(self.strideLineEdit)
 
         options_layout2 = QHBoxLayout()

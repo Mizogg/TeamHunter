@@ -11,7 +11,7 @@ class ConsoleWindow(QWidget):
         self.layout = QVBoxLayout(self)
         self.consoleOutput = QPlainTextEdit(self)
         self.consoleOutput.setReadOnly(True)
-        self.consoleOutput.setMinimumSize(300, 250)
+
         self.layout.addWidget(self.consoleOutput)
 
         # Create a widget for the buttons
@@ -20,22 +20,22 @@ class ConsoleWindow(QWidget):
 
         self.clearButton = QPushButton("Clear", self)
         self.clearButton.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         button_layout.addWidget(self.clearButton)
 
         self.selectAllButton = QPushButton("Select All", self)
         self.selectAllButton.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         button_layout.addWidget(self.selectAllButton)
 
         self.copyButton = QPushButton("Copy", self)
         self.copyButton.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         button_layout.addWidget(self.copyButton)
 

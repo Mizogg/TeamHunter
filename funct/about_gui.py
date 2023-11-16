@@ -2,13 +2,15 @@
 
 @author: Team Mizogg
 """
-from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QGroupBox, QTextBrowser
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QGroupBox, QTextBrowser, QPushButton
 from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtCore import Qt
-
-version = '0.7'
-ICO_ICON = "webfiles/css/images/main/miz.ico"
-TITLE_ICON = "webfiles/css/images/main/title.png"
+from PyQt6.QtCore import Qt, QSize
+from speaker import Speaker
+import webbrowser
+version = '0.8'
+ICO_ICON = "images/main/miz.ico"
+TITLE_ICON = "images/main/title.png"
+RED_ICON = "images/main/mizogg-eyes.png"
 class AboutDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -99,5 +101,17 @@ class AboutDialog(QDialog):
             config_layout.addWidget(config_textbox)
             config_group.setLayout(config_layout)
             layout.addWidget(config_group)
-
+        icon_size = QSize(26, 26)
+        iconred = QIcon(QPixmap(RED_ICON))
+        self.miz_git_mode_button = QPushButton(self)
+        self.miz_git_mode_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Mizogg Website and Information </span>')
+        self.miz_git_mode_button.setStyleSheet("font-size: 12pt;")
+        self.miz_git_mode_button.setIconSize(icon_size)
+        self.miz_git_mode_button.setIcon(iconred)
+        self.miz_git_mode_button.clicked.connect(self.open_website)
+        self.miz_git_mode_button.enterEvent = lambda e: Speaker.play_death()
+        layout.addWidget(self.miz_git_mode_button)
         self.setLayout(layout)
+
+    def open_website(self):
+        webbrowser.open("https://mizogg.co.uk")

@@ -12,8 +12,8 @@ from libs import secp256k1 as ice
 from libs import team_brain
 from libs import team_word
 
-ICO_ICON = "webfiles/css/images/main/miz.ico"
-TITLE_ICON = "webfiles/css/images/main/title.png"
+ICO_ICON = "images/main/miz.ico"
+TITLE_ICON = "images/main/title.png"
 
 class ConversionDialog(QDialog):
     def __init__(self, parent=None):

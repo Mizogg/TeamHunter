@@ -30,8 +30,8 @@ from config import *
 import locale
 
 addfind = load_bloom.load_bloom_filter()
-TEL_ICON = "webfiles/css/images/main/Telegram.png"
-DIS_ICON = "webfiles/css/images/main/Discord.png"
+TEL_ICON = "images/main/Telegram.png"
+DIS_ICON = "images/main/Discord.png"
 
 class GUIInstance(QMainWindow):
     def __init__(self):
@@ -47,10 +47,10 @@ class GUIInstance(QMainWindow):
         self.add_count_label = QLabel(self.count_addresses(), objectName="count_addlabel", alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(self.add_count_label)
         power_label = QLabel("Amount Of Devrations to Show", self)
-        power_label.setStyleSheet("font-size: 14px; font-weight: bold; color: #E7481F;")
+        power_label.setStyleSheet("font-size: 12pt; font-weight: bold; color: #E7481F;")
 
         ammount_words_label = QLabel('Amount of words:')
-        ammount_words_label.setStyleSheet("font-size: 14px; font-weight: bold; color: #E7481F;")
+        ammount_words_label.setStyleSheet("font-size: 12pt; font-weight: bold; color: #E7481F;")
         ammount_words_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         self.ammount_words = QComboBox()
@@ -58,7 +58,7 @@ class GUIInstance(QMainWindow):
         self.ammount_words.setCurrentIndex(1)
         
         lang_words_label = QLabel('Chose Language:')
-        lang_words_label.setStyleSheet("font-size: 14px; font-weight: bold; color: #E7481F;")
+        lang_words_label.setStyleSheet("font-size: 12pt; font-weight: bold; color: #E7481F;")
         lang_words_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         self.lang_words = QComboBox()
@@ -67,20 +67,20 @@ class GUIInstance(QMainWindow):
 
         self.format_combo_box_POWER = QLineEdit('1', self)
         self.format_combo_box_POWER.setPlaceholderText('Type here your Mnemonic to Check')
-        self.format_combo_box_POWER.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Amount it Address to Check per scan. Ajust for best speed have to stop to change amount </span>')
+        self.format_combo_box_POWER.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Amount it Address to Check per scan. Ajust for best speed have to stop to change amount </span>')
         
         custom_phrase_layout = QHBoxLayout()
         custom_phrase_label = QLabel('Custom Phrase:')
         custom_phrase_layout.addWidget(custom_phrase_label)
         self.custom_phrase_edit = QLineEdit("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about")
         self.custom_phrase_edit.setPlaceholderText('Type here your Mnemonic to Check')
-        self.custom_phrase_edit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> TYPE a Mnemonic Here to check </span>')
+        self.custom_phrase_edit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> TYPE a Mnemonic Here to check </span>')
         
         custom_phrase_layout.addWidget(self.custom_phrase_edit)
         enter_button = QPushButton('Enter')
         enter_button.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         enter_button.setFixedWidth(300)
         enter_button.clicked.connect(self.enter)
@@ -99,20 +99,20 @@ class GUIInstance(QMainWindow):
 
         start_button = QPushButton("Start", self)
         start_button.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
-        start_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start scanning </span>')
+        start_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Start scanning </span>')
         start_button.clicked.connect(self.start)
         start_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         start_button.setFixedWidth(600)
 
         stop_button = QPushButton("Stop", self)
         stop_button.setStyleSheet(
-            "QPushButton { font-size: 16pt; background-color: #1E1E1E; color: white; }"
-            "QPushButton:hover { font-size: 16pt; background-color: #5D6062; color: white; }"
+            "QPushButton { font-size: 12pt; background-color: #1E1E1E; color: white; }"
+            "QPushButton:hover { font-size: 12pt; background-color: #5D6062; color: white; }"
         )
-        stop_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Stop scanning </span>')
+        stop_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Stop scanning </span>')
         stop_button.clicked.connect(self.stop)
         stop_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         stop_button.setFixedWidth(600)
@@ -133,7 +133,7 @@ class GUIInstance(QMainWindow):
         checkbox_width = 140
         for label in checkbox_labels:
             checkbox = QCheckBox(label)
-            checkbox.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Ticks can be removed to search for single type or mutiple types of Bitcoin Address. Removing some will increase speed. Address not selected we not be searched </span>')
+            checkbox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Ticks can be removed to search for single type or mutiple types of Bitcoin Address. Removing some will increase speed. Address not selected we not be searched </span>')
             checkbox.setFixedWidth(checkbox_width)
             checkbox_objects.append(checkbox)
         self.compressed_checkbox, self.p2sh_checkbox, self.bech32_checkbox, self.win_checkbox = checkbox_objects[0:]
@@ -197,8 +197,8 @@ class GUIInstance(QMainWindow):
         icondis = QIcon(QPixmap(DIS_ICON))
 
         self.telegram_mode_button = QPushButton(self)
-        self.telegram_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Enter Custom Telegram Credentials Settings .</span>')
-        self.telegram_mode_button.setStyleSheet("font-size: 16px;")
+        self.telegram_mode_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Enter Custom Telegram Credentials Settings .</span>')
+        self.telegram_mode_button.setStyleSheet("font-size: 12pt;")
         self.telegram_mode_button.setIconSize(icon_size)
         self.telegram_mode_button.setIcon(icontel)
         self.telegram_mode_button.clicked.connect(self.open_telegram_settings)
@@ -207,8 +207,8 @@ class GUIInstance(QMainWindow):
         self.use_telegram_credentials_checkbox.setChecked(False)
 
         self.discord_mode_button = QPushButton(self)
-        self.discord_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Enter Custom Discord Credentials Settings .</span>')
-        self.discord_mode_button.setStyleSheet("font-size: 16px;")
+        self.discord_mode_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Enter Custom Discord Credentials Settings .</span>')
+        self.discord_mode_button.setStyleSheet("font-size: 12pt;")
         self.discord_mode_button.setIconSize(icon_size)
         self.discord_mode_button.setIcon(icondis)
         self.discord_mode_button.clicked.connect(self.open_discord_settings)
@@ -218,18 +218,18 @@ class GUIInstance(QMainWindow):
 
 
         self.load_mode_button = QPushButton("Load New Database from File",self)
-        self.load_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Load New Database from File.</span>')
+        self.load_mode_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Load New Database from File.</span>')
         self.load_mode_button.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         self.load_mode_button.clicked.connect(self.onOpen)
 
         self.update_mode_button = QPushButton("Update Database from Internet", self)
-        self.update_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Update Database from Internet </span>')
+        self.update_mode_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Update Database from Internet </span>')
         self.update_mode_button.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         self.update_mode_button.clicked.connect(self.update_action_run)
         

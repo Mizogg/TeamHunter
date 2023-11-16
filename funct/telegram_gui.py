@@ -10,8 +10,8 @@ sys.path.extend(['libs', 'config', 'funct'])
 
 from config import *
 
-ICO_ICON = "webfiles/css/images/main/miz.ico"
-TITLE_ICON = "webfiles/css/images/main/title.png"
+ICO_ICON = "images/main/miz.ico"
+TITLE_ICON = "images/main/title.png"
 
 class Settings_telegram_Dialog(QDialog):
     def __init__(self, parent=None):
@@ -40,13 +40,13 @@ class Settings_telegram_Dialog(QDialog):
 
         self.save_button = QPushButton("Save")
         self.save_button.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         self.cancel_button = QPushButton("Cancel")
         self.cancel_button.setStyleSheet(
-            "QPushButton { font-size: 16pt; background-color: #1E1E1E; color: white; }"
-            "QPushButton:hover { font-size: 16pt; background-color: #5D6062; color: white; }"
+            "QPushButton { font-size: 12pt; background-color: #1E1E1E; color: white; }"
+            "QPushButton:hover { font-size: 12pt; background-color: #5D6062; color: white; }"
         )
         
         layout = QVBoxLayout()

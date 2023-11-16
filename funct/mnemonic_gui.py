@@ -49,19 +49,19 @@ class MnemonicFrame(QMainWindow):
         stopButton = QPushButton("Stop ALL", self)
         stopButton.clicked.connect(self.stop_mnemonic)
         stopButton.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
-        stopButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Stop Mnemonic and All Running programs </span>')
+        stopButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Stop Mnemonic and All Running programs </span>')
         stopButton.setStyleSheet(
-            "QPushButton { font-size: 16pt; background-color: #1E1E1E; color: white; }"
-            "QPushButton:hover { font-size: 16pt; background-color: #5D6062; color: white; }"
+            "QPushButton { font-size: 12pt; background-color: #1E1E1E; color: white; }"
+            "QPushButton:hover { font-size: 12pt; background-color: #5D6062; color: white; }"
         )
         return stopButton
 
     def create_start_button(self):
         StartButton = QPushButton("Start Mnemonic", self)
-        StartButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start Mnemonic </span>')
+        StartButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Start Mnemonic </span>')
         StartButton.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         StartButton.clicked.connect(self.run_mnemonic)
         StartButton.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
@@ -76,16 +76,16 @@ class MnemonicFrame(QMainWindow):
         outputFileLayout.addWidget(self.inputFileLabel)
         self.inputFileLineEdit = QLineEdit("h160.blf", self)
         self.inputFileLineEdit.setPlaceholderText('Click browse to find your BTC database h160.blf,h161.blf')
-        self.inputFileLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type the Name of database blf file or Browse location h160.blf,h161.blf </span>')
+        self.inputFileLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type the Name of database blf file or Browse location h160.blf,h161.blf </span>')
         outputFileLayout.addWidget(self.inputFileLineEdit)
         self.inputFileButton = QPushButton("Browse", self)
         self.inputFileButton.setStyleSheet("color: #E7481F;")
         self.inputFileButton.clicked.connect(self.browse_input_file)
-        self.inputFileButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
+        self.inputFileButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
         outputFileLayout.addWidget(self.inputFileButton)
         self.found_progButton = QPushButton("🔥 Check if Found 🔥")
         self.found_progButton.clicked.connect(self.found_prog)
-        self.found_progButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Click Here to See if your a Winner </span>')
+        self.found_progButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Click Here to See if your a Winner </span>')
         outputFileLayout.addWidget(self.found_progButton)
         return outputFileGroupBox
 
@@ -101,22 +101,22 @@ class MnemonicFrame(QMainWindow):
         for i in range(1, self.cpu_count + 1):
             self.threadComboBox_key.addItem(str(i))
         self.threadComboBox_key.setCurrentIndex(2)
-        self.threadComboBox_key.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Pick Your ammount to CPUs to start scaning with</span>')
+        self.threadComboBox_key.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Pick Your ammount to CPUs to start scaning with</span>')
         self.row1Layout.setStretchFactor(self.threadComboBox_key, 1)
         self.row1Layout.addWidget(self.threadComboBox_key)
 
         self.incrementalEntropyLabel = QLabel("Incremental Entropy (hex):", self)
         self.incrementalEntropyLineEdit = QLineEdit(self)
         self.incrementalEntropyLineEdit.setPlaceholderText('0000000000000000000000000000000')
-        self.incrementalEntropyLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Incremental entropy search, in order from specified hex number (Length - 8 , 16, 24 ,32 ,40 ,48 ,56 ,64) HEX characters </span>')
+        self.incrementalEntropyLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Incremental entropy search, in order from specified hex number (Length - 8 , 16, 24 ,32 ,40 ,48 ,56 ,64) HEX characters </span>')
         self.stepLabel = QLabel("Step:", self)
         self.stepLineEdit = QLineEdit(self)
         self.stepLineEdit.setPlaceholderText('2')
-        self.stepLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Specify step to add in -entropy mode </span>')
+        self.stepLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Specify step to add in -entropy mode </span>')
         self.privateKeyIncrementLabel = QLabel("Private Key Increment:", self)
         self.privateKeyIncrementLineEdit = QLineEdit(self)
         self.privateKeyIncrementLineEdit.setPlaceholderText('2')
-        self.privateKeyIncrementLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Number of keys for incremental search (PrivateKeys) (+- value to the keys obtained from the mnemonic) </span>')
+        self.privateKeyIncrementLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Number of keys for incremental search (PrivateKeys) (+- value to the keys obtained from the mnemonic) </span>')
         self.row1Layout.addWidget(self.incrementalEntropyLabel)
         self.row1Layout.addWidget(self.incrementalEntropyLineEdit)
         self.row1Layout.addWidget(self.stepLabel)
@@ -136,7 +136,7 @@ class MnemonicFrame(QMainWindow):
             'Axe', 'Peercoin', 'Particle', 'Qtum', 'Komodo', 'Ravencoin', 'Reddcoin', 'SafeInsure', 'SmartCash',
             'Stratis', 'Syscoin', 'Vertcoin', 'Viacoin', 'BeetleCoin', 'Dash', 'Xenios', 'Zcoin'
         ])
-        self.modeComboBox.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">Select the Crypto mode for the mnemonic hunt</span>')
+        self.modeComboBox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Select the Crypto mode for the mnemonic hunt</span>')
         self.modeComboBox.setCurrentIndex(1)
         radio_button_layout.addWidget(self.modeComboBox)
 
@@ -146,20 +146,20 @@ class MnemonicFrame(QMainWindow):
         self.wordsComboBox = QComboBox()
         self.wordsComboBox.addItems(['3', '6', '9', '12', '15', '18', '21', '24'])
         self.wordsComboBox.setCurrentIndex(3)
-        self.wordsComboBox.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">Select the number of words for the mnemonic</span>')
+        self.wordsComboBox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Select the number of words for the mnemonic</span>')
         radio_button_layout.addWidget(self.wordsComboBox)
 
         self.languageLabel = QLabel("Language:", self)
         self.languageComboBox = QComboBox(self)
         self.languageComboBox.addItems(['EN', 'CT', 'CS', 'KO', 'JA', 'IT', 'FR', 'SP'])
-        self.languageComboBox.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Pick Language for Generation </span>')
+        self.languageComboBox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Pick Language for Generation </span>')
         radio_button_layout.addWidget(self.languageLabel)
         radio_button_layout.addWidget(self.languageComboBox)
 
         div_button_layout = QHBoxLayout()
         self.derivationDepthLabel = QLabel("Derivation Depth:", self)
         self.derivationDepthLineEdit = QLineEdit('1',self)
-        self.derivationDepthLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> 1-1000 “derivation path.” Simply put, a derivation path defines a consistent method for generating the same set of accounts and wallets for a given private key </span>')
+        self.derivationDepthLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> 1-1000 “derivation path.” Simply put, a derivation path defines a consistent method for generating the same set of accounts and wallets for a given private key </span>')
         div_button_layout.addWidget(self.derivationDepthLabel)
         div_button_layout.addWidget(self.derivationDepthLineEdit)
 
@@ -167,11 +167,11 @@ class MnemonicFrame(QMainWindow):
         div_button_layout.addWidget(derivationPathsLabel)
         self.derivationPathsLineEdit = QLineEdit(self)
         self.derivationPathsLineEdit.setPlaceholderText('paths.txt')
-        self.derivationPathsLineEdit.setToolTip('<span style="font-size: 12pt; font-weight; bold; color: black;">Specify derivation paths to load from file make sure it is stored in the input folder </span>')
+        self.derivationPathsLineEdit.setToolTip('<span style="font-size: 10pt; font-weight; bold; color: black;">Specify derivation paths to load from file make sure it is stored in the input folder </span>')
         div_button_layout.addWidget(self.derivationPathsLineEdit)
 
         self.debugCheckBox = QCheckBox("Debug Mode", self)
-        self.debugCheckBox.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;">Enable debug mode for lower speed</span>')
+        self.debugCheckBox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Enable debug mode for lower speed</span>')
         div_button_layout.addWidget(self.debugCheckBox)
 
 

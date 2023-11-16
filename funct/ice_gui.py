@@ -22,8 +22,8 @@ from config import *
 import locale
 
 addfind = load_bloom.load_bloom_filter()
-TEL_ICON = "webfiles/css/images/main/Telegram.png"
-DIS_ICON = "webfiles/css/images/main/Discord.png"
+TEL_ICON = "images/main/Telegram.png"
+DIS_ICON = "images/main/Discord.png"
 
 crypto_mapping = {
     "Bitcoin (BTC)": 0,
@@ -152,16 +152,16 @@ class GUIInstance(QMainWindow):
         self.add_count_label = QLabel(self.count_addresses(), objectName="count_addlabel", alignment=Qt.AlignmentFlag.AlignLeft)
 
         power_label = QLabel("Amount Of Addresses Per Page to Show", self)
-        power_label.setStyleSheet("font-size: 14px; font-weight: bold; color: #E7481F;")
+        power_label.setStyleSheet("font-size: 12pt; font-weight: bold; color: #E7481F;")
 
         self.format_combo_box_POWER = QComboBox(self)
-        self.format_combo_box_POWER.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Amount it Address to Check per scan. Ajust for best speed have to stop to change amount </span>')
+        self.format_combo_box_POWER.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Amount it Address to Check per scan. Ajust for best speed have to stop to change amount </span>')
         self.format_combo_box_POWER.addItems(
             ["1", "128", "256", "512", "1024", "2048", "4096", "8192", "16384"]
         )
         self.format_combo_box_POWER.setCurrentIndex(2)
         crypto_label = QLabel("Type of Crypto ", self)
-        crypto_label.setStyleSheet("font-size: 14px; font-weight: bold; color: #E7481F;")
+        crypto_label.setStyleSheet("font-size: 12pt; font-weight: bold; color: #E7481F;")
         self.crypto_selector = QComboBox()
         self.crypto_selector.addItem("Bitcoin (BTC)")
         self.crypto_selector.addItem("Bitcoin SV (BSV)")
@@ -226,20 +226,20 @@ class GUIInstance(QMainWindow):
 
         start_button = QPushButton("Start", self)
         start_button.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
-        start_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start scanning (Make sure Range is set) </span>')
+        start_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Start scanning (Make sure Range is set) </span>')
         start_button.clicked.connect(self.start)
         start_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         start_button.setFixedWidth(150)
 
         stop_button = QPushButton("Stop", self)
         stop_button.setStyleSheet(
-            "QPushButton { font-size: 16pt; background-color: #1E1E1E; color: white; }"
-            "QPushButton:hover { font-size: 16pt; background-color: #5D6062; color: white; }"
+            "QPushButton { font-size: 12pt; background-color: #1E1E1E; color: white; }"
+            "QPushButton:hover { font-size: 12pt; background-color: #5D6062; color: white; }"
         )
-        stop_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Stop scanning </span>')
+        stop_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Stop scanning </span>')
         stop_button.clicked.connect(self.stop)
         stop_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         stop_button.setFixedWidth(150)
@@ -256,18 +256,18 @@ class GUIInstance(QMainWindow):
         # Create input fields and buttons for skip range
         self.add_range_button = QPushButton("➕ Skip Current Range in Scan", self)
         self.add_range_button.setStyleSheet(
-            "QPushButton { font-size: 16pt; background-color: #8AB4F7; color: white; }"
+            "QPushButton { font-size: 12pt; background-color: #8AB4F7; color: white; }"
             "QPushButton:hover { background-color: #769AD3; }"
         )
-        self.add_range_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Here you can add ranges from the Key Space box to exclude from scanning </span>')
+        self.add_range_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Here you can add ranges from the Key Space box to exclude from scanning </span>')
         self.add_range_button.clicked.connect(self.add_range_from_input)
 
         self.show_ranges_button = QPushButton("👀 Show Skipped Ranges", self)
         self.show_ranges_button.setStyleSheet(
-            "QPushButton { font-size: 16pt; background-color: #8AB4F7; color: white; }"
+            "QPushButton { font-size: 12pt; background-color: #8AB4F7; color: white; }"
             "QPushButton:hover { background-color: #769AD3; }"
         )
-        self.show_ranges_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Show excluded ranges (Edit add and remove) </span>')
+        self.show_ranges_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Show excluded ranges (Edit add and remove) </span>')
         self.show_ranges_button.clicked.connect(self.show_ranges)
 
         skip_range_layout = QHBoxLayout()
@@ -280,17 +280,17 @@ class GUIInstance(QMainWindow):
         options_layout2.addWidget(self.keyspaceLabel)
 
         self.start_edit = QLineEdit("20000000000000000")
-        self.start_edit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type in Starting HEX or Use Slider to update</span>')
+        self.start_edit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type in Starting HEX or Use Slider to update</span>')
 
         self.end_edit = QLineEdit("3ffffffffffffffff")
-        self.end_edit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type in Ending HEX or Use Slider to update</span>')
+        self.end_edit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type in Ending HEX or Use Slider to update</span>')
 
         self.keyspace_slider = QSlider(Qt.Orientation.Horizontal)
         self.keyspace_slider.setMinimum(1)
         self.keyspace_slider.setMaximum(256)
         self.keyspace_slider.setValue(66)
         self.keyspace_slider.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.generic_scroll_01), 0.3)
-        self.keyspace_slider.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
+        self.keyspace_slider.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
         keyspacerange_layout = QVBoxLayout()
         keyspacerange_layout.addWidget(self.start_edit)
         keyspacerange_layout.addWidget(self.end_edit)
@@ -327,7 +327,7 @@ class GUIInstance(QMainWindow):
 
         for label in button_labels:
             button = QRadioButton(label)
-            button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Pick Type of scan Random Sequence/Forward or Reverse/Backwards </span>')
+            button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Pick Type of scan Random Sequence/Forward or Reverse/Backwards </span>')
             button_objects.append(button)
 
         button_objects[0].setChecked(True)
@@ -339,7 +339,7 @@ class GUIInstance(QMainWindow):
         checkbox_width = 140
         for label in checkbox_labels:
             checkbox = QCheckBox(label)
-            checkbox.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Ticks can be removed to sreach for single type or mutiple types of Bitcoin Address. Removing some will increase speed. Address not selected we not be searched </span>')
+            checkbox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Ticks can be removed to sreach for single type or mutiple types of Bitcoin Address. Removing some will increase speed. Address not selected we not be searched </span>')
             checkbox.setFixedWidth(checkbox_width)
             checkbox_objects.append(checkbox)
         self.dec_checkbox, self.hex_checkbox, self.compressed_checkbox, self.uncompressed_checkbox, self.p2sh_checkbox, self.bech32_checkbox, self.win_checkbox = checkbox_objects[0:]
@@ -415,22 +415,22 @@ class GUIInstance(QMainWindow):
         self.address_layout_ = QGridLayout()
         self.priv_label = QLabel("DEC Keys: ")
         self.priv_text = QTextEdit(self)
-        self.priv_text.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Decimal Key Output</span>')
+        self.priv_text.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Decimal Key Output</span>')
         self.HEX_label = QLabel("HEX Keys: ")
         self.HEX_text = QTextEdit(self)
-        self.HEX_text.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> HEX Key Output</span>')
+        self.HEX_text.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> HEX Key Output</span>')
         self.comp_label = QLabel("Compressed Address: ")
         self.comp_text = QTextEdit(self)
-        self.comp_text.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Compressed Address Output</span>')
+        self.comp_text.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Compressed Address Output</span>')
         self.uncomp_label = QLabel("Uncompressed Address: ")
         self.uncomp_text = QTextEdit(self)
-        self.uncomp_text.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Uncompressed Address Output</span>')
+        self.uncomp_text.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Uncompressed Address Output</span>')
         self.p2sh_label = QLabel("p2sh Address: ")
         self.p2sh_text = QTextEdit(self)
-        self.p2sh_text.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> P2SH 3 Address Output</span>')
+        self.p2sh_text.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> P2SH 3 Address Output</span>')
         self.bech32_label = QLabel("bech32 Address: ")
         self.bech32_text = QTextEdit(self)
-        self.bech32_text.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> bech32 BC1 Address Output</span>')
+        self.bech32_text.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> bech32 BC1 Address Output</span>')
         self.address_layout_.addWidget(self.priv_label, 1, 0)
         self.address_layout_.addWidget(self.priv_text, 2, 0)
         self.address_layout_.addWidget(self.HEX_label, 1, 1)
@@ -495,8 +495,8 @@ class GUIInstance(QMainWindow):
         icondis = QIcon(QPixmap(DIS_ICON))
 
         self.telegram_mode_button = QPushButton(self)
-        self.telegram_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Enter Custom Telegram Credentials Settings .</span>')
-        self.telegram_mode_button.setStyleSheet("font-size: 16px;")
+        self.telegram_mode_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Enter Custom Telegram Credentials Settings .</span>')
+        self.telegram_mode_button.setStyleSheet("font-size: 14px;")
         self.telegram_mode_button.setIconSize(icon_size)
         self.telegram_mode_button.setIcon(icontel)
         self.telegram_mode_button.clicked.connect(self.open_telegram_settings)
@@ -504,8 +504,8 @@ class GUIInstance(QMainWindow):
         self.use_telegram_credentials_checkbox.setChecked(False)
 
         self.discord_mode_button = QPushButton(self)
-        self.discord_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Enter Custom Discord Credentials Settings .</span>')
-        self.discord_mode_button.setStyleSheet("font-size: 16px;")
+        self.discord_mode_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Enter Custom Discord Credentials Settings .</span>')
+        self.discord_mode_button.setStyleSheet("font-size: 14px;")
         self.discord_mode_button.setIconSize(icon_size)
         self.discord_mode_button.setIcon(icondis)
         self.discord_mode_button.clicked.connect(self.open_discord_settings)
@@ -514,18 +514,18 @@ class GUIInstance(QMainWindow):
 
 
         self.load_mode_button = QPushButton("Load New Database from File",self)
-        self.load_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Load New Database from File.</span>')
+        self.load_mode_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Load New Database from File.</span>')
         self.load_mode_button.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         self.load_mode_button.clicked.connect(self.onOpen)
 
         self.update_mode_button = QPushButton("Update Database from Internet", self)
-        self.update_mode_button.setToolTip('<span style="font-size: 12px; font-weight: bold; color: black;">Update Database from Internet </span>')
+        self.update_mode_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Update Database from Internet </span>')
         self.update_mode_button.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         self.update_mode_button.clicked.connect(self.update_action_run)
         

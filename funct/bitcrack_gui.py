@@ -33,19 +33,19 @@ class BitcrackFrame(QMainWindow):
 
         buttonLayout = QHBoxLayout()
         StartButton = QPushButton("Start BitCrack OpenCL", self)
-        StartButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start BitCrack OpenCL </span>')
+        StartButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Start BitCrack OpenCL </span>')
         StartButton.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         StartButton.clicked.connect(self.run_gpu_open)
         StartButton.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         buttonLayout.addWidget(StartButton)
         StartButtonc = QPushButton("Start BitCrack Cuda", self)
-        StartButtonc.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start BitCrack Cuda </span>')
+        StartButtonc.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Start BitCrack Cuda </span>')
         StartButtonc.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         StartButtonc.clicked.connect(self.run_gpu_cuda)
         StartButtonc.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
@@ -54,10 +54,10 @@ class BitcrackFrame(QMainWindow):
         main_layout.addLayout(buttonLayout)
 
         stop_button = self.create_stop_button()
-        stop_button.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Stop All Running Scans </span>')
+        stop_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Stop All Running Scans </span>')
         stop_button.setStyleSheet(
-            "QPushButton { font-size: 16pt; background-color: #1E1E1E; color: white; }"
-            "QPushButton:hover { font-size: 16pt; background-color: #5D6062; color: white; }"
+            "QPushButton { font-size: 12pt; background-color: #1E1E1E; color: white; }"
+            "QPushButton:hover { font-size: 12pt; background-color: #5D6062; color: white; }"
         )
         stop_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         main_layout.addWidget(stop_button)
@@ -79,7 +79,7 @@ class BitcrackFrame(QMainWindow):
         keyspaceLabel = QLabel("Key Space:")
         keyspaceLayout.addWidget(keyspaceLabel)
         self.keyspaceLineEdit = QLineEdit("20000000000000000:3ffffffffffffffff")
-        self.keyspaceLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type in your own HEX Range separated with : </span>')
+        self.keyspaceLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type in your own HEX Range separated with : </span>')
         keyspaceLayout.addWidget(self.keyspaceLineEdit)
         keyspaceMainLayout.addLayout(keyspaceLayout)
 
@@ -89,7 +89,7 @@ class BitcrackFrame(QMainWindow):
         self.keyspace_slider.setMaximum(256)
         self.keyspace_slider.setValue(66)
         self.keyspace_slider.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.generic_scroll_01), 0.3)
-        self.keyspace_slider.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
+        self.keyspace_slider.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
         keyspacerange_layout1 = QHBoxLayout()
         keyspacerange_layout1.addWidget(self.keyspace_slider)
         self.keyspace_slider.valueChanged.connect(self.update_keyspace_range)
@@ -144,36 +144,36 @@ class BitcrackFrame(QMainWindow):
         self.lookComboBox = QComboBox()
         self.lookComboBox.addItem("compress")
         self.lookComboBox.addItem("uncompress")
-        self.lookComboBox.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Search for compressed keys (default). Can be used with also search uncompressed keys  </span>')
+        self.lookComboBox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Search for compressed keys (default). Can be used with also search uncompressed keys  </span>')
         outputFileLayout.addWidget(self.lookComboBox)
 
         self.inputFileLabel = QLabel("Input File:", self)
         outputFileLayout.addWidget(self.inputFileLabel)
         self.inputFileLineEdit = QLineEdit("btc.txt", self)
         self.inputFileLineEdit.setPlaceholderText('Click browse to find your BTC database')
-        self.inputFileLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
+        self.inputFileLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
         outputFileLayout.addWidget(self.inputFileLineEdit)
 
         self.inputFileButton = QPushButton("Browse", self)
         self.inputFileButton.setStyleSheet("color: #E7481F;")
         self.inputFileButton.clicked.connect(self.browse_input_file)
-        self.inputFileButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
+        self.inputFileButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
         outputFileLayout.addWidget(self.inputFileButton)
 
         self.save_prog = QCheckBox("💾 Save Progress 💾")
         self.save_prog.setStyleSheet("color: #E7481F;")
-        self.save_prog.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Save The Progress of BitCrack Scan (default) ON</span>')
+        self.save_prog.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Save The Progress of BitCrack Scan (default) ON</span>')
         self.save_prog.setChecked(True)
         outputFileLayout.addWidget(self.save_prog)
 
         self.save_progButton = QPushButton("💾 Check Progress 💾")
         self.save_progButton.clicked.connect(self.check_prog)
-        self.save_progButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Check The Progress of BitCrack </span>')
+        self.save_progButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Check The Progress of BitCrack </span>')
         outputFileLayout.addWidget(self.save_progButton)
 
         self.found_progButton = QPushButton("🔥 Check if Found 🔥")
         self.found_progButton.clicked.connect(self.found_prog)
-        self.found_progButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Click Here to See if your a Winner </span>')
+        self.found_progButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Click Here to See if your a Winner </span>')
         outputFileLayout.addWidget(self.found_progButton)
 
         return outputFileGroupBox
@@ -189,7 +189,7 @@ class BitcrackFrame(QMainWindow):
 
         # Button to check GPU information
         self.GPUButton = QPushButton("🔋 Check GPU 🪫", bitcrackGroupBox)
-        self.GPUButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> List available devices </span>')
+        self.GPUButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> List available devices </span>')
         self.GPUButton.clicked.connect(self.list_if_gpu)
         self.deviceLayout.addWidget(self.GPUButton)
 
@@ -201,7 +201,7 @@ class BitcrackFrame(QMainWindow):
             self.blocksSize_choice.addItem(str(i))
         self.blocksSize_choice.setCurrentIndex(12)
         self.blocksSize_choice.setMinimumWidth(60)
-        self.blocksSize_choice.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> The number of CUDA blocks </span>')
+        self.blocksSize_choice.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> The number of CUDA blocks </span>')
         self.deviceLayout.addWidget(self.blocksSize_choice)
 
         # Dropdown for thread count selection
@@ -210,7 +210,7 @@ class BitcrackFrame(QMainWindow):
         self.threadComboBox_n = QComboBox()
         self.threadComboBox_n.addItems(['32', '64', '96', '128', '256', '512'])
         self.threadComboBox_n.setCurrentIndex(4)
-        self.threadComboBox_n.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Threads per block </span>')
+        self.threadComboBox_n.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Threads per block </span>')
         self.deviceLayout.addWidget(self.threadComboBox_n)
 
         # Dropdown for points size selection
@@ -219,7 +219,7 @@ class BitcrackFrame(QMainWindow):
         self.pointsSize_choice = QComboBox()
         self.pointsSize_choice.addItems(['128', '256', '512', '1024', '2048'])
         self.pointsSize_choice.setCurrentIndex(1)
-        self.pointsSize_choice.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Each thread will process NUMBER keys at a time </span>')
+        self.pointsSize_choice.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Each thread will process NUMBER keys at a time </span>')
         self.deviceLayout.addWidget(self.pointsSize_choice)
 
         # Input field for stride/jump/magnitude
@@ -227,7 +227,7 @@ class BitcrackFrame(QMainWindow):
         self.deviceLayout.addWidget(self.strideLabel)
         self.strideLineEdit = QLineEdit("1", bitcrackGroupBox)
         self.strideLineEdit.setPlaceholderText('10000')
-        self.strideLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Increment by NUMBER </span>')
+        self.strideLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Increment by NUMBER </span>')
         self.deviceLayout.addWidget(self.strideLineEdit)
 
         self.gpuIdLabel = QLabel("CUDA ONLY List of GPU(s) to use:", bitcrackGroupBox)
@@ -235,7 +235,7 @@ class BitcrackFrame(QMainWindow):
 
         self.gpuIdLineEdit = QLineEdit("0", bitcrackGroupBox)
         self.gpuIdLineEdit.setPlaceholderText('0, 1, 2')
-        self.gpuIdLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Use device with ID equal to N  (Example = 0 for main or for more than 1GPU = 0, 1, 2) </span>')
+        self.gpuIdLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Use device with ID equal to N  (Example = 0 for main or for more than 1GPU = 0, 1, 2) </span>')
         self.deviceLayout.addWidget(self.gpuIdLineEdit)
         
         self.bitcrackLayout.addLayout(self.deviceLayout)

@@ -21,7 +21,7 @@ import sys
 sys.path.extend(['libs', 'funct'])
 from config import *
 addfind = load_bloom.load_bloom_filter()
-ICO_ICON = "webfiles/css/images/main/miz.ico"
+ICO_ICON = "images/main/miz.ico"
 FOUND_FILE = "found/found.txt"
 # Set system locale
 locale.setlocale(locale.LC_ALL, "")

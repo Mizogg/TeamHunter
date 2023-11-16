@@ -55,19 +55,19 @@ class VanbitFrame(QMainWindow):
         buttonLayout = QHBoxLayout()
         randomButton_van = QPushButton("Random VanBitCracken Cuda", self)
         randomButton_van.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
-        randomButton_van.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start Random VanBitCracken Cuda </span>')
+        randomButton_van.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Start Random VanBitCracken Cuda </span>')
         randomButton_van.clicked.connect(self.run_VBCRandom)
         randomButton_van.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         buttonLayout.addWidget(randomButton_van)
         sequenceButton_van = QPushButton("Sequence VanBitCracken Cuda", self)
         sequenceButton_van.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
-        sequenceButton_van.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start Sequence VanBitCracken Cuda </span>')
+        sequenceButton_van.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Start Sequence VanBitCracken Cuda </span>')
         sequenceButton_van.clicked.connect(self.run_VanBitCrackenS1)
         sequenceButton_van.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         buttonLayout.addWidget(sequenceButton_van)
@@ -75,29 +75,29 @@ class VanbitFrame(QMainWindow):
         buttonLayout_key = QHBoxLayout()
         randomButton_van_cpu = QPushButton("Random VanBitCracken CPU", self)
         randomButton_van_cpu.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
-        randomButton_van_cpu.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start Random VanBitCracken With CPU </span>')
+        randomButton_van_cpu.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Start Random VanBitCracken With CPU </span>')
         randomButton_van_cpu.clicked.connect(self.run_VBCRandom_cpu)
         randomButton_van_cpu.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         buttonLayout_key.addWidget(randomButton_van_cpu)
         sequenceButton_van_cpu = QPushButton("Sequence VanBitCracken CPU", self)
         sequenceButton_van_cpu.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
-        sequenceButton_van_cpu.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Start Sequence VanBitCracken With CPU </span>')
+        sequenceButton_van_cpu.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Start Sequence VanBitCracken With CPU </span>')
         sequenceButton_van_cpu.clicked.connect(self.run_VanBitCrackenS1_cpu)
         sequenceButton_van_cpu.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         buttonLayout_key.addWidget(sequenceButton_van_cpu)
         main_layout.addLayout(buttonLayout_key)
 
         stopButton = self.create_stop_button()
-        stopButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Stop All Running Scans </span>')
+        stopButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Stop All Running Scans </span>')
         stopButton.setStyleSheet(
-            "QPushButton { font-size: 16pt; background-color: #1E1E1E; color: white; }"
-            "QPushButton:hover { font-size: 16pt; background-color: #5D6062; color: white; }"
+            "QPushButton { font-size: 12pt; background-color: #1E1E1E; color: white; }"
+            "QPushButton:hover { font-size: 12pt; background-color: #5D6062; color: white; }"
         )
         stopButton.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
         main_layout.addWidget(stopButton)
@@ -118,7 +118,7 @@ class VanbitFrame(QMainWindow):
         keyspaceLabel = QLabel("Key Space:")
         keyspaceLayout.addWidget(keyspaceLabel)
         self.keyspaceLineEdit = QLineEdit("20000000000000000:3ffffffffffffffff")
-        self.keyspaceLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type in your own HEX Range separated with : </span>')
+        self.keyspaceLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type in your own HEX Range separated with : </span>')
         keyspaceLayout.addWidget(self.keyspaceLineEdit)
         keyspaceMainLayout.addLayout(keyspaceLayout)
         keyspacerange_layout = QHBoxLayout()
@@ -127,7 +127,7 @@ class VanbitFrame(QMainWindow):
         self.keyspace_slider.setMaximum(256)
         self.keyspace_slider.setValue(66)
         self.keyspace_slider.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.generic_scroll_01), 0.3)
-        self.keyspace_slider.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
+        self.keyspace_slider.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Drag Left to Right to Adjust Range </span>')
         keyspacerange_layout1 = QHBoxLayout()
         keyspacerange_layout1.addWidget(self.keyspace_slider)
         self.keyspace_slider.valueChanged.connect(self.update_keyspace_range)
@@ -167,8 +167,8 @@ class VanbitFrame(QMainWindow):
         stopButton = QPushButton("Stop ALL", self)
         stopButton.clicked.connect(self.stop_hunt)
         stopButton.setStyleSheet(
-            "QPushButton { font-size: 16pt; background-color: #1E1E1E; color: white; }"
-            "QPushButton:hover { font-size: 16pt; background-color: #5D6062; color: white; }"
+            "QPushButton { font-size: 12pt; background-color: #1E1E1E; color: white; }"
+            "QPushButton:hover { font-size: 12pt; background-color: #5D6062; color: white; }"
         )
         return stopButton
 
@@ -182,22 +182,22 @@ class VanbitFrame(QMainWindow):
         self.lookComboBox = QComboBox()
         self.lookComboBox.addItem("compress")
         self.lookComboBox.addItem("uncompress")
-        self.lookComboBox.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Search for compressed keys (default). Can be used with also search uncompressed keys  </span>')
+        self.lookComboBox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Search for compressed keys (default). Can be used with also search uncompressed keys  </span>')
         outputFileLayout.addWidget(self.lookComboBox)
         self.inputFileLabel = QLabel("Input File:", self)
         outputFileLayout.addWidget(self.inputFileLabel)
         self.inputFileLineEdit = QLineEdit("btc.txt", self)
         self.inputFileLineEdit.setPlaceholderText('Click browse to find your BTC database')
-        self.inputFileLineEdit.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
+        self.inputFileLineEdit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
         outputFileLayout.addWidget(self.inputFileLineEdit)
         self.inputFileButton = QPushButton("Browse", self)
         self.inputFileButton.setStyleSheet("color: #E7481F;")
-        self.inputFileButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
+        self.inputFileButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Type the Name of database txt file or Browse location </span>')
         self.inputFileButton.clicked.connect(self.browse_input_file)
         outputFileLayout.addWidget(self.inputFileButton)
         self.found_progButton = QPushButton("🔥 Check if Found 🔥")
         self.found_progButton.clicked.connect(self.found_prog)
-        self.found_progButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Click Here to See if your a Winner </span>')
+        self.found_progButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Click Here to See if your a Winner </span>')
         outputFileLayout.addWidget(self.found_progButton)
         return outputFileGroupBox
 
@@ -209,10 +209,10 @@ class VanbitFrame(QMainWindow):
         self.deviceLayout_van = QHBoxLayout()
         self.GPUButton = QPushButton("🔋 Check GPU 🪫", vanbitGroupBox)
         self.GPUButton.clicked.connect(self.list_if_gpu_van)
-        self.GPUButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> List available devices </span>')
+        self.GPUButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> List available devices </span>')
         self.deviceLayout_van.addWidget(self.GPUButton)
         self.GPUvsCPUButton = QPushButton("GPU 🆚 CPU", vanbitGroupBox)
-        self.GPUvsCPUButton.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> See the performance of CPUvsGPU Power  </span>')
+        self.GPUvsCPUButton.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> See the performance of CPUvsGPU Power  </span>')
         self.GPUvsCPUButton.clicked.connect(self.list_if_gpu_van)
         self.deviceLayout_van.addWidget(self.GPUvsCPUButton)
         self.cpu_lable_van = QLabel("Number of CPUs:", self)
@@ -221,21 +221,21 @@ class VanbitFrame(QMainWindow):
         for i in range(1, self.cpu_count + 1):
             self.threadComboBox_van.addItem(str(i))
         self.threadComboBox_van.setCurrentIndex(2)
-        self.threadComboBox_van.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> The number of CPU available </span>')
+        self.threadComboBox_van.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> The number of CPU available </span>')
 
         self.deviceLayout_van.addWidget(self.threadComboBox_van)
         self.groupSizeLabel = QLabel("Grid Size:", self)
         self.deviceLayout_van.addWidget(self.groupSizeLabel)
         self.gridSize_choice = QComboBox()
         self.gridSize_choice.addItems(['16','32', '64', '96', '128'])
-        self.gridSize_choice.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> The number of GRID blocks Per CPU</span>')
+        self.gridSize_choice.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> The number of GRID blocks Per CPU</span>')
         self.gridSize_choice.setCurrentIndex(1)
         self.deviceLayout_van.addWidget(self.gridSize_choice)
         self.gpuIdLabel_van = QLabel("CUDA ONLY List of GPU(s) to use:", vanbitGroupBox)
         self.deviceLayout_van.addWidget(self.gpuIdLabel_van)
         self.gpuIdLineEdit_van = QLineEdit("0", vanbitGroupBox)
         self.gpuIdLineEdit_van.setPlaceholderText('0, 1, 2')
-        self.gpuIdLineEdit_van.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Use device with ID equal to N  (Example = 0 for main or for more than 1GPU = 0, 1, 2)</span>')
+        self.gpuIdLineEdit_van.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Use device with ID equal to N  (Example = 0 for main or for more than 1GPU = 0, 1, 2)</span>')
         self.deviceLayout_van.addWidget(self.gpuIdLineEdit_van)
         self.vanbitLayout.addLayout(self.deviceLayout_van)
         return vanbitGroupBox

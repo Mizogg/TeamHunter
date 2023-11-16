@@ -3,17 +3,17 @@
 @author: Team Mizogg
 """
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QAbstractItemView, QApplication
-from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QTimer
 
-
+ICO_ICON = "images/main/miz.ico"
 SKIPED_FILE = 'input/skipped.txt'
 # ShowRangesDialog: Custom QDialog for displaying and managing ranges.
 class ShowRangesDialog(QDialog):
     def __init__(self, ranges):
         super().__init__()
         self.setWindowTitle("Show Ranges")
-        self.setWindowIcon(QIcon('images/ico'))
+        self.setWindowIcon(QIcon(f"{ICO_ICON}"))
         self.setMinimumSize(640, 440)
         self.ranges = ranges
         self.hex_mode = False

@@ -6,8 +6,8 @@ from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPlainTextEdit, QPushB
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtCore import Qt
 
-ICO_ICON = "webfiles/css/images/main/miz.ico"
-TITLE_ICON = "webfiles/css/images/main/title.png"
+ICO_ICON = "images/main/miz.ico"
+TITLE_ICON = "images/main/title.png"
 # WinnerDialog: Custom QDialog for displaying winner information.
 class WinnerDialog(QDialog):
     def __init__(self, WINTEXT, parent=None):

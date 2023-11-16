@@ -6,8 +6,8 @@ from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton
 from PyQt6.QtGui import QIcon, QPixmap, QFont
 from PyQt6.QtCore import Qt
 
-ICO_ICON = "webfiles/css/images/main/miz.ico"
-TITLE_ICON = "webfiles/css/images/main/title.png"
+ICO_ICON = "images/main/miz.ico"
+TITLE_ICON = "images/main/title.png"
 
 class RangeDialog(QDialog):
     def __init__(self, parent=None):
