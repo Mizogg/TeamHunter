@@ -12,7 +12,8 @@ settings = QSettings(f"{CONFIG_FOLDER}/config.json", QSettings.Format.IniFormat)
 CONFIG_FILE = f"{CONFIG_FOLDER}/config.json"
 
 INPUT_FOLDER = settings.value("Paths/INPUT_FOLDER", defaultValue="input", type=str)
-IMAGES_FOLDER = settings.value("Paths/IMAGES_FOLDER", defaultValue="webfiles/css/images", type=str)
+IMAGES_FOLDER = settings.value("Paths/IMAGES_FOLDER", defaultValue="images", type=str)
+MUSIC_FOLDER = settings.value("Paths/MUSIC_FOLDER", defaultValue="music", type=str)
 WINNER_FOLDER = settings.value("Paths/WINNER_FOLDER", defaultValue="found", type=str)
 
 BTC_BF_FILE = f"{INPUT_FOLDER}/{settings.value('Paths/BTC_BF_FILE', defaultValue='btc.bf', type=str)}"
