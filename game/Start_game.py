@@ -9,8 +9,8 @@ import os
 import sys
 sys.path.extend(['game'])
 
-ICO_ICON = "webfiles/css/images/main/miz.ico"
-TITLE_ICON = "webfiles/css/images/main/title.png"
+ICO_ICON = "images/main/miz.ico"
+TITLE_ICON = "images/main/title.png"
 
 class LauncherWindow(QDialog):
     def __init__(self):
@@ -34,7 +34,7 @@ class LauncherWindow(QDialog):
         self.buttonLaunch.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         #-----------------
         self.versionText = self.findChild(QLabel, "VersionText")
-        self.versionText.setText("ver. 0.6")
+        self.versionText.setText("ver. 0.7")
                     
     def showLauncher(self):
         self.show()

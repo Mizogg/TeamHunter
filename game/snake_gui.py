@@ -20,23 +20,23 @@ class StartScreen(QWidget):
         layout = QVBoxLayout()
         combined_text = """
         <html><center>
-        <font size="18" color="#E7481F">🐍 Snake Game 🐍</font>
-        <br><br><font size="8" color="#E7481F">
+        <font size="12" color="#E7481F">🐍 Snake Game 🐍</font>
+        <br><br><font size="5" color="#E7481F">
         Use the arrow keys to control the snake or "W," "A," "S," "D".
         </font><br>
         <br>
-        <br><font size="4">
+        <br><font size="3">
         This is a classic Snake game.<br>
         Your goal is to control the snake using the arrow keys and collect the Bitcoin (BTC) symbols on the board.<br>
         Be careful not to crash into yourself. AND Donn't Collect Bad Food <br>
         The longer your snake gets, the higher your score! Good luck and have fun!
         </font>
-        <br><br><font size="8">
-        Image Good food: <img src="webfiles/css/images/main/btc.png">
+        <br><br><font size="3">
+        Image Good food: <img src="images/main/btc.png">
         <br><br>
-        Image Bad food: <img src="webfiles/css/images/main/bad.png">
+        Image Bad food: <img src="images/main/bad.png">
         <br><br>
-        <img src="webfiles/css/images/main/head.png"><img src="webfiles/css/images/main/body.png"><img src="webfiles/css/images/main/body.png"><img src="webfiles/css/images/main/body.png"><img src="webfiles/css/images/main/body.png"><img src="webfiles/css/images/main/body.png"><img src="webfiles/css/images/main/body.png"><img src="webfiles/css/images/main/body.png"><img src="webfiles/css/images/main/body.png"><img src="webfiles/css/images/main/body.png"><img src="webfiles/css/images/main/body.png">
+        <img src="images/main/head.png"><img src="images/main/body.png"><img src="images/main/body.png"><img src="images/main/body.png"><img src="images/main/body.png"><img src="images/main/body.png"><img src="images/main/body.png"><img src="images/main/body.png"><img src="images/main/body.png"><img src="images/main/body.png"><img src="images/main/body.png">
                 </font></center><br><br><br></html>
         """
         instructions = QLabel(combined_text)
@@ -45,8 +45,8 @@ class StartScreen(QWidget):
 
         self.startButton = QPushButton("Start Game")
         self.startButton.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         self.startButton.clicked.connect(self.start_game)
 
@@ -69,15 +69,15 @@ class EndScreen(QWidget):
 
         gameover_text = (f"""
         <html><center>
-        <font size="18" color="#E7481F">🐍 Snake Game 🐍</font>
-        <br><br><font size="8" color="#E7481F">
+        <font size="12" color="#E7481F">🐍 Snake Game 🐍</font>
+        <br><br><font size="6" color="#E7481F">
         Game Over
         <br>
         Ammount of Bitcoin: {score}.00000000 BTC
         </font><br>
         <br>
 
-        <br><font size="6">
+        <br><font size="4">
         Try Again ?
         </font>
         </center><br><br><br></html>
@@ -87,8 +87,8 @@ class EndScreen(QWidget):
 
         restartButton = QPushButton("Restart Game")
         restartButton.setStyleSheet(
-                "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
+                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
+                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         restartButton.clicked.connect(self.restart_game)
 
@@ -118,7 +118,7 @@ class Window(QMainWindow):
         self.start_screen.hide()
         self.board = Board(self)
         self.statusbar = self.statusBar()
-        self.statusbar.setStyleSheet("font-size: 16pt; border: 2px solid #E7481F;")
+        self.statusbar.setStyleSheet("font-size: 12pt; border: 2px solid #E7481F;")
         self.board.msg2statusbar.connect(self.statusbar.showMessage)
         self.board.gameOver.connect(self.game_over)
         self.setCentralWidget(self.board)
@@ -135,7 +135,7 @@ class Window(QMainWindow):
             self.end_screen.hide()
         self.board = Board(self)
         self.statusbar = self.statusBar()
-        self.statusbar.setStyleSheet("font-size: 16pt; border: 2px solid #E7481F;")
+        self.statusbar.setStyleSheet("font-size: 12pt; border: 2px solid #E7481F;")
         self.board.msg2statusbar.connect(self.statusbar.showMessage)
         self.board.gameOver.connect(self.game_over)
         self.setCentralWidget(self.board)
@@ -173,8 +173,8 @@ class Board(QFrame):
 
 
     def load_images(self):
-        image_path = "webfiles/css/images/main/"  # Adjust the path to your image directory
-        image_size = (40, 40)  # Adjust the desired image size
+        image_path = "images/main/"  # Adjust the path to your image directory
+        image_size = (32, 32)  # Adjust the desired image size
 
         self.dot = QPixmap(image_path + "body.png").scaled(image_size[0], image_size[1])
         self.head = QPixmap(image_path + "head.png").scaled(image_size[0], image_size[1])

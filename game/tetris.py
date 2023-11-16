@@ -8,8 +8,8 @@ import time as time_module
 import keyboard
 import random
         
-ICO_ICON = "webfiles/css/images/main/miz.ico"
-TITLE_ICON = "webfiles/css/images/main/title.png"
+ICO_ICON = "images/main/miz.ico"
+TITLE_ICON = "images/main/title.png"
                                      
 S = [['.....','..00.','.00..','.....','.....'],['..0..','..00.','...0.','.....','.....']]
 Z = [['.....','.00..','..00.','.....','.....'],['..0..','.00..','.0...','.....','.....']]
@@ -181,7 +181,7 @@ def playTextAnimation(self):
     self.animation.setStartValue(70)
     self.animation.setEndValue(0)
     self.animation.setDuration(1000)
-    self.animation.setEasingCurve(QEasingCurve.Type.ElasticOut)  # Use ElasticOut for a bouncing-out effect
+    self.animation.setEasingCurve(QEasingCurve.Type.OutElastic)
     self.animation.start()
 
 #=====QT CLASSES n WINDOWS=====================================================================================
