@@ -25,9 +25,10 @@ def create_settings_file_if_not_exists():
                 "END_ADDRESS": ""
             },
             "Paths": {
-                "BLOOM_FOLDER": "bloom",
+                "INPUT_FOLDER": "input",
                 "IMAGES_FOLDER": "images",
-                "WINNER_FOLDER": "#WINNER",
+                "MUSIC_FOLDER": "music",
+                "WINNER_FOLDER": "found",
                 "WINNER_COMPRESSED": "foundcaddr.txt",
                 "WINNER_UNCOMPRESSED": "founduaddr.txt",
                 "WINNER_P2SH": "foundp2sh.txt",
