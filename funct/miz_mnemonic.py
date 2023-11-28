@@ -451,12 +451,12 @@ class GUIInstance(QMainWindow):
                         WINTEXT = f"\n Menmonic {words} \n {caddr} \n Decimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX}  \n"
 
                         try:
-                            with open(WINNER_COMPRESSED, "a") as f:
+                            with open(WINNER_FOUND, "a") as f:
                                 f.write(WINTEXT)
                         except FileNotFoundError:
-                            os.makedirs(os.path.dirname(WINNER_COMPRESSED), exist_ok=True)
+                            os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
 
-                            with open(WINNER_COMPRESSED, "w") as f:
+                            with open(WINNER_FOUND, "w") as f:
                                 f.write(WINTEXT)
                         if self.use_telegram_credentials_checkbox.isChecked():
                             self.send_to_telegram(WINTEXT)
@@ -480,14 +480,13 @@ class GUIInstance(QMainWindow):
                         WINTEXT = f"\n Menmonic {words} \n {p2sh}\nDecimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX} \n"
 
                         try:
-                            with open(WINNER_P2SH, "a") as f:
+                            with open(WINNER_FOUND, "a") as f:
                                 f.write(WINTEXT)
                         except FileNotFoundError:
-                            os.makedirs(os.path.dirname(WINNER_P2SH), exist_ok=True)
+                            os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
 
-                            with open(WINNER_P2SH, "w") as f:
+                            with open(WINNER_FOUND, "w") as f:
                                 f.write(WINTEXT)
-
                         if self.use_telegram_credentials_checkbox.isChecked():
                             self.send_to_telegram(WINTEXT)
                         if self.use_discord_credentials_checkbox.isChecked():
@@ -510,14 +509,13 @@ class GUIInstance(QMainWindow):
                         WINTEXT = f"\n Menmonic {words} \n {bech32}\n Decimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX} \n"
 
                         try:
-                            with open(WINNER_BECH32, "a") as f:
+                            with open(WINNER_FOUND, "a") as f:
                                 f.write(WINTEXT)
                         except FileNotFoundError:
-                            os.makedirs(os.path.dirname(WINNER_BECH32), exist_ok=True)
+                            os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
 
-                            with open(WINNER_BECH32, "w") as f:
+                            with open(WINNER_FOUND, "w") as f:
                                 f.write(WINTEXT)
-
                         if self.use_telegram_credentials_checkbox.isChecked():
                             self.send_to_telegram(WINTEXT)
                         if self.use_discord_credentials_checkbox.isChecked():
