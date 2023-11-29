@@ -1,4 +1,4 @@
-# Team-Hunter GUI Version 0.8
+# Team-Hunter GUI Version 0.9
 
 ![titlebig](https://github.com/Mizogg/TeamHunter/assets/88630056/393f60cb-fe1a-4547-8e1b-58ff4696c3d4)
 
@@ -23,9 +23,6 @@ https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019
 
 Python 3.11
 https://www.python.org/downloads/
-
-.NET 8.0 Runtime (v8.0.0-rc.2)  This is required for C#-Mnemonic
-https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-8.0.0-rc.2-windows-x64-installer
 
 New version 0.8 has sound in it. If your device or server does not have a sound card.The Program opens it closes with error. I have found a fix for this to install virtal sound card and the sound even works over RDP the program for information is https://vb-audio.com/Cable/index.htm
 
@@ -76,35 +73,12 @@ A tool for brute-forcing Bitcoin private keys. The main purpose of this project 
 
  GitHub: https://github.com/brichard19/BitCrack
 
-## C#-Mnemonic
-
-Михаил Х.XopMC Mnemonic Bruteforce in C#
-
- Website: https://github.com/XopMC/C-Sharp-Mnemonic
-
 ## Keyhunt
 Tool for hunt privatekeys for crypto currencies that use secp256k1 elliptic curve
 
  Telegram group: https://t.me/keyhunters
 
  GitHub: https://github.com/albertobsd/keyhunt
-
-## VanBitCracken
-WanderingPhilosopher
-
- GitHub: https://github.com/WanderingPhilosopher/VanBitCrackenRandom
-
-## Mnemonic Code Converter v0.5.6
-
- GitHub: https://github.com/iancoleman/bip39
-
- Website: https://iancoleman.io/bip39/
-
-## Brain wallet
-
- GitHub: https://github.com/brainwallet/brainwallet.github.io
-
- Website: https://brainwalletx.github.io/
 
  # TeamHunter GUI
 
