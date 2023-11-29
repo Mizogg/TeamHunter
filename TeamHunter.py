@@ -10,7 +10,7 @@ from PyQt6.QtGui import *
 import qdarktheme
 from libs import set_settings, create_setting
 from game import snake_gui, Start_game
-from funct import (range_div_gui, about_gui, ice_gui, bitcrack_gui, keyhunt_gui, vanbit_gui, up_bloom_gui, grid_16x16, mnemonic_gui, miz_mnemonic, conversion_gui, balance_gui)
+from funct import (range_div_gui, about_gui, ice_gui, bitcrack_gui, keyhunt_gui, up_bloom_gui, grid_16x16, miz_mnemonic, conversion_gui, balance_gui)
 import sys
 from Mizmusic import MusicPlayer
 sys.path.extend(['libs', 'config', 'funct', 'found', 'input', 'game', 'images'])
@@ -23,7 +23,7 @@ IMAGES_MAIN = "images/main/"
 image_folder = "images"
 image_files = [os.path.join(image_folder, filename) for filename in os.listdir(image_folder) if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
 
-version = '0.8'
+version = '0.9'
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -41,20 +41,18 @@ class MainWindow(QMainWindow):
         self.tab2 = QWidget()
         self.tab3 = QWidget()
         self.tab4 = QWidget()
-        self.tab5 = QWidget()
+
         self.tab6 = QWidget()
         self.tab7 = QWidget()
-        self.tab8 = QWidget()
 
         self.tab_widget.addTab(self.tabmain, "Welcome")
         self.tab_widget.addTab(self.tab1, "BitCrack")
         self.tab_widget.addTab(self.tab2, "KeyHunt")
-        self.tab_widget.addTab(self.tab3, "Vanbitcracken")
-        self.tab_widget.addTab(self.tab4, "C-Sharp-Mnemonic")
-        self.tab_widget.addTab(self.tab5, "Iceland2k14 Secp256k1")
-        self.tab_widget.addTab(self.tab6, "Miz Mnemonic")
-        self.tab_widget.addTab(self.tab7, "BTC Snake Game")
-        self.tab_widget.addTab(self.tab8, "Art Work")
+        self.tab_widget.addTab(self.tab3, "Iceland2k14 Secp256k1")
+        self.tab_widget.addTab(self.tab4, "Miz Mnemonic")
+
+        self.tab_widget.addTab(self.tab6, "BTC Snake Game")
+        self.tab_widget.addTab(self.tab7, "Art Work")
         self.process = None
         self.scanning = False
         self.initUI()
@@ -95,9 +93,7 @@ class MainWindow(QMainWindow):
         git_label = QLabel("GitHub Links")
 
         self.alberto_mode_button = self.create_button("GitHub Alertobsd Keyhunt About", "python-snake-black.png", self.alberto_git)
-        self.XopMC_mode_button = self.create_button("GitHub Михаил Х. XopMC C#-Mnemonic About", "python-snake-red.png", self.XopMC_git)
-        self.bitcrack_mode_button = self.create_button("GitHub brichard19 BitCrack About", "python-snake-black.png", self.bitcrack_git)
-        self.vanbit_mode_button = self.create_button("GitHub WanderingPhilosopher VanBitCracken Random About", "python-snake-red.png", self.vanbit_git)
+        self.bitcrack_mode_button = self.create_button("GitHub brichard19 BitCrack About", "python-snake-red.png", self.bitcrack_git)
         self.iceland_mode_button = self.create_button("GitHub Iceland iceland2k14 Python Secp256k1 About", "python-snake-black.png", self.iceland_git)
         self.miz_git_mode_button = self.create_button("GitHub Mizogg About", "python-snake-red.png", self.miz_git)
 
@@ -115,9 +111,7 @@ class MainWindow(QMainWindow):
         dark_mode_layout = QHBoxLayout()
         dark_mode_layout.addWidget(git_label)
         dark_mode_layout.addWidget(self.alberto_mode_button)
-        dark_mode_layout.addWidget(self.XopMC_mode_button)
         dark_mode_layout.addWidget(self.bitcrack_mode_button)
-        dark_mode_layout.addWidget(self.vanbit_mode_button)
         dark_mode_layout.addWidget(self.iceland_mode_button)
         dark_mode_layout.addWidget(self.miz_git_mode_button)
 
@@ -162,41 +156,36 @@ class MainWindow(QMainWindow):
         self.tab2_layout = QVBoxLayout()
         self.tab3_layout = QVBoxLayout()
         self.tab4_layout = QVBoxLayout()
-        self.tab5_layout = QVBoxLayout()
+
         self.tab6_layout = QVBoxLayout()
         self.tab7_layout = QVBoxLayout()
-        self.tab8_layout = QVBoxLayout()
 
         self.centralWidget = QWidget(self)
         self.setCentralWidget(self.centralWidget)
         self.layout = QVBoxLayout(self.centralWidget)
         bitcrack_tool = bitcrack_gui.BitcrackFrame()
         keyhunt_tool = keyhunt_gui.KeyHuntFrame()
-        vanbit_tool = vanbit_gui.VanbitFrame()
         ice_tool = ice_gui.GUIInstance()
-        XopMC_tool = mnemonic_gui.MnemonicFrame()
         MIZ_tool = miz_mnemonic.GUIInstance()
         snake_frame = snake_gui.Window()
         
         self.tabmain_layout = self.main_tab()
         self.tab1_layout.addWidget(bitcrack_tool)
         self.tab2_layout.addWidget(keyhunt_tool)
-        self.tab3_layout.addWidget(vanbit_tool)
-        self.tab4_layout.addWidget(XopMC_tool)
-        self.tab5_layout.addWidget(ice_tool)
-        self.tab6_layout.addWidget(MIZ_tool)
-        self.tab7_layout.addWidget(snake_frame)
-        self.tab8_layout = self.picture_tab()
+        self.tab3_layout.addWidget(ice_tool)
+        self.tab4_layout.addWidget(MIZ_tool)
+
+        self.tab6_layout.addWidget(snake_frame)
+        self.tab7_layout = self.picture_tab()
 
         self.tabmain.setLayout(self.tabmain_layout)
         self.tab1.setLayout(self.tab1_layout)
         self.tab2.setLayout(self.tab2_layout)
         self.tab3.setLayout(self.tab3_layout)
         self.tab4.setLayout(self.tab4_layout)
-        self.tab5.setLayout(self.tab5_layout)
+
         self.tab6.setLayout(self.tab6_layout)
         self.tab7.setLayout(self.tab7_layout)
-        self.tab8.setLayout(self.tab8_layout)
 
         self.layout.addLayout(self.main_layout)
         mizogg_player = MusicPlayer()
@@ -226,7 +215,7 @@ class MainWindow(QMainWindow):
     def create_tab_buttons(self):
         buttons_layout = QGridLayout()
 
-        tabs = ["BitCrack", "KeyHunt", "Vanbitcracken", "C-Sharp-Mnemonic", "Iceland2k14 Secp256k1", "Miz Mnemonic", "BTC Snake Game", "Art Work"]
+        tabs = ["BitCrack", "KeyHunt", "Iceland2k14 Secp256k1", "Miz Mnemonic", "BTC Snake Game", "Art Work"]
         for i, tab_name in enumerate(tabs):
             row = i // 4
             col = i % 4
@@ -257,7 +246,7 @@ class MainWindow(QMainWindow):
 
         <br><font size="4">
         This Python application, named "Team Hunter GUI," provides a user-friendly interface for various cryptocurrency-related tools and functions.<br>
-        Users can access tools for Bitcoin-related operations, including BitCrack, KeyHunt, Vanbitcracken, Iceland2k14 Secp256k1....<br>
+        Users can access tools for Bitcoin-related operations, including BitCrack, KeyHunt, Iceland2k14 Secp256k1....<br>
         The application supports both dark and light themes and offers a convenient way to switch between them.<br>
         It also features a 16x16 grid tool, a range division tool in hexadecimal format, and allows users to open external websites.<br>
         This application is built using PyQt6 and is designed to assist cryptocurrency enthusiasts in their endeavors.</font>
@@ -361,14 +350,8 @@ class MainWindow(QMainWindow):
     def alberto_git(self):
         webbrowser.open("https://github.com/albertobsd/keyhunt")
 
-    def XopMC_git(self):
-        webbrowser.open("https://github.com/XopMC/C-Sharp-Mnemonic")
-
     def bitcrack_git(self):
         webbrowser.open("https://github.com/brichard19/BitCrack")
-
-    def vanbit_git(self):
-        webbrowser.open("https://github.com/WanderingPhilosopher/VanBitCrackenRandom#vanbitcrackenrandom")
 
     def iceland_git(self):
         webbrowser.open("https://github.com/iceland2k14/secp256k1")
