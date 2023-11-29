@@ -59,13 +59,6 @@ class AboutDialog(QDialog):
         # Create QTextBrowser widgets for configuration details
         configurations = [
             ("Bitcrack Configuration", "Recommended for 16GB of RAM: -b 104 -t 512 -p 2016\nRecommended for 8GB of RAM: -b 104 -t 512 -p 1024\n-b = Blocks\n-t = Threads\n-p = points"),
-            ("Vanbitcracken Configuration", 
-             '''The Newest Version of VanBitCrackenRandom...VBCr
-             This program is really only intended for the BTC Challenge. However, you can use it to generate your own personal BTC address and use it.
-             It is a spinoff of JLP's original VanitySearch.
-             Program supports a simple -bits flag and Begin and End Range (-begr and -endr) flags. New version also supports full address with newer RTX cards.
-             It has been tested on Windows 10 and Windows 11 on RTX 30xx cards, RTX 20xx cards and a GTX 1660 Ti card.
-             Only working Display is in CMD work in progress'''),
             ("Key Hunt Configuration", 
              '''Run against puzzle 66 (address mode)
              ./keyhunt -m address -f tests/66.txt -b 66 -l compress -R -q -s 10
