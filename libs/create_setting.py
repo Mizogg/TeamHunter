@@ -29,10 +29,6 @@ def create_settings_file_if_not_exists():
                 "IMAGES_FOLDER": "images",
                 "MUSIC_FOLDER": "music",
                 "WINNER_FOLDER": "found",
-                "WINNER_COMPRESSED": "foundcaddr.txt",
-                "WINNER_UNCOMPRESSED": "founduaddr.txt",
-                "WINNER_P2SH": "foundp2sh.txt",
-                "WINNER_BECH32": "foundbech32.txt",
                 "BTC_BF_FILE": "btc.bf",
                 "BTC_TXT_FILE": "btc.txt"
             }
