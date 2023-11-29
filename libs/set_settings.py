@@ -3,6 +3,7 @@
 @author: Team Mizogg
 """
 import sys
+from PyQt6.QtWidgets import QMessageBox
 sys.path.append('config')
 from config import *
 
