@@ -7,7 +7,7 @@ from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtCore import Qt, QSize
 from speaker import Speaker
 import webbrowser
-version = '0.8'
+version = '0.9'
 ICO_ICON = "images/main/miz.ico"
 TITLE_ICON = "images/main/title.png"
 RED_ICON = "images/main/mizogg-eyes.png"
