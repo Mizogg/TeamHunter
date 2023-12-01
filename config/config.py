@@ -2,7 +2,6 @@
 
 @author: Team Mizogg
 """
-import json
 from PyQt6.QtCore import QSettings
 
 CONFIG_FOLDER = "config"
