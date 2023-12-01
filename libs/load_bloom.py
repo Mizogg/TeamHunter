@@ -3,9 +3,8 @@
 @author: Team Mizogg
 """
 from bloomfilter import BloomFilter
-import sys
-sys.path.append('config')
-from config import *
+BTC_BF_FILE = "input/btc.bf"
+BTC_TXT_FILE = "input/btc.txt"
 def load_bloom_filter():
     try:
         with open(BTC_BF_FILE, "rb") as fp:

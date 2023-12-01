@@ -3,10 +3,8 @@
 @author: Team Mizogg
 """
 import json
-import os, sys
-sys.path.append('config')
-from config import *
-
+import os
+CONFIG_FILE = "config/config.json"
 def create_settings_file_if_not_exists():
     if not os.path.exists(CONFIG_FILE):
         config_data = {
