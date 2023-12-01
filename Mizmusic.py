@@ -1,12 +1,12 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel, QSlider, QCheckBox, QStyle, QStyleFactory, QHBoxLayout, QSizePolicy
-from PyQt6.QtCore import QPoint, QSize, Qt, QTimer, QRect
+from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QSlider, QCheckBox, QStyle, QHBoxLayout, QSizePolicy
+from PyQt6.QtCore import QSize, Qt, QTimer, QRect
 from PyQt6.QtGui import QColor, QPainter, QBrush
 import pygame
 import os
 import random
 import numpy as np
-from speaker import Speaker
+from game.speaker import Speaker
 
 class EqualizerBar(QWidget):
     def __init__(self, bars, steps, *args, **kwargs):

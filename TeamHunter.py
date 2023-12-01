@@ -8,13 +8,14 @@ from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 import qdarktheme
+import signal
 from libs import set_settings, create_setting
 from game import snake_gui, Start_game
-from funct import (range_div_gui, about_gui, ice_gui, bitcrack_gui, keyhunt_gui, up_bloom_gui, grid_16x16, miz_mnemonic, conversion_gui, balance_gui)
+from funct import (range_div_gui, about_gui, ice_gui, bitcrack_gui, keyhunt_gui, grid_16x16, miz_mnemonic, conversion_gui, balance_gui)
 import sys
 from Mizmusic import MusicPlayer
 sys.path.extend(['libs', 'config', 'funct', 'found', 'input', 'game', 'images'])
-from speaker import Speaker
+from game.speaker import Speaker
 from config import *
 import platform
 import subprocess
@@ -23,7 +24,7 @@ IMAGES_MAIN = "images/main/"
 image_folder = "images"
 image_files = [os.path.join(image_folder, filename) for filename in os.listdir(image_folder) if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
 
-version = '0.9'
+version = '1.0'
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -41,18 +42,16 @@ class MainWindow(QMainWindow):
         self.tab2 = QWidget()
         self.tab3 = QWidget()
         self.tab4 = QWidget()
-
+        self.tab5 = QWidget()
         self.tab6 = QWidget()
-        self.tab7 = QWidget()
 
         self.tab_widget.addTab(self.tabmain, "Welcome")
         self.tab_widget.addTab(self.tab1, "BitCrack")
         self.tab_widget.addTab(self.tab2, "KeyHunt")
         self.tab_widget.addTab(self.tab3, "Iceland2k14 Secp256k1")
         self.tab_widget.addTab(self.tab4, "Miz Mnemonic")
-
-        self.tab_widget.addTab(self.tab6, "BTC Snake Game")
-        self.tab_widget.addTab(self.tab7, "Art Work")
+        self.tab_widget.addTab(self.tab5, "BTC Snake Game")
+        self.tab_widget.addTab(self.tab6, "Art Work")
         self.process = None
         self.scanning = False
         self.initUI()
@@ -156,9 +155,8 @@ class MainWindow(QMainWindow):
         self.tab2_layout = QVBoxLayout()
         self.tab3_layout = QVBoxLayout()
         self.tab4_layout = QVBoxLayout()
-
+        self.tab5_layout = QVBoxLayout()
         self.tab6_layout = QVBoxLayout()
-        self.tab7_layout = QVBoxLayout()
 
         self.centralWidget = QWidget(self)
         self.setCentralWidget(self.centralWidget)
@@ -174,18 +172,16 @@ class MainWindow(QMainWindow):
         self.tab2_layout.addWidget(keyhunt_tool)
         self.tab3_layout.addWidget(ice_tool)
         self.tab4_layout.addWidget(MIZ_tool)
-
-        self.tab6_layout.addWidget(snake_frame)
-        self.tab7_layout = self.picture_tab()
+        self.tab5_layout.addWidget(snake_frame)
+        self.tab6_layout = self.picture_tab()
 
         self.tabmain.setLayout(self.tabmain_layout)
         self.tab1.setLayout(self.tab1_layout)
         self.tab2.setLayout(self.tab2_layout)
         self.tab3.setLayout(self.tab3_layout)
         self.tab4.setLayout(self.tab4_layout)
-
+        self.tab5.setLayout(self.tab5_layout)
         self.tab6.setLayout(self.tab6_layout)
-        self.tab7.setLayout(self.tab7_layout)
 
         self.layout.addLayout(self.main_layout)
         mizogg_player = MusicPlayer()
@@ -217,8 +213,8 @@ class MainWindow(QMainWindow):
 
         tabs = ["BitCrack", "KeyHunt", "Iceland2k14 Secp256k1", "Miz Mnemonic", "BTC Snake Game", "Art Work"]
         for i, tab_name in enumerate(tabs):
-            row = i // 4
-            col = i % 4
+            row = i // 3
+            col = i % 3
 
             button = QPushButton(tab_name)
 
