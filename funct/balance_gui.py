@@ -4,9 +4,6 @@
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
-import sys
-sys.path.append('libs')
-import libs
 from libs import team_balance
 
 ICO_ICON = "images/main/miz.ico"
@@ -19,7 +16,6 @@ class BalanceDialog(QDialog):
         self.setWindowIcon(QIcon(f"{ICO_ICON}"))
         self.setMinimumSize(640, 440)
         pixmap = QPixmap(f"{TITLE_ICON}")
-        # Create a QLabel and set the pixmap as its content
         title_label = QLabel()
         title_label.setPixmap(pixmap)
         title_label.setFixedSize(pixmap.size())

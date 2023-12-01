@@ -5,9 +5,9 @@
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QGroupBox, QTextBrowser, QPushButton
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtCore import Qt, QSize
-from speaker import Speaker
+from game.speaker import Speaker
 import webbrowser
-version = '0.9'
+version = '1.0'
 ICO_ICON = "images/main/miz.ico"
 TITLE_ICON = "images/main/title.png"
 RED_ICON = "images/main/mizogg-eyes.png"

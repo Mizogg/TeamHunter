@@ -10,7 +10,7 @@ import subprocess
 import platform
 from console_gui import ConsoleWindow
 from command_thread import CommandThread
-from speaker import Speaker
+from game.speaker import Speaker
 
 class BitcrackFrame(QMainWindow):
     def __init__(self):

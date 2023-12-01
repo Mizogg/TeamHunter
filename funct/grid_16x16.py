@@ -15,16 +15,14 @@ from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from bloomfilter import BloomFilter
-from libs import secp256k1 as ice, team_balance, load_bloom, set_settings
-from funct import (win_gui)
-import sys
-sys.path.extend(['libs', 'funct'])
+from libs import secp256k1 as ice, team_balance, load_bloom
+from funct import win_gui
 from config import *
+from decimal import InvalidOperation
 addfind = load_bloom.load_bloom_filter()
 ICO_ICON = "images/main/miz.ico"
 FOUND_FILE = "found/found.txt"
-# Set system locale
-locale.setlocale(locale.LC_ALL, "")
+BTC_BF_FILE = "input/btc.bf"
 
 DEFAULT_SEED_RATIO = 45
 GRID_SIZE = 16
@@ -65,45 +63,45 @@ class KeyspaceScannerThread(QThread):
                 WINTEXT = (f"DEC Key: {dec}\nHEX Key: {HEX} \nBTC Address Compressed: {caddr} \nWIF Compressed: {wifc} \n")
                 self.btc_hunter_finished.emit(data, 'winner')
                 try:
-                    with open(WINNER_FOUND, "a") as f:
+                    with open(FOUND_FILE, "a") as f:
                         f.write(WINTEXT)
                 except FileNotFoundError:
-                    os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+                    os.makedirs(os.path.dirname(FOUND_FILE), exist_ok=True)
 
-                    with open(WINNER_FOUND, "w") as f:
+                    with open(FOUND_FILE, "w") as f:
                         f.write(WINTEXT)
             if uaddr in addfind:
                 WINTEXT = (f"DEC Key: {dec}\nHEX Key: {HEX} \nBTC Address Uncompressed: {uaddr} \nWIF Uncompressed: {wifu} \n")
                 self.btc_hunter_finished.emit(data, 'winner')
                 try:
-                    with open(WINNER_FOUND, "a") as f:
+                    with open(FOUND_FILE, "a") as f:
                         f.write(WINTEXT)
                 except FileNotFoundError:
-                    os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+                    os.makedirs(os.path.dirname(FOUND_FILE), exist_ok=True)
 
-                    with open(WINNER_FOUND, "w") as f:
+                    with open(FOUND_FILE, "w") as f:
                         f.write(WINTEXT)
             if p2sh in addfind:
                 self.WINTEXT = (f"DEC Key: {dec}\nHEX Key: {HEX} \nBTC Address p2sh: {p2sh} \n")
                 self.btc_hunter_finished.emit(data, 'winner')
                 try:
-                    with open(WINNER_FOUND, "a") as f:
+                    with open(FOUND_FILE, "a") as f:
                         f.write(WINTEXT)
                 except FileNotFoundError:
-                    os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+                    os.makedirs(os.path.dirname(FOUND_FILE), exist_ok=True)
 
-                    with open(WINNER_FOUND, "w") as f:
+                    with open(FOUND_FILE, "w") as f:
                         f.write(WINTEXT)
             if bech32 in addfind:
                 WINTEXT = (f"DEC Key: {dec}\nHEX Key: {HEX} \nBTC Address Bc1: {bech32} \n")
                 self.btc_hunter_finished.emit(data, 'winner')
                 try:
-                    with open(WINNER_FOUND, "a") as f:
+                    with open(FOUND_FILE, "a") as f:
                         f.write(WINTEXT)
                 except FileNotFoundError:
-                    os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+                    os.makedirs(os.path.dirname(FOUND_FILE), exist_ok=True)
 
-                    with open(WINNER_FOUND, "w") as f:
+                    with open(FOUND_FILE, "w") as f:
                         f.write(WINTEXT)
             if counter >= 1000:
                 binstring = "{0:b}".format(int_value)
@@ -139,48 +137,48 @@ class BtcHunterThread(QThread):
             WINTEXT = (f"DEC Key: {dec}\nHEX Key: {HEX} \nBTC Address Compressed: {caddr} \nWIF Compressed: {wifc} \n")
             self.btc_hunter_finished.emit(data, 'winner')
             try:
-                with open(WINNER_FOUND, "a") as f:
+                with open(FOUND_FILE, "a") as f:
                     f.write(WINTEXT)
             except FileNotFoundError:
-                os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+                os.makedirs(os.path.dirname(FOUND_FILE), exist_ok=True)
 
-                with open(WINNER_FOUND, "w") as f:
+                with open(FOUND_FILE, "w") as f:
                     f.write(WINTEXT)
             pass
         if uaddr in addfind:
             WINTEXT = (f"DEC Key: {dec}\nHEX Key: {HEX} \nBTC Address Uncompressed: {uaddr} \nWIF Uncompressed: {wifu} \n")
             self.btc_hunter_finished.emit(data, 'winner')
             try:
-                with open(WINNER_FOUND, "a") as f:
+                with open(FOUND_FILE, "a") as f:
                     f.write(WINTEXT)
             except FileNotFoundError:
-                os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+                os.makedirs(os.path.dirname(FOUND_FILE), exist_ok=True)
 
-                with open(WINNER_FOUND, "w") as f:
+                with open(FOUND_FILE, "w") as f:
                     f.write(WINTEXT)
             pass
         if p2sh in addfind:
             self.WINTEXT = (f"DEC Key: {dec}\nHEX Key: {HEX} \nBTC Address p2sh: {p2sh} \n")
             self.btc_hunter_finished.emit(data, 'winner')
             try:
-                with open(WINNER_FOUND, "a") as f:
+                with open(FOUND_FILE, "a") as f:
                     f.write(WINTEXT)
             except FileNotFoundError:
-                os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+                os.makedirs(os.path.dirname(FOUND_FILE), exist_ok=True)
 
-                with open(WINNER_FOUND, "w") as f:
+                with open(FOUND_FILE, "w") as f:
                     f.write(WINTEXT)
             pass
         if bech32 in addfind:
             WINTEXT = (f"DEC Key: {dec}\nHEX Key: {HEX} \nBTC Address Bc1: {bech32} \n")
             self.btc_hunter_finished.emit(data, 'winner')
             try:
-                with open(WINNER_FOUND, "a") as f:
+                with open(FOUND_FILE, "a") as f:
                     f.write(WINTEXT)
             except FileNotFoundError:
-                os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+                os.makedirs(os.path.dirname(FOUND_FILE), exist_ok=True)
 
-                with open(WINNER_FOUND, "w") as f:
+                with open(FOUND_FILE, "w") as f:
                     f.write(WINTEXT)
             pass
     def stop(self):
@@ -215,22 +213,22 @@ class BtcHunterThread_online(QThread):
         if int(txs) > 1:
             self.btc_hunter_finished_online.emit(data, 'winner')
             try:
-                with open(WINNER_FOUND, "a") as f:
+                with open(FOUND_FILE, "a") as f:
                     f.write(data)
             except FileNotFoundError:
-                os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+                os.makedirs(os.path.dirname(FOUND_FILE), exist_ok=True)
 
-                with open(WINNER_FOUND, "w") as f:
+                with open(FOUND_FILE, "w") as f:
                     f.write(data)
         if int(txsu) > 1:
             self.btc_hunter_finished_online.emit(data1, 'winner')
             try:
-                with open(WINNER_FOUND, "a") as f:
+                with open(FOUND_FILE, "a") as f:
                     f.write(data1)
             except FileNotFoundError:
-                os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+                os.makedirs(os.path.dirname(FOUND_FILE), exist_ok=True)
 
-                with open(WINNER_FOUND, "w") as f:
+                with open(FOUND_FILE, "w") as f:
                     f.write(data1)
 
     def stop(self):
@@ -887,10 +885,6 @@ class GridFrame(QMainWindow):
             for cl in range(self.cols):
                 self.grid[rw][cl] = 1 - self.grid[rw][cl]
         self.update_canvas()
-
-    def show_about_dialog(self):
-        QMessageBox.about(self, "About 16x16Hunter", mizogg)
-        pass
 
     def start(self):
         self.init_grid()

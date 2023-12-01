@@ -3,7 +3,7 @@
 @author: Team Mizogg
 """
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPlainTextEdit, QPushButton, QHBoxLayout, QLabel, QComboBox
-from PyQt6.QtCore import Qt, pyqtSlot
+from PyQt6.QtCore import pyqtSlot
 
 class ConsoleWindow(QWidget):
     def __init__(self, parent=None):
@@ -11,7 +11,6 @@ class ConsoleWindow(QWidget):
         self.layout = QVBoxLayout(self)
         self.consoleOutput = QPlainTextEdit(self)
         self.consoleOutput.setReadOnly(True)
-
         self.layout.addWidget(self.consoleOutput)
 
         # Create a widget for the buttons

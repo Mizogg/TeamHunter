@@ -8,7 +8,6 @@ from PyQt6.QtGui import *
 from PyQt6.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 import gzip
 import os
-import subprocess
 import sys
 sys.path.extend(['input'])
 

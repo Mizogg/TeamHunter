@@ -11,20 +11,14 @@ import time
 import random
 import requests
 import json
-import base58, binascii
 from bloomfilter import BloomFilter
 from libs import secp256k1 as ice, load_bloom, team_word
 from funct import (win_gui, up_bloom_gui, telegram_gui, discord_gui)
-import sys
-sys.path.extend(['libs', 'config', 'funct'])
 from console_gui import ConsoleWindow
-from command_thread import CommandThread
 from config import *
 import locale
 from mnemonic import Mnemonic
-from speaker import Speaker
-import sys
-sys.path.extend(['libs', 'config', 'funct'])
+from game.speaker import Speaker
 
 from config import *
 import locale
@@ -32,7 +26,8 @@ import locale
 addfind = load_bloom.load_bloom_filter()
 TEL_ICON = "images/main/Telegram.png"
 DIS_ICON = "images/main/Discord.png"
-
+WINNER_FOUND = "found/found.txt"
+CONFIG_FILE = "config/config.json"
 class GUIInstance(QMainWindow):
     def __init__(self):
         super().__init__()

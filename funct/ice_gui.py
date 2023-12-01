@@ -11,20 +11,19 @@ import time
 import random
 import requests
 import json
-import base58, binascii
 from bloomfilter import BloomFilter
 from libs import secp256k1 as ice, load_bloom
 from funct import (bar_gui, win_gui, up_bloom_gui, show_ranges_gui, telegram_gui, discord_gui)
-import sys
-sys.path.extend(['libs', 'config', 'funct'])
-from speaker import Speaker
+from game.speaker import Speaker
 from config import *
 import locale
 
 addfind = load_bloom.load_bloom_filter()
 TEL_ICON = "images/main/Telegram.png"
 DIS_ICON = "images/main/Discord.png"
-
+WINNER_FOUND = "found/found.txt"
+CONFIG_FILE = "config/config.json"
+SKIPPED_FILE = "input/skipped.txt"
 crypto_mapping = {
     "Bitcoin (BTC)": 0,
     "Bitcoin SV (BSV)": 1,
@@ -99,21 +98,21 @@ class GUIInstance(QMainWindow):
                 return True
         return False
 
-    def read_ranges_from_file(file_path):
+    def read_ranges_from_file(self, file_path):
         with open(file_path, "r") as f:
             return f.read()
 
-    def write_ranges_to_file(file_path, ranges_text):
+    def write_ranges_to_file(self, file_path, ranges_text):
         with open(file_path, "a") as f:
             f.write(ranges_text)
 
     def save_ranges(self, ranges_textedit, ranges_dialog):
         new_ranges_text = ranges_textedit.toPlainText()
-        write_ranges_to_file(SKIPPED_FILE, new_ranges_text)
+        self.write_ranges_to_file(SKIPPED_FILE, new_ranges_text)
         ranges_dialog.accept()
 
     def show_ranges(self):
-        ranges_text = read_ranges_from_file(SKIPPED_FILE)
+        ranges_text = self.read_ranges_from_file(SKIPPED_FILE)
 
         ranges_dialog = show_ranges_gui.ShowRangesDialog(self)
         ranges_dialog.setWindowTitle("Show Ranges")

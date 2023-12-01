@@ -5,12 +5,7 @@ from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 import base58, binascii
-import sys
-sys.path.append('libs')
-import libs
-from libs import secp256k1 as ice
-from libs import team_brain
-from libs import team_word
+from libs import secp256k1 as ice, team_brain, team_word
 
 ICO_ICON = "images/main/miz.ico"
 TITLE_ICON = "images/main/title.png"

@@ -5,13 +5,11 @@
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtCore import Qt
-import sys
-sys.path.extend(['libs', 'config', 'funct'])
+import json
 
-from config import *
 ICO_ICON = "images/main/miz.ico"
 TITLE_ICON = "images/main/title.png"
-
+CONFIG_FILE = "config/config.json"
 class Settings_discord_Dialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
