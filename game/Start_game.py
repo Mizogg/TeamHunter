@@ -5,8 +5,6 @@ from PyQt6.QtGui import *
 from game.speaker import Speaker
 import game.tetris as tetris
 import sys
-import os
-import sys
 sys.path.extend(['game'])
 
 ICO_ICON = "images/main/miz.ico"
