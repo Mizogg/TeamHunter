@@ -12,12 +12,11 @@ import random
 import requests
 import json
 from bloomfilter import BloomFilter
-from libs import secp256k1 as ice, load_bloom, team_word
+from libs import secp256k1 as ice, load_bloom, team_brain
 from funct import (win_gui, up_bloom_gui, telegram_gui, discord_gui)
 from console_gui import ConsoleWindow
 from config import *
 import locale
-from mnemonic import Mnemonic
 from game.speaker import Speaker
 import itertools
 from config import *
@@ -31,9 +30,10 @@ CONFIG_FILE = "config/config.json"
 ########### Database Load and Files ###########
 mylist = []
  
-with open('input/mnemonics.txt', newline='', encoding='utf-8') as f:
+with open('input/words.txt', newline='', encoding='utf-8') as f:
     for line in f:
         mylist.append(line.strip())
+
 class GUIInstance(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -48,35 +48,21 @@ class GUIInstance(QMainWindow):
 
         self.add_count_label = QLabel(self.count_addresses(), objectName="count_addlabel", alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(self.add_count_label)
-        power_label = QLabel("Amount Of Devrations to Show", self)
-        power_label.setStyleSheet("font-size: 12pt; font-weight: bold; color: #E7481F;")
 
         ammount_words_label = QLabel('Amount of words:')
         ammount_words_label.setStyleSheet("font-size: 12pt; font-weight: bold; color: #E7481F;")
         ammount_words_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         self.ammount_words = QComboBox()
-        self.ammount_words.addItems(['random', '12', '15', '18', '21', '24'])
-        self.ammount_words.setCurrentIndex(1)
-        
-        lang_words_label = QLabel('Chose Language:')
-        lang_words_label.setStyleSheet("font-size: 12pt; font-weight: bold; color: #E7481F;")
-        lang_words_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
-        self.lang_words = QComboBox()
-        self.lang_words.addItems(['random', 'english', 'french', 'italian', 'spanish', 'chinese_simplified', 'chinese_traditional', 'japanese', 'korean'])
-        self.lang_words.setCurrentIndex(1)
-
-        self.format_combo_box_POWER = QLineEdit('1', self)
-        self.format_combo_box_POWER.setPlaceholderText('Type here your Mnemonic to Check')
-        self.format_combo_box_POWER.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Amount it Address to Check per scan. Ajust for best speed have to stop to change amount </span>')
-        
+        self.ammount_words.addItems(['random', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'])
+        self.ammount_words.setCurrentIndex(2)
+    
         custom_phrase_layout = QHBoxLayout()
-        custom_phrase_label = QLabel('Custom Phrase:')
+        custom_phrase_label = QLabel('Custom BrainWallet:')
         custom_phrase_layout.addWidget(custom_phrase_label)
-        self.custom_phrase_edit = QLineEdit("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about")
-        self.custom_phrase_edit.setPlaceholderText('Type here your Mnemonic to Check')
-        self.custom_phrase_edit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> TYPE a Mnemonic Here to check </span>')
+        self.custom_phrase_edit = QLineEdit("bitcoin is awsome")
+        self.custom_phrase_edit.setPlaceholderText('Type here your BrainWallet to Check')
+        self.custom_phrase_edit.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> TYPE a BrainWallet Here to check </span>')
         
         custom_phrase_layout.addWidget(self.custom_phrase_edit)
         enter_button = QPushButton('Enter')
@@ -102,15 +88,11 @@ class GUIInstance(QMainWindow):
 
         select_power_layout = QHBoxLayout()
         select_power_layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
-        select_power_layout.addWidget(power_label)
-        select_power_layout.addWidget(self.format_combo_box_POWER)
         select_power_layout.addWidget(ammount_words_label)
         select_power_layout.addWidget(self.ammount_words)
-        select_power_layout.addWidget(lang_words_label)
-        select_power_layout.addWidget(self.lang_words)
         layout.addLayout(custom_phrase_layout)
 
-        start_button = QPushButton("Start", self)
+        start_button = QPushButton("Start Random Amount of Words", self)
         start_button.setStyleSheet(
                 "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
                 "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
@@ -118,15 +100,15 @@ class GUIInstance(QMainWindow):
         start_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Start scanning </span>')
         start_button.clicked.connect(self.start)
         start_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
-        start_button.setFixedWidth(600)
+        start_button.setFixedWidth(400)
 
-        start_button_read = QPushButton("Read File of Menmonic Words", self)
+        start_button_read = QPushButton("Read File of BrainWallet Words", self)
         start_button_read.setStyleSheet(
                 "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
                 "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         start_button_read.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Start scanning </span>')
-        start_button_read.clicked.connect(self.read_mnms)
+        start_button_read.clicked.connect(self.read_brains)
         start_button_read.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
         start_button_read.setFixedWidth(400)
 
@@ -138,48 +120,23 @@ class GUIInstance(QMainWindow):
         stop_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Stop scanning </span>')
         stop_button.clicked.connect(self.stop)
         stop_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
-        stop_button.setFixedWidth(600)
+        stop_button.setFixedWidth(400)
 
         control_layout = QHBoxLayout()
-        control_layout.addLayout(select_power_layout)
         control_layout.addStretch(1)
 
-        mnm_label = QLabel(" Mnenonics :")
-        self.value_edit_mnm = QLineEdit()
-        self.value_edit_mnm.setReadOnly(True)
+        brain_label = QLabel(" BrainWallet Words :")
+        self.value_edit_brain = QLineEdit()
+        self.value_edit_brain.setReadOnly(True)
 
         current_scan_layout = QHBoxLayout()
-        current_scan_layout.addWidget(mnm_label)
-        current_scan_layout.addWidget(self.value_edit_mnm)
-        checkbox_labels = ["Compressed", "P2SH", "Bech32", "Stop if found"]
-        checkbox_objects = []
-        checkbox_width = 140
-        for label in checkbox_labels:
-            checkbox = QCheckBox(label)
-            checkbox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Ticks can be removed to search for single type or mutiple types of Bitcoin Address. Removing some will increase speed. Address not selected we not be searched </span>')
-            checkbox.setFixedWidth(checkbox_width)
-            checkbox_objects.append(checkbox)
-        self.compressed_checkbox, self.p2sh_checkbox, self.bech32_checkbox, self.win_checkbox = checkbox_objects[0:]
-        checkboxes_to_check = [self.compressed_checkbox, self.p2sh_checkbox, self.bech32_checkbox]
-        for checkbox in checkboxes_to_check:
-            checkbox.setChecked(True)
+        current_scan_layout.addWidget(brain_label)
+        current_scan_layout.addWidget(self.value_edit_brain)
 
-        self.win_checkbox.setChecked(False)
-        divider = QFrame(frameShape=QFrame.Shape.VLine, frameShadow=QFrame.Shadow.Sunken)
-        radio_and_checkbox_layout = QHBoxLayout()
-
-        widgets = [
-            self.compressed_checkbox,
-            self.p2sh_checkbox, self.bech32_checkbox,
-            self.win_checkbox
-        ]
-
-        for widget in widgets:
-            radio_and_checkbox_layout.addWidget(widget)
 
         layouts = [
             control_layout, 
-            radio_and_checkbox_layout, current_scan_layout
+            current_scan_layout
         ]
 
         for l in layouts:
@@ -191,24 +148,25 @@ class GUIInstance(QMainWindow):
             line_edit.setText(text)
             return line_edit
 
-        self.found_mnms_scanned_edit = create_line_edit()
-        self.total_mnms_scanned_edit = create_line_edit()
-        self.mnms_per_sec_edit = create_line_edit(False, "")
+        self.found_brains_scanned_edit = create_line_edit()
+        self.total_brains_scanned_edit = create_line_edit()
+        self.brains_per_sec_edit = create_line_edit(False, "")
         labels_and_edits = [
-            ("Found", self.found_mnms_scanned_edit),
-            ("Total Mnemonic scanned:", self.total_mnms_scanned_edit),
-            ("Menmonics per second:", self.mnms_per_sec_edit)
+            ("Found", self.found_brains_scanned_edit),
+            ("Total Brains scanned:", self.total_brains_scanned_edit),
+            ("Brains per second:", self.brains_per_sec_edit)
         ]
 
-        mnms_layout = QHBoxLayout()
+        brains_layout = QHBoxLayout()
 
         for label_text, edit_widget in labels_and_edits:
             label = QLabel(label_text)
-            mnms_layout.addWidget(label)
-            mnms_layout.addWidget(edit_widget)
+            brains_layout.addWidget(label)
+            brains_layout.addWidget(edit_widget)
 
-        layout.addLayout(mnms_layout)
+        layout.addLayout(brains_layout)
         buttonLayout = QHBoxLayout()
+        buttonLayout.addLayout(select_power_layout)
         buttonLayout.addWidget(start_button)
         buttonLayout.addWidget(start_button_read)
         buttonLayout.addWidget(stop_button)
@@ -362,7 +320,7 @@ class GUIInstance(QMainWindow):
         return message
 
     def send_to_discord(self, text):
-        settings = self.load_config()  # Load settings from config.json
+        settings = self.load_config()
         webhook_url = settings.get("Discord", {}).get("webhook_url", "").strip()
         headers = {'Content-Type': 'application/json'}
 
@@ -388,7 +346,7 @@ class GUIInstance(QMainWindow):
             return {}
 
     def send_to_telegram(self, text):
-        settings = self.load_config()  # Load settings from config.json
+        settings = self.load_config()
         apiToken = settings.get("Telegram", {}).get("token", "").strip()
         chatID = settings.get("Telegram", {}).get("chatid", "").strip()
 
@@ -412,48 +370,38 @@ class GUIInstance(QMainWindow):
     def start(self):
         self.scanning = True
         self.timer = QTimer(self)
-        self.timer.timeout.connect(self.generate_mnemonic)
+        self.timer.timeout.connect(self.generate_brains)
         self.timer.start()
         self.start_time = time.time()
-        self.timer.timeout.connect(self.update_mnms_per_sec)
+        self.timer.timeout.connect(self.update_brains_per_sec)
 
     def stop(self):
-        if isinstance(self.timer, QTimer):
+        if isinstance(self.timer, QTimer) and self.timer.isActive():
             self.timer.stop()
             self.worker_finished("Recovery Finished")
+        else:
+            self.worker_finished("User Stopped")
 
     def worker_finished(self, result):
         if self.scanning:
             QMessageBox.information(self, "Recovery Finished", "Done")
         self.scanning = False
-        
-    def generate_mnemonic(self):
+
+    def generate_brains(self):
+        if self.ammount_words.currentText() == 'random':
+                word_length = random.choice([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+        else:
+            word_length = int(self.ammount_words.currentText())
         if self.timer.isActive():
-            if self.lang_words.currentText() == 'random':
-                lang = random.choice(['english', 'french', 'italian', 'spanish', 'chinese_simplified', 'chinese_traditional', 'japanese', 'korean'])
-            else:
-                lang = self.lang_words.currentText()
-            
-            if self.ammount_words.currentText() == 'random':
-                word_length = random.choice([12, 15, 18, 21, 24])
-            else:
-                word_length = int(self.ammount_words.currentText())
-            
-            strengths = {
-                12: 128,
-                15: 160,
-                18: 192,
-                21: 224,
-                24: 256
-            }
-            strength = strengths[word_length]
-            mnemonic = Mnemonic(lang)
-            words = mnemonic.generate(strength=strength)
-            self.mnemonic_btc(words)
+            passphrase = ' '.join(random.sample(mylist, word_length))
+            self.brains_btc(passphrase)
 
     def enter(self):
-        words = self.custom_phrase_edit.text()
-        self.mnemonic_btc(words)
+        passphrase = self.custom_phrase_edit.text()
+        total_brains_scanned_text = int(self.total_brains_scanned_edit.text())
+        self.brains_btc(passphrase)
+        total_brains_scanned_text +=1
+        self.total_brains_scanned_edit.setText(str(total_brains_scanned_text))
 
     def iterate_over_shuffles(self):
         self.permutation_iterator = None
@@ -461,7 +409,8 @@ class GUIInstance(QMainWindow):
         self.timer.timeout.connect(self.process_next_permutation)
         self.timer.start(0)
         self.start_time = time.time()
-        self.timer.timeout.connect(self.update_mnms_per_sec)
+        self.timer.timeout.connect(self.update_brains_per_sec)
+
 
     def process_next_permutation(self):
         if not self.permutation_iterator:
@@ -471,141 +420,79 @@ class GUIInstance(QMainWindow):
         try:
             permuted_words = next(self.permutation_iterator)
             shuffled_text = ' '.join(permuted_words)
-            self.mnemonic_btc(shuffled_text)
+            self.brains_btc(shuffled_text)
         except StopIteration:
             self.timer.stop()
             self.permutation_iterator = None
 
-    def read_mnms(self):
+
+    def read_brains(self):
         self.word_index = 0
         self.timer = QTimer(self)
-        self.timer.timeout.connect(self.process_next_mnm)
+        self.timer.timeout.connect(self.process_next_word)
         self.timer.start(0)
         self.start_time = time.time()
-        self.timer.timeout.connect(self.update_mnms_per_sec)
+        self.timer.timeout.connect(self.update_brains_per_sec)
 
-    def process_next_mnm(self):
+    def process_next_word(self):
         if self.word_index < len(mylist):
-            words = mylist[self.word_index]
-            self.mnemonic_btc(words)
+            passphrase = mylist[self.word_index]
+            self.brains_btc(passphrase)
             self.word_index += 1
         else:
             self.timer.stop()
 
-    def mnemonic_btc(self, words):
-        found = int(self.found_mnms_scanned_edit.text())
-        power_format = int(self.format_combo_box_POWER.text())
+    def brains_btc(self, passphrase):
+        found = int(self.found_brains_scanned_edit.text())
         try:
-            seed = team_word.mnem_to_seed(words)
-            for r in range (0,power_format):
-                if self.compressed_checkbox.isChecked():
-                    pvk = team_word.bip39seed_to_private_key(seed, r)
-                    dec = (int.from_bytes(pvk, "big"))
-                    HEX = "%064x" % dec
-                    caddr = ice.privatekey_to_address(0, True, (int.from_bytes(pvk, "big")))
-                    cpath = f"m/44'/0'/0'/0/{r}"
-                    wordvartext = (f'\n Menmonic {words} \n Bitcoin {cpath} :  {caddr} \n Dec : {dec} \n   Hex : {HEX}  ')
-                    self.consoleWindow.append_output(wordvartext)
-                    if caddr in addfind:
-                        found += 1
-                        self.found_mnms_scanned_edit.setText(str(found))
-                        WINTEXT = f"\n Menmonic {words} \n {caddr} \n Decimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX}  \n"
+            wallet = team_brain.BrainWallet()
+            private_key, uaddr = wallet.generate_address_from_passphrase(passphrase)
+            brainvartext = (f'\n BrainWallet: {passphrase} \n Private Key In HEX : {private_key} \n Bitcoin Adress : {uaddr}')
+            self.consoleWindow.append_output(brainvartext)
+            if uaddr in addfind:
+                found += 1
+                self.found_brains_scanned_edit.setText(str(found))
+                WINTEXT = (f'\n BrainWallet: {passphrase} \n Private Key In HEX : {private_key} \n Bitcoin Adress : {uaddr}')
 
-                        try:
-                            with open(WINNER_FOUND, "a") as f:
-                                f.write(WINTEXT)
-                        except FileNotFoundError:
-                            os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+                try:
+                    with open(WINNER_FOUND, "a") as f:
+                        f.write(WINTEXT)
+                except FileNotFoundError:
+                    os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
 
-                            with open(WINNER_FOUND, "w") as f:
-                                f.write(WINTEXT)
-                        if self.use_telegram_credentials_checkbox.isChecked():
-                            self.send_to_telegram(WINTEXT)
-                        if self.use_discord_credentials_checkbox.isChecked():
-                            self.send_to_discord(WINTEXT)
-                        if self.win_checkbox.isChecked():
-                            winner_dialog = win_gui.WinnerDialog(WINTEXT, self)
-                            winner_dialog.exec()
+                    with open(WINNER_FOUND, "w") as f:
+                        f.write(WINTEXT)
+                if self.use_telegram_credentials_checkbox.isChecked():
+                    self.send_to_telegram(WINTEXT)
+                if self.use_discord_credentials_checkbox.isChecked():
+                    self.send_to_discord(WINTEXT)
+                if self.win_checkbox.isChecked():
+                    winner_dialog = win_gui.WinnerDialog(WINTEXT, self)
+                    winner_dialog.exec()
 
-                if self.p2sh_checkbox.isChecked():
-                    pvk2 = team_word.bip39seed_to_private_key2(seed, r)
-                    dec2 = (int.from_bytes(pvk2, "big"))
-                    HEX2 = "%064x" % dec2
-                    p2sh = ice.privatekey_to_address(1, True, (int.from_bytes(pvk2, "big")))
-                    ppath = f"m/49'/0'/0'/0/{r}"
-                    wordvartext = (f'\n Menmonic {words} \n Bitcoin {ppath} :  {p2sh}\n Dec : {dec2} \n  Hex : {HEX2}')
-                    self.consoleWindow.append_output(wordvartext)
-                    if p2sh in addfind:
-                        found += 1
-                        self.found_mnms_scanned_edit.setText(str(found))
-                        WINTEXT = f"\n Menmonic {words} \n {p2sh}\nDecimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX} \n"
-
-                        try:
-                            with open(WINNER_FOUND, "a") as f:
-                                f.write(WINTEXT)
-                        except FileNotFoundError:
-                            os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
-
-                            with open(WINNER_FOUND, "w") as f:
-                                f.write(WINTEXT)
-                        if self.use_telegram_credentials_checkbox.isChecked():
-                            self.send_to_telegram(WINTEXT)
-                        if self.use_discord_credentials_checkbox.isChecked():
-                            self.send_to_discord(WINTEXT)
-                        if self.win_checkbox.isChecked():
-                            winner_dialog = win_gui.WinnerDialog(WINTEXT, self)
-                            winner_dialog.exec()
-
-                if self.bech32_checkbox.isChecked():
-                    pvk3 = team_word.bip39seed_to_private_key3(seed, r)
-                    dec3 = (int.from_bytes(pvk3, "big"))
-                    HEX3 = "%064x" % dec3
-                    bech32 = ice.privatekey_to_address(2, True, (int.from_bytes(pvk3, "big")))
-                    bpath = f"m/84'/0'/0'/0/{r}"
-                    wordvartext = (f'\n Menmonic {words} \n Bitcoin {bpath} : {bech32}\n  Dec : {dec3} \n  Hex : {HEX3} ')
-                    self.consoleWindow.append_output(wordvartext)
-                    if bech32 in addfind:
-                        found += 1
-                        self.found_mnms_scanned_edit.setText(str(found))
-                        WINTEXT = f"\n Menmonic {words} \n {bech32}\n Decimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX} \n"
-
-                        try:
-                            with open(WINNER_FOUND, "a") as f:
-                                f.write(WINTEXT)
-                        except FileNotFoundError:
-                            os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
-
-                            with open(WINNER_FOUND, "w") as f:
-                                f.write(WINTEXT)
-                        if self.use_telegram_credentials_checkbox.isChecked():
-                            self.send_to_telegram(WINTEXT)
-                        if self.use_discord_credentials_checkbox.isChecked():
-                            self.send_to_discord(WINTEXT)
-                        if self.win_checkbox.isChecked():
-                            winner_dialog = win_gui.WinnerDialog(WINTEXT, self)
-                            winner_dialog.exec()
-            self.value_edit_mnm.setText(words)
+                
+            self.value_edit_brain.setText(passphrase)
             self.counter += 1
         except ValueError:
             print("Invalid input. Please enter a valid Menmonics.")
 
-    def update_mnms_per_sec(self):
+    def update_brains_per_sec(self):
         elapsed_time = time.time() - self.start_time
 
         if elapsed_time == 0:
-            mnms_per_sec = 0
+            brains_per_sec = 0
         else:
-            mnms_per_sec = self.counter / elapsed_time
+            brains_per_sec = self.counter / elapsed_time
 
-        mnms_per_sec = round(mnms_per_sec, 2)
+        brains_per_sec = round(brains_per_sec, 2)
 
-        total_mnms_scanned_text = self.total_mnms_scanned_edit.text()
-        total_mnms_scanned = locale.atoi(total_mnms_scanned_text) + self.counter
+        total_brains_scanned_text = self.total_brains_scanned_edit.text()
+        total_brains_scanned = locale.atoi(total_brains_scanned_text) + self.counter
 
-        total_mnms_scanned_formatted = locale.format_string("%d", total_mnms_scanned, grouping=True)
-        mnms_per_sec_formatted = locale.format_string("%.2f", mnms_per_sec, grouping=True)
+        total_brains_scanned_formatted = locale.format_string("%d", total_brains_scanned, grouping=True)
+        brains_per_sec_formatted = locale.format_string("%.2f", brains_per_sec, grouping=True)
 
-        self.total_mnms_scanned_edit.setText(total_mnms_scanned_formatted)
-        self.mnms_per_sec_edit.setText(mnms_per_sec_formatted)
+        self.total_brains_scanned_edit.setText(total_brains_scanned_formatted)
+        self.brains_per_sec_edit.setText(brains_per_sec_formatted)
         self.start_time = time.time()
         self.counter = 0

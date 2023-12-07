@@ -12,9 +12,9 @@ TITLE_ICON = "images/main/title.png"
 class WinnerDialog(QDialog):
     def __init__(self, WINTEXT, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("QTMizICE_Display.py  WINNER")
+        self.setWindowTitle("TeamHunter.py  WINNER")
         self.setWindowIcon(QIcon(f"{ICO_ICON}"))
-        self.setMinimumSize(640, 440)
+        self.setMinimumSize(640, 600)
         pixmap = QPixmap(f"{TITLE_ICON}")
         # Create a QLabel and set the pixmap as its content
         title_label = QLabel()
