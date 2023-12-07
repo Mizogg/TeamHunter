@@ -11,7 +11,7 @@ import qdarktheme
 import signal
 from libs import set_settings, create_setting
 from game import snake_gui, Start_game
-from funct import (range_div_gui, about_gui, ice_gui, bitcrack_gui, keyhunt_gui, grid_16x16, miz_mnemonic, conversion_gui, balance_gui)
+from funct import (range_div_gui, about_gui, ice_gui, bitcrack_gui, keyhunt_gui, grid_16x16, miz_mnemonic, conversion_gui, balance_gui, brain_gui, calculator)
 import sys
 from Mizmusic import MusicPlayer
 sys.path.extend(['libs', 'config', 'funct', 'found', 'input', 'game', 'images'])
@@ -24,7 +24,7 @@ IMAGES_MAIN = "images/main/"
 image_folder = "images"
 image_files = [os.path.join(image_folder, filename) for filename in os.listdir(image_folder) if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
 
-version = '1.0'
+version = '1.1'
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -44,14 +44,18 @@ class MainWindow(QMainWindow):
         self.tab4 = QWidget()
         self.tab5 = QWidget()
         self.tab6 = QWidget()
+        self.tab7 = QWidget()
+        self.tab8 = QWidget()
 
         self.tab_widget.addTab(self.tabmain, "Welcome")
         self.tab_widget.addTab(self.tab1, "BitCrack")
         self.tab_widget.addTab(self.tab2, "KeyHunt")
         self.tab_widget.addTab(self.tab3, "Iceland2k14 Secp256k1")
         self.tab_widget.addTab(self.tab4, "Miz Mnemonic")
-        self.tab_widget.addTab(self.tab5, "BTC Snake Game")
-        self.tab_widget.addTab(self.tab6, "Art Work")
+        self.tab_widget.addTab(self.tab5, "Brain Hunter")
+        self.tab_widget.addTab(self.tab6, "BTC Snake Game")
+        self.tab_widget.addTab(self.tab7, "Art Work")
+        self.tab_widget.addTab(self.tab8, "CAL")
         self.process = None
         self.scanning = False
         self.initUI()
@@ -157,6 +161,8 @@ class MainWindow(QMainWindow):
         self.tab4_layout = QVBoxLayout()
         self.tab5_layout = QVBoxLayout()
         self.tab6_layout = QVBoxLayout()
+        self.tab7_layout = QVBoxLayout()
+        self.tab8_layout = QVBoxLayout()
 
         self.centralWidget = QWidget(self)
         self.setCentralWidget(self.centralWidget)
@@ -165,15 +171,19 @@ class MainWindow(QMainWindow):
         keyhunt_tool = keyhunt_gui.KeyHuntFrame()
         ice_tool = ice_gui.GUIInstance()
         MIZ_tool = miz_mnemonic.GUIInstance()
+        BRAIN_tool = brain_gui.GUIInstance()
         snake_frame = snake_gui.Window()
+        cal_frame = calculator.MyMainWindow()
         
         self.tabmain_layout = self.main_tab()
         self.tab1_layout.addWidget(bitcrack_tool)
         self.tab2_layout.addWidget(keyhunt_tool)
         self.tab3_layout.addWidget(ice_tool)
         self.tab4_layout.addWidget(MIZ_tool)
-        self.tab5_layout.addWidget(snake_frame)
-        self.tab6_layout = self.picture_tab()
+        self.tab5_layout.addWidget(BRAIN_tool)
+        self.tab6_layout.addWidget(snake_frame)
+        self.tab7_layout = self.picture_tab()
+        self.tab8_layout.addWidget(cal_frame)
 
         self.tabmain.setLayout(self.tabmain_layout)
         self.tab1.setLayout(self.tab1_layout)
@@ -182,6 +192,8 @@ class MainWindow(QMainWindow):
         self.tab4.setLayout(self.tab4_layout)
         self.tab5.setLayout(self.tab5_layout)
         self.tab6.setLayout(self.tab6_layout)
+        self.tab7.setLayout(self.tab7_layout)
+        self.tab8.setLayout(self.tab8_layout)
 
         self.layout.addLayout(self.main_layout)
         mizogg_player = MusicPlayer()
@@ -211,23 +223,29 @@ class MainWindow(QMainWindow):
     def create_tab_buttons(self):
         buttons_layout = QGridLayout()
 
-        tabs = ["BitCrack", "KeyHunt", "Iceland2k14 Secp256k1", "Miz Mnemonic", "BTC Snake Game", "Art Work"]
+        tabs = ["BitCrack", "KeyHunt", "Iceland2k14 Secp256k1", "Miz Mnemonic", "Brain Hunter", "BTC Snake Game", "Art Work", "CAL","16x16 Grid"]
+        
         for i, tab_name in enumerate(tabs):
             row = i // 3
             col = i % 3
 
             button = QPushButton(tab_name)
 
+            if tab_name == "16x16 Grid":
+                button.clicked.connect(self.load_16x16)
+            else:
+                button.clicked.connect(self.switch_to_tab(i + 1))
+
             button.setStyleSheet(
                 "QPushButton { font-size: 16pt; background-color: #E7481F; color: white; }"
                 "QPushButton:hover { font-size: 16pt; background-color: #A13316; color: white; }"
             )
-            
-            button.clicked.connect(self.switch_to_tab(i + 1))
+
             button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_focus))
             buttons_layout.addWidget(button, row, col)
 
         return buttons_layout
+
 
     def main_tab(self):
         pixmap = QPixmap(f"{IMAGES_MAIN}titlebig.png")
