@@ -14,7 +14,7 @@ import json
 from bloomfilter import BloomFilter
 from libs import secp256k1 as ice, load_bloom, team_brain
 from funct import (win_gui, up_bloom_gui, telegram_gui, discord_gui)
-from console_gui import ConsoleWindow
+from funct.console_gui import ConsoleWindow
 from config import *
 import locale
 from game.speaker import Speaker

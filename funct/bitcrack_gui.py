@@ -8,8 +8,8 @@ import os
 import signal
 import subprocess
 import platform
-from console_gui import ConsoleWindow
-from command_thread import CommandThread
+from funct.console_gui import ConsoleWindow
+from funct.command_thread import CommandThread
 from game.speaker import Speaker
 
 class BitcrackFrame(QMainWindow):

@@ -6,7 +6,7 @@ from PyQt6 import QtGui, QtCore
 from libs import secp256k1 as ice, load_bloom, team_brain
 from bloomfilter import BloomFilter
 import os
-from console_gui import ConsoleWindow
+from funct.console_gui import ConsoleWindow
 from funct import win_gui
 addfind = load_bloom.load_bloom_filter()
 

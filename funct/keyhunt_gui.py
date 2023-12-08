@@ -9,8 +9,8 @@ import subprocess
 import signal
 import platform
 import multiprocessing
-from console_gui import ConsoleWindow
-from command_thread import CommandThread
+from funct.console_gui import ConsoleWindow
+from funct.command_thread import CommandThread
 from game.speaker import Speaker
 
 class KeyHuntFrame(QMainWindow):
