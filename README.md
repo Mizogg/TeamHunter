@@ -1,4 +1,4 @@
-# Team-Hunter GUI Version 1.0
+# Team-Hunter GUI Version 1.1
 
 ![titlebig](https://github.com/Mizogg/TeamHunter/assets/88630056/393f60cb-fe1a-4547-8e1b-58ff4696c3d4)
 
@@ -9,11 +9,8 @@ The application supports both dark and light themes and offers a convenient way 
 It also features a 16x16 grid tool, a range division tool in hexadecimal format, and allows users to open external websites.
 This application is built using PyQt6 and is designed to assist cryptocurrency enthusiasts in their endeavors.
 
-Team Mizogg is cooking up something big in the crypto world, and it's so secret even our coffee machine doesn't have a clue!
+![image](https://github.com/Mizogg/TeamHunter/assets/88630056/82cc2a11-f41a-4cfc-bd31-8f78a7e3e0bf)
 
-Stay tuned for our crypto concoctions that will have you laughing all the way to the blockchain!
-
-![_c87420ff-3a34-461c-bbed-e2a30d84922f](https://github.com/Mizogg/TeamHunter/assets/88630056/33c458b2-ef30-449c-bde6-a5002e409c8c)
 
 
 # Requirements 
@@ -34,7 +31,7 @@ or
 ```
 PyQt6
 bit
-pyqtdarktheme
+QDarkStyle
 requests
 PyQt6-WebEngine
 simplebloomfilter
