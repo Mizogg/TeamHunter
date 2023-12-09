@@ -1,7 +1,7 @@
 python -m pip install --upgrade pip
 pip install PyQt6
 pip install bit
-pip install pyqtdarktheme
+pip install QDarkStyle
 pip install requests
 pip install base58
 pip install ecdsa
