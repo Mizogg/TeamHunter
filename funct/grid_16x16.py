@@ -310,8 +310,8 @@ class blocking_grid:
         return 0 <= self.row < self.max_rows and self.ttl > 0
 
 class GridFrame(QMainWindow):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self):
+        super().__init__()
         self.setWindowTitle("GRID 16x16")
         self.setWindowIcon(QIcon(f"{ICO_ICON}"))
         self.setGeometry(50, 50, 1600, 900)

@@ -315,5 +315,9 @@ class MyMainWindow(QMainWindow):
             print("Invalid input. Please enter a valid Menmonics.")
         
     def takeInput(self):
-        self.num1 = float(self.numInput.text())
-        self.numInput.clear()
+        input_text = self.numInput.text()
+        if input_text:
+            self.num1 = float(input_text)
+            self.numInput.clear()
+        else:
+            print("Input is empty. Please enter a valid number.")
