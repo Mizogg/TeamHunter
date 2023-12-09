@@ -7,7 +7,7 @@ import webbrowser
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
-import qdarktheme
+import qdarkstyle
 import signal
 from libs import set_settings, create_setting
 from game import snake_gui, Start_game
@@ -26,10 +26,26 @@ image_files = [os.path.join(image_folder, filename) for filename in os.listdir(i
 
 version = '1.1'
 
+class ThemeManager(QObject):
+    theme_changed = pyqtSignal(bool)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.dark_mode = False
+
+    def set_dark_mode(self, dark_mode):
+        self.dark_mode = dark_mode
+        self.theme_changed.emit(dark_mode)
+
+    def get_dark_mode(self):
+        return self.dark_mode
+
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.dark_mode_button = None
+        self.theme_manager = ThemeManager(self)
+        self.theme_manager.theme_changed.connect(self.on_theme_changed)
         self.setWindowTitle("Team Hunter GUI")
         self.setWindowIcon(QIcon(f"{IMAGES_MAIN}miz.ico"))
         self.setGeometry(50, 50, 1200, 800)
@@ -65,10 +81,17 @@ class MainWindow(QMainWindow):
         self.toggle_theme()
 
     def load_dark_mode(self):
-        qdarktheme.setup_theme("dark")
+        self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt6())
+        self.theme_manager.set_dark_mode(True)
 
     def load_light_mode(self):
-        qdarktheme.setup_theme("light")
+        self.setStyleSheet("")
+        self.theme_manager.set_dark_mode(False)
+
+    def on_theme_changed(self, dark_mode):
+        # Implement any additional actions when the theme changes
+        # For example, you can update the child windows here
+        pass
 
     def initUI(self):
         Speaker.play_death()
@@ -144,14 +167,19 @@ class MainWindow(QMainWindow):
 
         credit_label = QHBoxLayout()
         credit_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
+        mizlogo = QPixmap(f"{IMAGES_MAIN}mizogglogo.png")
+        miz_label = QLabel(self)
+        miz_label.setPixmap(mizlogo)
+        miz_label1 = QLabel(self)
+        miz_label1.setPixmap(mizlogo)
+        credit_label.addWidget(miz_label)
         for info in labels_info:
             label = QLabel(info["text"])
             credit_label.addWidget(label)
             if dot_labels:
                 dot_label = dot_labels.pop(0)
                 credit_label.addWidget(dot_label)
-
+        credit_label.addWidget(miz_label1)
         self.main_layout.addWidget(self.tab_widget)
         
         self.tabmain_layout = QVBoxLayout()
