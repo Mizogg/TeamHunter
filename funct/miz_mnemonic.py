@@ -151,7 +151,7 @@ class GUIInstance(QMainWindow):
         current_scan_layout = QHBoxLayout()
         current_scan_layout.addWidget(mnm_label)
         current_scan_layout.addWidget(self.value_edit_mnm)
-        checkbox_labels = ["Compressed", "P2SH", "Bech32", "Stop if found"]
+        checkbox_labels = ["Compressed", "P2SH", "Bech32", "ETH", "Stop if found"]
         checkbox_objects = []
         checkbox_width = 140
         for label in checkbox_labels:
@@ -159,11 +159,11 @@ class GUIInstance(QMainWindow):
             checkbox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Ticks can be removed to search for single type or mutiple types of Bitcoin Address. Removing some will increase speed. Address not selected we not be searched </span>')
             checkbox.setFixedWidth(checkbox_width)
             checkbox_objects.append(checkbox)
-        self.compressed_checkbox, self.p2sh_checkbox, self.bech32_checkbox, self.win_checkbox = checkbox_objects[0:]
+        self.compressed_checkbox, self.p2sh_checkbox, self.bech32_checkbox, self.eth_checkbox, self.win_checkbox = checkbox_objects[0:]
         checkboxes_to_check = [self.compressed_checkbox, self.p2sh_checkbox, self.bech32_checkbox]
         for checkbox in checkboxes_to_check:
             checkbox.setChecked(True)
-
+        self.eth_checkbox.setChecked(False)
         self.win_checkbox.setChecked(False)
         divider = QFrame(frameShape=QFrame.Shape.VLine, frameShadow=QFrame.Shadow.Sunken)
         radio_and_checkbox_layout = QHBoxLayout()
@@ -171,7 +171,7 @@ class GUIInstance(QMainWindow):
         widgets = [
             self.compressed_checkbox,
             self.p2sh_checkbox, self.bech32_checkbox,
-            self.win_checkbox
+            self.eth_checkbox, self.win_checkbox
         ]
 
         for widget in widgets:
@@ -538,7 +538,7 @@ class GUIInstance(QMainWindow):
                     if p2sh in addfind:
                         found += 1
                         self.found_mnms_scanned_edit.setText(str(found))
-                        WINTEXT = f"\n Menmonic {words} \n {p2sh}\nDecimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX} \n"
+                        WINTEXT = f"\n Menmonic {words} \n {p2sh}\nDecimal Private Key \n {dec2} \n Hexadecimal Private Key \n {HEX2} \n"
 
                         try:
                             with open(WINNER_FOUND, "a") as f:
@@ -567,7 +567,35 @@ class GUIInstance(QMainWindow):
                     if bech32 in addfind:
                         found += 1
                         self.found_mnms_scanned_edit.setText(str(found))
-                        WINTEXT = f"\n Menmonic {words} \n {bech32}\n Decimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX} \n"
+                        WINTEXT = f"\n Menmonic {words} \n {bech32}\n Decimal Private Key \n {dec3} \n Hexadecimal Private Key \n {HEX3} \n"
+
+                        try:
+                            with open(WINNER_FOUND, "a") as f:
+                                f.write(WINTEXT)
+                        except FileNotFoundError:
+                            os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+
+                            with open(WINNER_FOUND, "w") as f:
+                                f.write(WINTEXT)
+                        if self.use_telegram_credentials_checkbox.isChecked():
+                            self.send_to_telegram(WINTEXT)
+                        if self.use_discord_credentials_checkbox.isChecked():
+                            self.send_to_discord(WINTEXT)
+                        if self.win_checkbox.isChecked():
+                            winner_dialog = win_gui.WinnerDialog(WINTEXT, self)
+                            winner_dialog.exec()
+                if self.eth_checkbox.isChecked():
+                    pvk4 = team_word.bip39seed_to_private_key4(seed, r)
+                    dec4 = (int.from_bytes(pvk4, "big"))
+                    HEX4 = "%064x" % dec4
+                    ethaddr = ice.privatekey_to_ETH_address(int.from_bytes(pvk4, "big"))
+                    epath = f"m/44'/60'/0'/0/{r}"
+                    wordvartext = (f'\n Menmonic {words} \n Eth {epath} : {ethaddr}\n  Dec : {dec4} \n  Hex : {HEX4} ')
+                    self.consoleWindow.append_output(wordvartext)
+                    if ethaddr in addfind or ethaddr[2:] in addfind:
+                        found += 1
+                        self.found_mnms_scanned_edit.setText(str(found))
+                        WINTEXT = f"\n Menmonic {words} \n {ethaddr}\n Decimal Private Key \n {dec4} \n Hexadecimal Private Key \n {HEX4} \n"
 
                         try:
                             with open(WINNER_FOUND, "a") as f:

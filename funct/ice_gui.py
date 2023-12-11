@@ -333,7 +333,7 @@ class GUIInstance(QMainWindow):
         self.random_button = button_objects[0]
         self.sequence_button = button_objects[1]
         self.reverse_button = button_objects[2]
-        checkbox_labels = ["DEC", "HEX", "Compressed", "Uncompressed", "P2SH", "Bech32", "Stop if found"]
+        checkbox_labels = ["DEC", "HEX", "Compressed", "Uncompressed", "P2SH", "Bech32", "ETH", "Stop if found"]
         checkbox_objects = []
         checkbox_width = 140
         for label in checkbox_labels:
@@ -341,11 +341,11 @@ class GUIInstance(QMainWindow):
             checkbox.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Ticks can be removed to sreach for single type or mutiple types of Bitcoin Address. Removing some will increase speed. Address not selected we not be searched </span>')
             checkbox.setFixedWidth(checkbox_width)
             checkbox_objects.append(checkbox)
-        self.dec_checkbox, self.hex_checkbox, self.compressed_checkbox, self.uncompressed_checkbox, self.p2sh_checkbox, self.bech32_checkbox, self.win_checkbox = checkbox_objects[0:]
+        self.dec_checkbox, self.hex_checkbox, self.compressed_checkbox, self.uncompressed_checkbox, self.p2sh_checkbox, self.bech32_checkbox, self.eth_checkbox, self.win_checkbox = checkbox_objects[0:]
         checkboxes_to_check = [self.dec_checkbox, self.hex_checkbox, self.compressed_checkbox, self.uncompressed_checkbox, self.p2sh_checkbox, self.bech32_checkbox]
         for checkbox in checkboxes_to_check:
             checkbox.setChecked(True)
-
+        self.eth_checkbox.setChecked(False)
         self.win_checkbox.setChecked(False)
 
         # Create a vertical line as a divider
@@ -358,7 +358,7 @@ class GUIInstance(QMainWindow):
             self.random_button, self.sequence_button, self.reverse_button, divider,
             self.dec_checkbox, self.hex_checkbox, self.compressed_checkbox,
             self.uncompressed_checkbox, self.p2sh_checkbox, self.bech32_checkbox,
-            self.win_checkbox
+            self.eth_checkbox, self.win_checkbox
         ]
 
         for widget in widgets:
@@ -430,6 +430,9 @@ class GUIInstance(QMainWindow):
         self.bech32_label = QLabel("bech32 Address: ")
         self.bech32_text = QTextEdit(self)
         self.bech32_text.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> bech32 BC1 Address Output</span>')
+        self.eth_label = QLabel("Eth Address: ")
+        self.eth_text = QTextEdit(self)
+        self.eth_text.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;"> Eth Address Output Address Output</span>')
         self.address_layout_.addWidget(self.priv_label, 1, 0)
         self.address_layout_.addWidget(self.priv_text, 2, 0)
         self.address_layout_.addWidget(self.HEX_label, 1, 1)
@@ -442,6 +445,8 @@ class GUIInstance(QMainWindow):
         self.address_layout_.addWidget(self.p2sh_text, 2, 4)
         self.address_layout_.addWidget(self.bech32_label, 1, 5)
         self.address_layout_.addWidget(self.bech32_text, 2, 5)
+        self.address_layout_.addWidget(self.eth_label, 1, 6)
+        self.address_layout_.addWidget(self.eth_text, 2, 6)
 
         layout.addLayout(self.address_layout_)
 
@@ -476,6 +481,12 @@ class GUIInstance(QMainWindow):
             )
         )
 
+        self.eth_checkbox.stateChanged.connect(
+            lambda: self.toggle_visibility(
+                self.eth_checkbox, self.eth_label, self.eth_text
+            )
+        )
+
         self.toggle_visibility(self.dec_checkbox, self.priv_label, self.priv_text)
         self.toggle_visibility(self.hex_checkbox, self.HEX_label, self.HEX_text)
         self.toggle_visibility(
@@ -488,7 +499,7 @@ class GUIInstance(QMainWindow):
         self.toggle_visibility(
             self.bech32_checkbox, self.bech32_label, self.bech32_text
         )
-
+        self.toggle_visibility(self.eth_checkbox, self.eth_label, self.eth_text)
         icon_size = QSize(32, 32)
         icontel = QIcon(QPixmap(TEL_ICON))
         icondis = QIcon(QPixmap(DIS_ICON))
@@ -885,7 +896,7 @@ class GUIInstance(QMainWindow):
         self.power_format = int(power_format)
         selected_crypto = self.crypto_selector.currentText()
         coin_type = crypto_mapping.get(selected_crypto, 0)
-        dec_keys, HEX_keys, uncomp_keys, comp_keys, p2sh_keys, bech32_keys = [], [], [], [], [], []
+        dec_keys, HEX_keys, uncomp_keys, comp_keys, p2sh_keys, bech32_keys, eth_keys = [], [], [], [], [], [], []
         found = int(self.found_keys_scanned_edit.text())
         startPrivKey = self.num
 
@@ -998,6 +1009,32 @@ class GUIInstance(QMainWindow):
                         winner_dialog = win_gui.WinnerDialog(WINTEXT, self)
                         winner_dialog.exec()
 
+            if self.eth_checkbox.isChecked():
+                ethaddr = ice.privatekey_to_ETH_address(dec)
+                eth_keys.append(ethaddr)
+
+                if ethaddr in addfind or ethaddr[2:] in addfind:
+                    found += 1
+                    self.found_keys_scanned_edit.setText(str(found))
+                    WINTEXT = f"\n {ethaddr}\n Decimal Private Key \n {dec} \n Hexadecimal Private Key \n {HEX} \n"
+
+                    try:
+                        with open(WINNER_FOUND, "a") as f:
+                            f.write(WINTEXT)
+                    except FileNotFoundError:
+                        os.makedirs(os.path.dirname(WINNER_FOUND), exist_ok=True)
+
+                        with open(WINNER_FOUND, "w") as f:
+                            f.write(WINTEXT)
+
+                    if self.use_telegram_credentials_checkbox.isChecked():
+                        self.send_to_telegram(WINTEXT)
+                    if self.use_discord_credentials_checkbox.isChecked():
+                        self.send_to_discord(WINTEXT)
+                    if self.win_checkbox.isChecked():
+                        winner_dialog = win_gui.WinnerDialog(WINTEXT, self)
+                        winner_dialog.exec()
+
             startPrivKey += 1
 
 
@@ -1009,6 +1046,7 @@ class GUIInstance(QMainWindow):
         self.comp_text.setText("\n".join(comp_keys))
         self.p2sh_text.setText("\n".join(p2sh_keys))
         self.bech32_text.setText("\n".join(bech32_keys))
+        self.eth_text.setText("\n".join(eth_keys))
 
         def save_config(config_data):
             with open(CONFIG_FILE, "w") as file:
