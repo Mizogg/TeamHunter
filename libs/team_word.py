@@ -110,3 +110,13 @@ def bip39seed_to_private_key3(bip39seed, n=1):
     for i in derivation_path:
         private_key, chain_code = derive_bip32childkey(private_key, chain_code, i)
     return private_key
+
+def bip39seed_to_private_key4(bip39seed, n=1):
+    const = "m/44'/60'/0'/0/"
+    str_derivation_path = "m/44'/60'/0'/0/0"
+    derivation_path = parse_derivation_path2(str_derivation_path)
+    master_private_key, master_chain_code = bip39seed_to_bip32masternode(bip39seed)
+    private_key, chain_code = master_private_key, master_chain_code
+    for i in derivation_path:
+        private_key, chain_code = derive_bip32childkey(private_key, chain_code, i)
+    return private_key
