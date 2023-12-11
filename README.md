@@ -1,4 +1,4 @@
-# Team-Hunter GUI Version 1.1
+# Team-Hunter GUI Version 1.2
 
 ![titlebig](https://github.com/Mizogg/TeamHunter/assets/88630056/393f60cb-fe1a-4547-8e1b-58ff4696c3d4)
 
