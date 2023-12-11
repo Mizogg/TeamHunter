@@ -43,27 +43,20 @@ class EqualizerBar(QWidget):
         brush.setColor(self._background_color)
         brush.setStyle(Qt.BrushStyle.SolidPattern)
         rect = QRect(0, 0, round(painter.device().width()), round(painter.device().height()))
-
         painter.fillRect(rect, brush)
-
         d_height = painter.device().height() - (self._padding * 2)
         d_width = painter.device().width() - (self._padding * 2)
         steps = random.randint(1, 7)
         step_y = d_height / steps
         bar_height = step_y * self._y_solid_percent
         bar_height_space = step_y * (1 - self._x_solid_percent) / 2
-
         step_x = d_width / self.n_bars
         bar_width = step_x * self._x_solid_percent
         bar_width_space = step_x * (1 - self._y_solid_percent) / 2
 
         for b in range(self.n_bars):
             pc = (self._values[b] - self._vmin) / (self._vmax - self._vmin)
-
-            # Calculate the height based on the current value
             bar_height_current = pc * bar_height
-
-            # Use the corresponding color for each bar
             brush.setColor(QColor(self.steps[b % len(self.steps)]))
             rect = QRect(
                 int(self._padding + (step_x * b) + bar_width_space),
@@ -102,7 +95,6 @@ class EqualizerBar(QWidget):
         self.update()
 
     def setValues(self, v):
-        # Update the values and trigger a refresh
         self._values = v
         self._trigger_refresh()
 
@@ -162,13 +154,8 @@ class Music_Player:
             self.update_timer.timeout.connect(lambda: self.update_equalizer(equalizer_bar))
 
     def update_equalizer(self, equalizer_bar):
-        # Get the current music position
         current_position = pygame.mixer.music.get_pos()
-
-        # Calculate values based on the music position (adjust as needed)
         values = [int(np.sin(0.1 * (current_position + i)) * 50 + 50) for i in range(equalizer_bar.n_bars)]
-
-        # Update the equalizer bar
         equalizer_bar.setValues(values)
         
     def stop_music(self):
@@ -187,15 +174,9 @@ class Music_Player:
     def get_volume(self):
         return pygame.mixer.music.get_volume()
 
-    def toggle_repeat(self):
-        self.repeat = not self.repeat
-
     def shuffle_playlist(self):
         self.playlist = self.get_song_list()
         random.shuffle(self.playlist)
-
-    def get_shuffled_playlist(self):
-        return self.playlist.copy()
 
     def seekPosition(self, position):
         if pygame.mixer.music.get_busy():
@@ -248,8 +229,6 @@ class MusicPlayer(QWidget):
         
         self.play_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_accept))
         self.stop_button.enterEvent = lambda e: Speaker.playsound(Speaker.obj(Speaker.menu_back))
-
-        self.repeat_checkbox = QCheckBox('Repeat', checked=False)
         self.volume_slider = QSlider(Qt.Orientation.Horizontal)
         
         self.current_song_label = QLabel('Current Song: ')
@@ -264,7 +243,6 @@ class MusicPlayer(QWidget):
         layout1.addWidget(self.play_button)
         layout1.addWidget(self.stop_button)
         layout1.addWidget(self.next_button)
-        layout1.addWidget(self.repeat_checkbox)
 
         self.seek_slider = QSlider(Qt.Orientation.Horizontal)
         self.seek_timer_label = QLabel("0:00")
@@ -284,7 +262,6 @@ class MusicPlayer(QWidget):
         self.play_button.clicked.connect(self.play_music)
         self.stop_button.clicked.connect(self.stop_music)
         self.next_button.clicked.connect(self.next_song)
-        self.repeat_checkbox.stateChanged.connect(self.toggle_repeat)
         self.volume_slider.valueChanged.connect(self.set_volume)
         self.update_timer.timeout.connect(self.update_seek_slider)
 
@@ -301,11 +278,6 @@ class MusicPlayer(QWidget):
     def seek_music(self):
         position = self.seek_slider.value()
         self.speaker.seekPosition(position)
-
-
-    def toggle_repeat(self):
-        self.speaker.toggle_repeat()
-        self.repeat_checkbox.setChecked(self.speaker.repeat)
 
     def next_song(self):
         songs = self.speaker.get_song_list()

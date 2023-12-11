@@ -24,7 +24,7 @@ IMAGES_MAIN = "images/main/"
 image_folder = "images"
 image_files = [os.path.join(image_folder, filename) for filename in os.listdir(image_folder) if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
 
-version = '1.1'
+version = '1.2'
 
 class ThemeManager(QObject):
     theme_changed = pyqtSignal(bool)
@@ -89,8 +89,6 @@ class MainWindow(QMainWindow):
         self.theme_manager.set_dark_mode(False)
 
     def on_theme_changed(self, dark_mode):
-        # Implement any additional actions when the theme changes
-        # For example, you can update the child windows here
         pass
 
     def initUI(self):
