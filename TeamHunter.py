@@ -11,7 +11,7 @@ import qdarkstyle
 import signal
 from libs import set_settings, create_setting
 from game import snake_gui, Start_game
-from funct import (range_div_gui, about_gui, ice_gui, bitcrack_gui, keyhunt_gui, grid_16x16, miz_mnemonic, conversion_gui, balance_gui, brain_gui, calculator)
+from funct import (range_div_gui, about_gui, ice_gui, bitcrack_gui, keyhunt_gui, grid_16x16, miz_mnemonic, miz_poetry, conversion_gui, balance_gui, brain_gui, calculator)
 import sys
 from Mizmusic import MusicPlayer
 sys.path.extend(['libs', 'config', 'funct', 'found', 'input', 'game', 'images'])
@@ -62,6 +62,7 @@ class MainWindow(QMainWindow):
         self.tab6 = QWidget()
         self.tab7 = QWidget()
         self.tab8 = QWidget()
+        self.tab9 = QWidget()
 
         self.tab_widget.addTab(self.tabmain, "Welcome")
         self.tab_widget.addTab(self.tab1, "BitCrack")
@@ -69,9 +70,10 @@ class MainWindow(QMainWindow):
         self.tab_widget.addTab(self.tab3, "Iceland2k14 Secp256k1")
         self.tab_widget.addTab(self.tab4, "Miz Mnemonic")
         self.tab_widget.addTab(self.tab5, "Brain Hunter")
-        self.tab_widget.addTab(self.tab6, "BTC Snake Game")
-        self.tab_widget.addTab(self.tab7, "Art Work")
-        self.tab_widget.addTab(self.tab8, "CAL")
+        self.tab_widget.addTab(self.tab6, "Miz Poetry")
+        self.tab_widget.addTab(self.tab7, "BTC Snake Game")
+        self.tab_widget.addTab(self.tab8, "Art Work")
+        self.tab_widget.addTab(self.tab9, "CAL")
         self.process = None
         self.scanning = False
         self.initUI()
@@ -189,6 +191,7 @@ class MainWindow(QMainWindow):
         self.tab6_layout = QVBoxLayout()
         self.tab7_layout = QVBoxLayout()
         self.tab8_layout = QVBoxLayout()
+        self.tab9_layout = QVBoxLayout()
 
         self.centralWidget = QWidget(self)
         self.setCentralWidget(self.centralWidget)
@@ -197,6 +200,7 @@ class MainWindow(QMainWindow):
         keyhunt_tool = keyhunt_gui.KeyHuntFrame()
         ice_tool = ice_gui.GUIInstance()
         MIZ_tool = miz_mnemonic.GUIInstance()
+        MIZP_tool = miz_poetry.GUIInstance()
         BRAIN_tool = brain_gui.GUIInstance()
         snake_frame = snake_gui.Window()
         cal_frame = calculator.MyMainWindow()
@@ -207,9 +211,10 @@ class MainWindow(QMainWindow):
         self.tab3_layout.addWidget(ice_tool)
         self.tab4_layout.addWidget(MIZ_tool)
         self.tab5_layout.addWidget(BRAIN_tool)
-        self.tab6_layout.addWidget(snake_frame)
-        self.tab7_layout = self.picture_tab()
-        self.tab8_layout.addWidget(cal_frame)
+        self.tab6_layout.addWidget(MIZP_tool)
+        self.tab7_layout.addWidget(snake_frame)
+        self.tab8_layout = self.picture_tab()
+        self.tab9_layout.addWidget(cal_frame)
 
         self.tabmain.setLayout(self.tabmain_layout)
         self.tab1.setLayout(self.tab1_layout)
@@ -220,6 +225,7 @@ class MainWindow(QMainWindow):
         self.tab6.setLayout(self.tab6_layout)
         self.tab7.setLayout(self.tab7_layout)
         self.tab8.setLayout(self.tab8_layout)
+        self.tab9.setLayout(self.tab9_layout)
 
         self.layout.addLayout(self.main_layout)
         mizogg_player = MusicPlayer()
@@ -249,10 +255,10 @@ class MainWindow(QMainWindow):
     def create_tab_buttons(self):
         buttons_layout = QGridLayout()
 
-        tabs = ["BitCrack", "KeyHunt", "Iceland2k14 Secp256k1", "Miz Mnemonic", "Brain Hunter", "BTC Snake Game", "Art Work", "CAL","16x16 Grid"]
+        tabs = ["BitCrack", "KeyHunt", "Iceland2k14 Secp256k1", "Miz Mnemonic", "Brain Hunter", "Miz Poetry", "BTC Snake Game", "Art Work", "CAL", "16x16 Grid"]
         
         for i, tab_name in enumerate(tabs):
-            row = i // 3
+            row = i // 4
             col = i % 3
 
             button = QPushButton(tab_name)
