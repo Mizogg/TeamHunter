@@ -9,9 +9,7 @@ The application supports both dark and light themes and offers a convenient way 
 It also features a 16x16 grid tool, a range division tool in hexadecimal format, and allows users to open external websites.
 This application is built using PyQt6 and is designed to assist cryptocurrency enthusiasts in their endeavors.
 
-![image](https://github.com/Mizogg/TeamHunter/assets/88630056/82cc2a11-f41a-4cfc-bd31-8f78a7e3e0bf)
-
-
+![image](https://github.com/Mizogg/TeamHunter/assets/88630056/3e4bc5d7-67ca-4c80-9600-3922ad3c6017)
 
 # Requirements 
 
