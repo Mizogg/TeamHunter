@@ -4,7 +4,10 @@
 """
 import json
 import os
+
 CONFIG_FILE = "config/config.json"
+
+
 def create_settings_file_if_not_exists():
     if not os.path.exists(CONFIG_FILE):
         config_data = {
@@ -31,6 +34,15 @@ def create_settings_file_if_not_exists():
                 "BTC_TXT_FILE": "btc.txt"
             }
         }
-        
+
         with open(CONFIG_FILE, "w") as file:
             json.dump(config_data, file, indent=4)
+    else:
+        # Load existing configuration data
+        with open(CONFIG_FILE, "r") as file:
+            config_data = json.load(file)
+
+    # Check and create the "found" folder
+    found_folder = config_data["Paths"]["WINNER_FOLDER"]
+    if not os.path.exists(found_folder):
+        os.makedirs(found_folder)
