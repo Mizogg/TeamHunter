@@ -286,10 +286,7 @@ class KeyHuntFrame(QMainWindow):
 
         keyspace = self.keyspaceLineEdit.text().strip()
         if keyspace:
-            if mode == 'bsgs':
-                pass
-            else:
-                command.extend(["-r", keyspace])
+            command.extend(["-r", keyspace])
 
         stride = self.strideLineEdit.text().strip()
         if stride:
