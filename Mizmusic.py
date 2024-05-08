@@ -1,12 +1,14 @@
 import sys
-from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QSlider, QCheckBox, QStyle, QHBoxLayout, QSizePolicy
+from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QSlider, QStyle, QHBoxLayout, QSizePolicy, QApplication
 from PyQt6.QtCore import QSize, Qt, QTimer, QRect
 from PyQt6.QtGui import QColor, QPainter, QBrush
 import pygame
 import os
 import random
 import numpy as np
+
 from game.speaker import Speaker
+import pygame.event
 
 class EqualizerBar(QWidget):
     def __init__(self, bars, steps, *args, **kwargs):
@@ -128,17 +130,17 @@ class EqualizerBar(QWidget):
 
 class Music_Player:
     pygame.mixer.init()
-    current_dir = os.path.dirname(os.path.realpath(__file__))
-    sounds_dir = os.path.join(current_dir, "music")
 
     def __init__(self):
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+        self.sounds_dir = os.path.join(current_dir, "music")
         self.current_song = ""
         self.playlist = []
         self.repeat = False
         self.update_timer = QTimer()
         self.update_timer.start(100)
 
-    def play_my_music(self, seek_slider, equalizer_bar):
+    def play_my_music(self, seek_slider, equalizer_bar, current_song_label):
         if not self.playlist:
             self.shuffle_playlist()
 
@@ -146,12 +148,22 @@ class Music_Player:
             my_song = os.path.join(self.sounds_dir, self.playlist.pop(0))
             pygame.mixer.music.load(my_song)
             pygame.mixer.music.set_volume(0.5)
-            pygame.mixer.music.play(-1)
+            pygame.mixer.music.play()
+
+            # Set end event to trigger next song
+            pygame.mixer.music.set_endevent(pygame.USEREVENT)
+            pygame.event.set_allowed(pygame.USEREVENT)
+
             self.current_song = os.path.basename(my_song)
+            current_song_label.setText(f'Current Song: {self.current_song}')  # Update current song label
             duration = pygame.mixer.Sound(my_song).get_length() * 1000
             seek_slider.setRange(0, int(duration))
             
             self.update_timer.timeout.connect(lambda: self.update_equalizer(equalizer_bar))
+
+            # When the song ends, advance to the next song
+            pygame.mixer.music.queue(os.path.join(self.sounds_dir, self.playlist[0]))
+
 
     def update_equalizer(self, equalizer_bar):
         current_position = pygame.mixer.music.get_pos()
@@ -182,6 +194,7 @@ class Music_Player:
         if pygame.mixer.music.get_busy():
             pygame.mixer.music.set_pos(position / 1000)
 
+
 class MusicPlayer(QWidget):
     def __init__(self):
         super().__init__()
@@ -189,7 +202,9 @@ class MusicPlayer(QWidget):
         self.speaker = Music_Player()
         self.current_index = 0
         self.update_timer = QTimer()
+        self.update_timer.timeout.connect(self.update_seek_slider)
         self.update_timer.start(100)
+        self.seek_position = 0
         self.init_ui()
 
         initial_volume = 50
@@ -200,8 +215,14 @@ class MusicPlayer(QWidget):
                                           '#F1824C', '#FCA635', '#FCCC25', '#EFF821'])
         self.layout().addWidget(self.equalizer_bar)
 
+        # Initialize the Pygame video system
+        pygame.init()
+
+        # Connect the Pygame music end event to the next_song function
+        pygame.mixer.music.set_endevent(pygame.USEREVENT)
+
     def play_music(self):
-        self.speaker.play_my_music(self.seek_slider, self.equalizer_bar)
+        self.speaker.play_my_music(self.seek_slider, self.equalizer_bar, self.current_song_label)
         self.update_current_song_label()
 
         self.equalizer_bar.setValues([
@@ -250,7 +271,7 @@ class MusicPlayer(QWidget):
         layout1.addWidget(self.seek_timer_label, alignment=Qt.AlignmentFlag.AlignCenter)
         layout1.addWidget(self.seek_slider)
 
-        self.seek_slider.valueChanged.connect(self.seek_slider_moved)
+        self.seek_slider.sliderMoved.connect(self.seek_slider_moved)
         self.seek_slider.sliderReleased.connect(self.seek_music)
 
         layout.addLayout(layout1)
@@ -263,26 +284,24 @@ class MusicPlayer(QWidget):
         self.stop_button.clicked.connect(self.stop_music)
         self.next_button.clicked.connect(self.next_song)
         self.volume_slider.valueChanged.connect(self.set_volume)
-        self.update_timer.timeout.connect(self.update_seek_slider)
 
     def update_seek_slider(self):
-        if not self.seek_slider.isSliderDown():
-            position = pygame.mixer.music.get_pos()
-            self.seek_slider.setValue(position)
-            self.seek_slider_moved(position)
+            if not self.seek_slider.isSliderDown():
+                position = pygame.mixer.music.get_pos()
+                self.seek_slider.setValue(position)
+                self.seek_timer_label.setText('%d:%02d' % (int(position / 60000), int((position / 1000) % 60)))
 
     def seek_slider_moved(self, position):
         self.seek_timer_label.setText('%d:%02d' % (int(position / 60000), int((position / 1000) % 60)))
-        self.seek_slider.setValue(position)
 
     def seek_music(self):
         position = self.seek_slider.value()
         self.speaker.seekPosition(position)
+        self.seek_timer_label.setText('%d:%02d' % (int(position / 60000), int((position / 1000) % 60)))
 
     def next_song(self):
-        songs = self.speaker.get_song_list()
-        self.current_index = (self.current_index + 1) % len(songs)
-        self.play_music()
+        self.speaker.play_my_music(self.seek_slider, self.equalizer_bar, self.current_song_label)
+        self.update_current_song_label()
 
     def update_current_song_label(self):
         current_song = self.speaker.get_current_song()
@@ -294,3 +313,13 @@ class MusicPlayer(QWidget):
 
         decibel_value = round(self.speaker.get_volume() * 100, 2)
         self.volume_label.setText(f'Volume: {decibel_value} dB')
+
+    def handle_event(self, event):
+        if event.type == pygame.USEREVENT:
+            self.next_song()
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MusicPlayer()
+    window.show()
+    sys.exit(app.exec())
