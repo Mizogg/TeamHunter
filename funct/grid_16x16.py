@@ -21,9 +21,12 @@ from config import *
 from decimal import InvalidOperation
 addfind = load_bloom.load_bloom_filter()
 ICO_ICON = "images/main/miz.ico"
+IMAGES_MAIN = "images/main/"
 FOUND_FILE = "found/found.txt"
 BTC_BF_FILE = "input/btc.bf"
 
+
+SPEED_BLOCKS = 0
 DEFAULT_SEED_RATIO = 45
 GRID_SIZE = 16
 CELL_SIZE = 36
@@ -314,7 +317,7 @@ class GridFrame(QMainWindow):
         super().__init__()
         self.setWindowTitle("GRID 16x16")
         self.setWindowIcon(QIcon(f"{ICO_ICON}"))
-        self.setGeometry(50, 50, 1600, 900)
+        self.setGeometry(50, 50, 1660, 960)
         self.is_active = False
         self.in_tick = False
         self.cols = GRID_SIZE
@@ -380,7 +383,11 @@ class GridFrame(QMainWindow):
 
         center_layout = QVBoxLayout()
         self.layout.addLayout(center_layout)
-
+        mizlogo = QPixmap(f"{IMAGES_MAIN}mizogglogo1.png")
+        miz_label = QLabel(self)
+        miz_label.setPixmap(mizlogo)
+        miz_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        center_layout.addWidget(miz_label)
         main_layout1 = QVBoxLayout()
         main_layout2 = QHBoxLayout()
         left_layout.addLayout(main_layout1)
@@ -518,6 +525,28 @@ class GridFrame(QMainWindow):
         scanning_controls_group_box.setTitle("Scanning Controls (Inc Block Grid Lines)")
         scanning_controls_group_box.setStyleSheet("QGroupBox { border: 2px solid #E7481F; padding: 3px; }")
         scanning_controls_layout = QVBoxLayout(scanning_controls_group_box)
+
+        labels_group_box = QGroupBox(self)
+        labels_group_box.setTitle("Information")
+        labels_group_box.setStyleSheet("QGroupBox { border: 2px solid #E7481F; padding: 3px; }")
+        labels_starting = QVBoxLayout(labels_group_box)  # Specify the parent widget
+
+        self.add_count_label = QLabel(self.count_addresses(), objectName="count_addlabel", alignment=Qt.AlignmentFlag.AlignLeft)
+        self.online_check_box = QCheckBox("🔞Check Balance Online🔞", parent=labels_group_box)  # Specify the parent widget
+        self.online_check_box.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Check online Balance from grid and scans. (This will hang/crash if on with keyspace scanning) </span>')
+        self.online_check_box.setChecked(False)
+        labels_starting.addWidget(self.add_count_label)
+        labels_starting.addWidget(self.online_check_box)
+
+        self.lbl_tick_no = QLabel('🔑 Total Private Keys Scanned 🔑: 0', parent=labels_group_box)  # Specify the parent widget
+        labels_starting.addWidget(self.lbl_tick_no)
+        self.lbl_total_no = QLabel('₿ Total Addresses Scanned ₿: 0', parent=labels_group_box)  # Specify the parent widget
+        labels_starting.addWidget(self.lbl_total_no)
+
+        center_layout.addWidget(labels_group_box)  # Add the group box to the layout
+
+
+
         buttons_layout = QVBoxLayout()
         
         self.pattern_dropdown = QComboBox()
@@ -594,66 +623,38 @@ class GridFrame(QMainWindow):
         scanning_controls_layout.addLayout(rain_layout1)
         center_layout.addWidget(scanning_controls_group_box)
 
-        forward_group_box = QGroupBox(self)
-        forward_group_box.setTitle("Forward Scanning Configuration")
-        forward_group_box.setStyleSheet("QGroupBox { border: 2px solid #E7481F; padding: 3px; }")
-        forward_button_layout = QHBoxLayout(forward_group_box)
-        self.forward_scaning = QLineEdit("1", self)
-        forward_button_layout.addWidget(self.forward_scaning)
-        self.start_button_forward = QPushButton('Start Forward', self)
-        self.start_button_forward.setStyleSheet("color: green")
-        self.start_button_forward.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Scan Forward from you starting HEX Choose ammount to jump/stride </span>')
-        self.start_button_forward.clicked.connect(self.start_stop_jump_forward)
-        forward_button_layout.addWidget(self.start_button_forward)
+        scanning_group_box = QGroupBox(self)
+        scanning_group_box.setTitle("Scanning Configuration")
+        scanning_group_box.setStyleSheet("QGroupBox { border: 2px solid #E7481F; padding: 3px; }")
+        scanning_layout = QVBoxLayout(scanning_group_box)
 
-        center_layout.addWidget(forward_group_box)
+        # Forward scanning configuration
+        forward_layout = QHBoxLayout()
+        forward_scaning = QLineEdit("1", self)
+        forward_layout.addWidget(forward_scaning)
+        start_button_forward = QPushButton('Start Forward', self)
+        start_button_forward.setStyleSheet("color: green")
+        start_button_forward.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Scan Forward from your starting HEX. Choose the amount to jump/stride </span>')
+        start_button_forward.clicked.connect(self.start_stop_jump_forward)
+        forward_layout.addWidget(start_button_forward)
+        scanning_layout.addLayout(forward_layout)
 
-        backward_group_box = QGroupBox(self)
-        backward_group_box.setTitle("Backward Scanning Configuration")
-        backward_group_box.setStyleSheet("QGroupBox { border: 2px solid #E7481F; padding: 3px; }")
-        backward_button_layout = QHBoxLayout(backward_group_box)
-        self.backwards_scaning = QLineEdit("1", self)
-        backward_button_layout.addWidget(self.backwards_scaning)
-        self.start_button_backward = QPushButton('Start Backwards', self)
-        self.start_button_backward.setStyleSheet("color: green")
-        self.start_button_backward.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Scan Backwards from you starting HEX Choose ammount to jump/stride </span>')
-        self.start_button_backward.clicked.connect(self.start_stop_jump_backward)
-        backward_button_layout.addWidget(self.start_button_backward)
+        # Backward scanning configuration
+        backward_layout = QHBoxLayout()
+        backward_scaning = QLineEdit("1", self)
+        backward_layout.addWidget(backward_scaning)
+        start_button_backward = QPushButton('Start Backwards', self)
+        start_button_backward.setStyleSheet("color: green")
+        start_button_backward.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Scan Backwards from your starting HEX. Choose the amount to jump/stride </span>')
+        start_button_backward.clicked.connect(self.start_stop_jump_backward)
+        backward_layout.addWidget(start_button_backward)
+        scanning_layout.addLayout(backward_layout)
+
+        center_layout.addWidget(scanning_group_box)
+
         
-        center_layout.addWidget(backward_group_box)
-        
-        self.speedGroupBox = QGroupBox(self)
-        self.speedGroupBox.setTitle("Speed Left faster Right Slower")
-        self.speedGroupBox.setStyleSheet("QGroupBox { border: 2px solid #E7481F; padding: 3px; }")
-        speed_layout = QHBoxLayout(self.speedGroupBox)
-        self.speed_slider = QSlider(Qt.Orientation.Horizontal)
-        self.speed_slider.setMinimum(0)
-        self.speed_slider.setMaximum(200)
-        self.speed_slider.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Ajust the speed of the scanning. Left fastest Right Slowest to see what is happening </span>')
-
-        self.speed_slider_value_display = QLabel(self)
-        speed_layout.addWidget(self.speed_slider)
-        speed_layout.addWidget(self.speed_slider_value_display)
-        center_layout.addWidget(self.speedGroupBox)
-        self.speed_slider.valueChanged.connect(self.update_speed_label)
-
         right_layout = QVBoxLayout()
         self.layout.addLayout(right_layout)
-        labels_starting = QHBoxLayout()
-        self.add_count_label = QLabel(self.count_addresses(), objectName="count_addlabel", alignment=Qt.AlignmentFlag.AlignLeft)
-        self.online_check_box = QCheckBox("🔞Check Balance Online🔞")
-        self.online_check_box.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Check online Balance from grid and scans. (This will hang/crash if on with keyspace scanning) </span>')
-        self.online_check_box.setChecked(False)
-        right_layout.addWidget(self.add_count_label)
-        labels_starting.addWidget(self.online_check_box)
-        right_layout.addLayout(labels_starting)
-        
-        labels_layout = QVBoxLayout()
-        self.lbl_tick_no = QLabel('🔑 Total Private Keys Scanned 🔑: 0')
-        labels_layout.addWidget(self.lbl_tick_no)
-        self.lbl_total_no = QLabel('₿ Total Addresses Scanned ₿: 0')
-        labels_layout.addWidget(self.lbl_total_no)
-        right_layout.addLayout(labels_layout)
 
         self.keyspaceGroupBox = QGroupBox(self)
         self.keyspaceGroupBox.setTitle("Key Space Configuration")
@@ -687,23 +688,18 @@ class GridFrame(QMainWindow):
         self.keyspace_slider.valueChanged.connect(self.update_keyspace_range)
         
         keyspaceLayout2 = QHBoxLayout()
-
-        input_win = QLabel("Visualize Your Own Private Key:", self)
-        keyspaceLayout2.addWidget(input_win)
-        self._btc_bin = QPushButton("Start Visualize", self)
-        self._btc_bin.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Visualize Your Own Private key in HEX </span>')
-        self._btc_bin.clicked.connect(self.update_grid)
-        keyspaceLayout2.addWidget(self._btc_bin)
         
-        keyspaceLayout3 = QHBoxLayout()
         self._txt_inputhex = QLineEdit(self)
         self._txt_inputhex.setText('2ffffffffffffffff')
         self._txt_inputhex.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Type in Here your own HEX to Visualize </span>')
         self._txt_inputhex.setFocus()
-        keyspaceLayout3.addWidget(self._txt_inputhex)
-
+        keyspaceLayout2.addWidget(self._txt_inputhex)
+        self._btc_bin = QPushButton("Start Visualize", self)
+        self._btc_bin.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> Visualize Your Own Private key in HEX </span>')
+        self._btc_bin.clicked.connect(self.update_grid)
+        keyspaceLayout2.addWidget(self._btc_bin)
         keyspaceMainLayout.addLayout(keyspaceLayout2)
-        keyspaceMainLayout.addLayout(keyspaceLayout3)
+
 
         self.keyspaceGroupBox1 = QGroupBox(self)
         self.keyspaceGroupBox1.setTitle("Visualize Brain Wallet or Mnemonic Words ")
@@ -763,7 +759,7 @@ class GridFrame(QMainWindow):
         self.derivation_choice.setToolTip('<span style="font-size: 12pt; font-weight: bold; color: black;"> “derivation path.” Simply put, a derivation path defines a consistent method for generating the same set of accounts and wallets for a given private key </span>')
         radio_button_layout.addWidget(self.derivation_choice)
         keyspaceMainLayout1.addLayout(radio_button_layout)
-        center_layout.addWidget(self.keyspaceGroupBox)
+        left_layout.addWidget(self.keyspaceGroupBox)
         center_layout.addWidget(self.keyspaceGroupBox1)
 
         hex_label = QLabel('Current HEX value:')
@@ -846,35 +842,37 @@ class GridFrame(QMainWindow):
         received_sent_layout.addWidget(totalSent_label)
         received_sent_layout.addWidget(self.totalSent_label_edit)
         
-        right_layout.addWidget(hex_label)
-        right_layout.addWidget(self.value_edit_hex)
-        right_layout.addWidget(dec_label)
-        right_layout.addWidget(self.value_edit_dec)
-        right_layout.addLayout(address_layout_caddr)
-        right_layout.addWidget(self.btc_address_edit)
-        right_layout.addWidget(wif_label)
-        right_layout.addWidget(self.value_edit_wif)
-        right_layout.addLayout(address_layout_uaddr)
-        right_layout.addWidget(self.btc_address_editu)
-        right_layout.addWidget(wif_labelu)
-        right_layout.addWidget(self.value_edit_wifu)
-        right_layout.addLayout(address_layout_p2sh)
-        right_layout.addWidget(self.btc_address_editp2sh)
-        right_layout.addLayout(address_layout_bc1)
-        right_layout.addWidget(self.btc_address_editbc1)
-        right_layout.addLayout(balance_transactions_layout)
-        right_layout.addLayout(received_sent_layout)
-        
+
+        scanned_info_group_box = QGroupBox("Scanned Information")
+        scanned_info_group_box.setStyleSheet("QGroupBox { border: 2px solid #E7481F; padding: 3px; }")
+        scanned_info_layout = QVBoxLayout(scanned_info_group_box)
+
+
+        scanned_info_layout.addWidget(hex_label)
+        scanned_info_layout.addWidget(self.value_edit_hex)
+        scanned_info_layout.addWidget(dec_label)
+        scanned_info_layout.addWidget(self.value_edit_dec)
+        scanned_info_layout.addLayout(address_layout_caddr)
+        scanned_info_layout.addWidget(self.btc_address_edit)
+        scanned_info_layout.addWidget(wif_label)
+        scanned_info_layout.addWidget(self.value_edit_wif)
+        scanned_info_layout.addLayout(address_layout_uaddr)
+        scanned_info_layout.addWidget(self.btc_address_editu)
+        scanned_info_layout.addWidget(wif_labelu)
+        scanned_info_layout.addWidget(self.value_edit_wifu)
+        scanned_info_layout.addLayout(address_layout_p2sh)
+        scanned_info_layout.addWidget(self.btc_address_editp2sh)
+        scanned_info_layout.addLayout(address_layout_bc1)
+        scanned_info_layout.addWidget(self.btc_address_editbc1)
+        scanned_info_layout.addLayout(balance_transactions_layout)
+        scanned_info_layout.addLayout(received_sent_layout)
+        right_layout.addWidget(scanned_info_group_box)
 
         self.canvas.mousePressEvent = self.canvas_click
         self.canvas.mousePressEvent = self.canvas_mouse_press_event
         self.canvas.mouseMoveEvent = self.canvas_mouse_move_event
         self.canvas.mouseReleaseEvent = self.canvas_mouse_release_event
         self.start()
-    
-    def update_speed_label(self):
-        actual_speed = self.speed_slider.value()
-        self.speed_slider_value_display.setText(str(actual_speed))
     
     def open_browser(self, address):
         url = f'https://www.blockchain.com/explorer/addresses/btc/{address}'
@@ -999,7 +997,6 @@ class GridFrame(QMainWindow):
         self.off_cells = 0
         self.scene.clear()
         int_value = int(self._txt_inputhex.text(), 16)
-        self.scanning_speed = self.speed_slider.value()
         self.update_grid_from_key(int_value)
         for rw in range(self.rows):
             for cl in range(self.cols):
@@ -1015,7 +1012,7 @@ class GridFrame(QMainWindow):
         self.in_tick = False
 
         if self.is_active:
-            QTimer.singleShot(self.scanning_speed, self.seed_inc)
+            QTimer.singleShot(SPEED_BLOCKS, self.seed_inc)
     
     def brain_inc(self):
         brainwords = self.brain_input.text().strip()
@@ -1043,7 +1040,6 @@ class GridFrame(QMainWindow):
         self.div_input = int(self.derivation_choice.currentText())
         derivation = "m/44'/0'/0'/0"
         words = self.brain_input.text().strip()
-        self.scanning_speed = self.speed_slider.value()
         try:
             hdwallet = HDWallet().from_mnemonic(words)
             wallet = hdwallet.from_mnemonic(words)
@@ -1072,14 +1068,13 @@ class GridFrame(QMainWindow):
                 self.btc_hunter()
 
                 if self.is_active:
-                    QTimer.singleShot(self.scanning_speed, self.seed_inc)
+                    QTimer.singleShot(SPEED_BLOCKS, self.seed_inc)
         except Exception as e:
             self.pop_Result("Error: " + str(e))
     
     
     def start_run_forever(self):
-        self.scanning_speed = self.speed_slider.value()
-        self.run_forever_timer.start(self.scanning_speed)
+        self.run_forever_timer.start()
 
     def stop_run_forever(self):
         self.run_forever_timer.stop()
@@ -1101,7 +1096,6 @@ class GridFrame(QMainWindow):
         self.off_cells = 0
         self.scene.clear()
         self.div_input = int(self.derivation_choice.currentText())
-        self.scanning_speed = self.speed_slider.value()
         derivation = "m/44'/0'/0'/0"
         try:
             if self.lang_words.currentText() == 'random':
@@ -1151,13 +1145,12 @@ class GridFrame(QMainWindow):
                 self.btc_hunter()
 
                 if self.is_active:
-                    QTimer.singleShot(self.scanning_speed, self.seed_inc)
+                    QTimer.singleShot(SPEED_BLOCKS, self.seed_inc)
             pass
         except Exception as e:
             self.pop_Result("Error: " + str(e))
             
     def start_stop_jump_forward(self):
-        self.scanning_speed = self.speed_slider.value()
         if self.jump_forward_active:
             self.jump_forward_active = False
             self.jump_forward_timer.stop()
@@ -1168,13 +1161,12 @@ class GridFrame(QMainWindow):
             selected_increment = int(self.forward_scaning.text())
             self.jump_forward_active = True
             self.jump_forward_timer.timeout.connect(lambda: self.seed_inc_increment(selected_increment))
-            self.jump_forward_timer.start(self.scanning_speed)
+            self.jump_forward_timer.start()
             self.start_button_forward.setText('Stop Forward')
             self.start_button_forward.setStyleSheet("color: red")
             self.scanning = True
 
     def start_stop_jump_backward(self):
-        self.scanning_speed = self.speed_slider.value()
         if self.jump_backward_active:
             self.jump_backward_active = False
             self.jump_backward_timer.stop()
@@ -1185,7 +1177,7 @@ class GridFrame(QMainWindow):
             selected_increment = int(self.backwards_scaning.text())
             self.jump_backward_active = True
             self.jump_backward_timer.timeout.connect(lambda: self.seed_inc_increment(-selected_increment))
-            self.jump_backward_timer.start(self.scanning_speed)
+            self.jump_backward_timer.start()
             self.start_button_backward.setText('Stop Backwards')
             self.start_button_backward.setStyleSheet("color: red")
             self.scanning = True
@@ -1426,7 +1418,6 @@ class GridFrame(QMainWindow):
             self.scanning = True
             
     def start_game_of_life(self):
-        self.scanning_speed = self.speed_slider.value()
         if self.is_active:
             self.is_active = False
             self.btn_game_of_life.setText('Start Game of Life Patterns')
@@ -1449,11 +1440,10 @@ class GridFrame(QMainWindow):
     def setup_animation_timer(self):
         self.animation_timer = QTimer()
         self.animation_timer.timeout.connect(self.game_of_life)
-        self.animation_timer.start(self.scanning_speed)
+        self.animation_timer.start()
     
     def game_of_life(self):
         selected_pattern = self.pattern_dropdown.currentText()
-        self.scanning_speed = self.speed_slider.value()
         patterns = {
             'Conway': lambda neighbors: 1 if neighbors == 3 else (1 if neighbors == 2 and self.grid[rw][cl] else 0),
             'High Life': lambda neighbors: 1 if neighbors in (3, 6) else (1 if neighbors == 2 and self.grid[rw][cl] else 0),
@@ -1485,7 +1475,7 @@ class GridFrame(QMainWindow):
             self.btc_hunter()
 
             if any(any(cell == 1 for cell in row) for row in self.grid) and self.is_active:
-                QTimer.singleShot(self.scanning_speed, self.game_of_life)
+                QTimer.singleShot(SPEED_BLOCKS, self.game_of_life)
             else:
                 self.is_active = False
                 self.btn_game_of_life.setText('Start Game of Life Patterns')
@@ -1507,14 +1497,13 @@ class GridFrame(QMainWindow):
         return count
         
     def start_stop_random(self):
-        self.scanning_speed = self.speed_slider.value()
         if self.matrix_timer_random.isActive():
             self.matrix_timer_random.stop()
             self.btn_matrix.setText('Start Matrix Random')
             self.btn_matrix.setStyleSheet("color: green")
             self.scanning = False
         else:
-            self.matrix_timer_random.start(self.scanning_speed)
+            self.matrix_timer_random.start()
             self.btn_matrix.setText('Stop Matrix Random')
             self.btn_matrix.setStyleSheet("color: red")
             self.scanning = True
@@ -1544,14 +1533,13 @@ class GridFrame(QMainWindow):
         self.update_canvas()
     
     def start_stop_Smoke_ups(self):
-        self.scanning_speed = self.speed_slider.value()
         if self.Smoke_ups_timer.isActive():
             self.Smoke_ups_timer.stop()
             self.btn_Smoke_ups.setText('Start Smoke')
             self.btn_Smoke_ups.setStyleSheet("color: green")
             self.scanning = False
         else:
-            self.Smoke_ups_timer.start(self.scanning_speed)
+            self.Smoke_ups_timer.start()
             self.btn_Smoke_ups.setText('Stop Smoke')
             self.btn_Smoke_ups.setStyleSheet("color: red")
             self.scanning = True
@@ -1584,14 +1572,13 @@ class GridFrame(QMainWindow):
         self.update_canvas()
     
     def start_stop_Lava_bubbles(self):
-        self.scanning_speed = self.speed_slider.value()
         if self.Lava_bubbles_timer.isActive():
             self.Lava_bubbles_timer.stop()
             self.btn_Lava_bubbles.setText('Start Lava')
             self.btn_Lava_bubbles.setStyleSheet("color: green")
             self.scanning = False
         else:
-            self.Lava_bubbles_timer.start(self.scanning_speed)
+            self.Lava_bubbles_timer.start()
             self.btn_Lava_bubbles.setText('Stop Lava')
             self.btn_Lava_bubbles.setStyleSheet("color: red")
             self.scanning = True
@@ -1627,14 +1614,13 @@ class GridFrame(QMainWindow):
         self.update_canvas()
 
     def start_stop_blocks(self):
-        self.scanning_speed = self.speed_slider.value()
         if self.blocks_timer.isActive():
             self.blocks_timer.stop()
             self.btn_blocks.setText('Start Blocks')
             self.btn_blocks.setStyleSheet("color: green")
             self.scanning = False
         else:
-            self.blocks_timer.start(self.scanning_speed)
+            self.blocks_timer.start()
             self.btn_blocks.setText('Stop Blocks')
             self.btn_blocks.setStyleSheet("color: red")
             self.scanning = True
@@ -1669,14 +1655,13 @@ class GridFrame(QMainWindow):
         self.update_canvas()
         
     def start_stop_matrix(self):
-        self.scanning_speed = self.speed_slider.value()
         if self.matrix_timer.isActive():
             self.matrix_timer.stop()
             self.btn_rain.setText('Start Matrix Rain')
             self.btn_rain.setStyleSheet("color: green")
             self.scanning = False
         else:
-            self.matrix_timer.start(self.scanning_speed)
+            self.matrix_timer.start()
             self.btn_rain.setText('Stop Matrix Rain')
             self.btn_rain.setStyleSheet("color: red")
             self.scanning = True
@@ -1784,7 +1769,6 @@ class GridFrame(QMainWindow):
     def tick(self):
         if self.in_tick:
             return
-        self.scanning_speed = self.speed_slider.value()
         self.in_tick = True
         self.on_cells = 0
         self.off_cells = 0
@@ -1814,12 +1798,12 @@ class GridFrame(QMainWindow):
                     color = self.off_cell_color
                     self.off_cells += 1
                 self.put_rect(self.scene, rw, cl, color)
-        self.speed_slider_value_display.setText(str(self.scanning_speed))
+
         self.update_canvas()
         self.in_tick = False
 
         if self.is_active:
-            QTimer.singleShot(self.scanning_speed, self.tick)
+            QTimer.singleShot(SPEED_BLOCKS, self.tick)
     
     def load_file(self):
         global addfind

@@ -13,7 +13,7 @@ import requests
 import json
 from bloomfilter import BloomFilter
 from libs import secp256k1 as ice, load_bloom, team_brain
-from funct import (win_gui, up_bloom_gui, telegram_gui, discord_gui)
+from funct import (win_gui, telegram_gui, discord_gui)
 from funct.console_gui import ConsoleWindow
 from config import *
 import locale
@@ -206,14 +206,6 @@ class GUIInstance(QMainWindow):
                 "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
             )
         self.load_mode_button.clicked.connect(self.onOpen)
-
-        self.update_mode_button = QPushButton("Update Database from Internet", self)
-        self.update_mode_button.setToolTip('<span style="font-size: 10pt; font-weight: bold; color: black;">Update Database from Internet </span>')
-        self.update_mode_button.setStyleSheet(
-                "QPushButton { font-size: 12pt; background-color: #E7481F; color: white; }"
-                "QPushButton:hover { font-size: 12pt; background-color: #A13316; color: white; }"
-            )
-        self.update_mode_button.clicked.connect(self.update_action_run)
         
         custom_credentials_layout = QHBoxLayout()
         custom_credentials_layout.addWidget(self.telegram_mode_button)
@@ -221,7 +213,6 @@ class GUIInstance(QMainWindow):
         custom_credentials_layout.addWidget(self.discord_mode_button)
         custom_credentials_layout.addWidget(self.use_discord_credentials_checkbox)
         custom_credentials_layout.addWidget(self.load_mode_button)
-        custom_credentials_layout.addWidget(self.update_mode_button)
         layout.addLayout(custom_credentials_layout)
         self.counter = 0
         self.timer = time.time()
@@ -267,10 +258,6 @@ class GUIInstance(QMainWindow):
     def open_discord_settings(self):
         settings_dialog = discord_gui.Settings_discord_Dialog(self)
         settings_dialog.exec()
-
-    def update_action_run(self):
-        update_dialog = up_bloom_gui.UpdateBloomFilterDialog(self)
-        update_dialog.exec()
 
     def count_addresses(self, btc_bf_file=None):
         if btc_bf_file is None:

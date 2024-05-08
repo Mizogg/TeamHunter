@@ -7,7 +7,7 @@ from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtCore import Qt, QSize
 from game.speaker import Speaker
 import webbrowser
-version = '1.1'
+version = '1.3'
 ICO_ICON = "images/main/miz.ico"
 TITLE_ICON = "images/main/title.png"
 RED_ICON = "images/main/mizogg-eyes.png"
@@ -22,16 +22,13 @@ class AboutDialog(QDialog):
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        # Add a header image
         header_pixmap = QPixmap(TITLE_ICON)
         header_label = QLabel()
         header_label.setPixmap(header_pixmap)
         layout.addWidget(header_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        # Add a vertical spacer for better separation
         layout.addSpacing(20)
 
-        # Create a group box for application information
         info_group = QGroupBox("Application Information")
         info_layout = QVBoxLayout()
 
@@ -45,8 +42,6 @@ class AboutDialog(QDialog):
         info_group.setLayout(info_layout)
 
         layout.addWidget(info_group)
-
-        # Create a QTextBrowser for the description
         description_textbox = QTextBrowser()
         description_textbox.setPlainText(
             "QT Hunter for Bitcoin is a feature-rich application designed for Bitcoin enthusiasts and researchers. "
@@ -55,8 +50,6 @@ class AboutDialog(QDialog):
             "QT Hunter empowers you with the tools you need to navigate the Bitcoin ecosystem efficiently."
         )
         layout.addWidget(description_textbox)
-
-        # Create QTextBrowser widgets for configuration details
         configurations = [
             ("Bitcrack Configuration", "Recommended for 16GB of RAM: -b 104 -t 512 -p 2016\nRecommended for 8GB of RAM: -b 104 -t 512 -p 1024\n-b = Blocks\n-t = Threads\n-p = points"),
             ("Key Hunt Configuration", 
@@ -71,10 +64,6 @@ class AboutDialog(QDialog):
              rmd160
              xpoint
              bsgs
-             Experimental modes
-             minikeys
-             pub2rmd
-             address mode
              This is the most basic approach to work, in this mode your text file need to have a list of the public address to be search.
              Example of address from solved puzzles, this file is already on the repository tests/1to32.txt
              1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH
