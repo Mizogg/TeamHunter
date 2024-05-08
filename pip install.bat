@@ -12,4 +12,5 @@ pip install mnemonic
 pip install numpy
 pip install keyboard
 pip install pygame
+pip install trotter
 pause
