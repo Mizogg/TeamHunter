@@ -1,4 +1,4 @@
-# Team-Hunter GUI Version 1.2
+# Team-Hunter GUI Version 1.3
 
 ![titlebig](https://github.com/Mizogg/TeamHunter/assets/88630056/393f60cb-fe1a-4547-8e1b-58ff4696c3d4)
 
@@ -9,7 +9,7 @@ The application supports both dark and light themes and offers a convenient way 
 It also features a 16x16 grid tool, a range division tool in hexadecimal format, and allows users to open external websites.
 This application is built using PyQt6 and is designed to assist cryptocurrency enthusiasts in their endeavors.
 
-![image](https://github.com/Mizogg/TeamHunter/assets/88630056/3e4bc5d7-67ca-4c80-9600-3922ad3c6017)
+![image](https://github.com/Mizogg/TeamHunter/assets/88630056/b5ab2ffe-50db-4560-9c17-af75aa14d63b)
 
 # Requirements 
 
@@ -40,6 +40,7 @@ numpy
 cryptography
 keyboard
 pygame
+totter
 ```
 # How to Run
 
