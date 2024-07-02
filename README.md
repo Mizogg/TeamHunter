@@ -1,3 +1,10 @@
+# Team-Hunter GUI Version 1.4
+
+Less to install more features but with all the goodness of version 1.3
+
+![image](https://github.com/Mizogg/TeamHunter/assets/88630056/22d3b561-9867-4b1e-8f08-ec0ea8b57b99)
+
+
 # Team-Hunter GUI Version 1.3
 
 ![titlebig](https://github.com/Mizogg/TeamHunter/assets/88630056/393f60cb-fe1a-4547-8e1b-58ff4696c3d4)
