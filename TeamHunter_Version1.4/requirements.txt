@@ -1,0 +1,8 @@
+PyQt6
+bit
+requests
+hdwallet
+mnemonic
+numpy
+keyboard
+pygame
