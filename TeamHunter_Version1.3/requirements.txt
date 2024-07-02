@@ -1,0 +1,11 @@
+PyQt6
+bit
+pyqtdarktheme
+requests
+simplebloomfilter
+bitarray==1.9.2
+hdwallet
+mnemonic
+numpy
+keyboard
+pygame
