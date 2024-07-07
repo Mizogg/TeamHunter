@@ -15,6 +15,7 @@ IMAGES_FOLDER = settings.value("Paths/IMAGES_FOLDER", defaultValue="images", typ
 MUSIC_FOLDER = settings.value("Paths/MUSIC_FOLDER", defaultValue="music", type=str)
 WINNER_FOLDER = settings.value("Paths/WINNER_FOLDER", defaultValue="found", type=str)
 
+BTC_BF_FILE = f"{INPUT_FOLDER}/{settings.value('Paths/BTC_BF_FILE', defaultValue='btc.bf', type=str)}"
 BTC_TXT_FILE = f"{INPUT_FOLDER}/{settings.value('Paths/BTC_TXT_FILE', defaultValue='btc.txt', type=str)}"
 
 WINNER_FOUND = f"{WINNER_FOLDER}/{settings.value('Paths/WINNER_FOUND', defaultValue='found.txt', type=str)}"
