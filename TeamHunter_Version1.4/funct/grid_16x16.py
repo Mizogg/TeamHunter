@@ -6,8 +6,10 @@ import os
 import sys
 import random
 import webbrowser
-import locale
 import datetime
+import time
+import locale
+from bloomfilter import BloomFilter
 import hashlib
 import numpy as np
 from mnemonic import Mnemonic
@@ -19,6 +21,7 @@ from funct.iceland import secp256k1 as ice
 from funct import (win_gui, scanner_thread, utils, team_balance, load_file)
 from config.config import *
 from decimal import InvalidOperation
+
 from game.speaker import Speaker
 addfind = load_file.load_addresses()
 ICO_ICON = "images/main/miz.ico"
@@ -298,7 +301,7 @@ class GridFrame(QMainWindow):
         file_menu = menubar.addMenu("Load New Database")
         # Add 'Load File' action
         load_file_action = QAction("Load File", self)
-        load_file_action.triggered.connect(self.load_file)
+        load_file_action.triggered.connect(self.onOpen)
         file_menu.addAction(load_file_action)
         file_menu.addAction("Exit", self.close)
 
@@ -459,7 +462,7 @@ class GridFrame(QMainWindow):
         labels_group_box.setStyleSheet("QGroupBox { border: 2px solid #E7481F; padding: 3px; }")
         labels_starting = QVBoxLayout(labels_group_box)  # Specify the parent widget
 
-        self.add_count_label = QLabel(self.count_addresses(BTC_TXT_FILE), objectName="count_addlabel", alignment=Qt.AlignmentFlag.AlignLeft)
+        self.add_count_label = QLabel(self.count_addresses(), objectName="count_addlabel", alignment=Qt.AlignmentFlag.AlignLeft)
         labels_starting.addWidget(self.add_count_label)
         self.online_check_box = QCheckBox("🔞Check Balance Online🔞")
         self.online_check_box.setStyleSheet("font-size: 14px; font-weight: bold; color: red;")
@@ -1738,23 +1741,26 @@ class GridFrame(QMainWindow):
         if self.is_active:
             QTimer.singleShot(SPEED_BLOCKS, self.tick)
     
-    def load_file(self):
-        global addfind, BTC_TXT_FILE
+    def onOpen(self):
+        global addfind, BTC_BF_FILE
         filePath, _ = QFileDialog.getOpenFileName(
-            self, "Open File", "", "Text Files (*.txt)"
+            self, "Open File", "", "BF Files (*.bf);;Text Files (*.txt)"
         )
 
         if not filePath:
             return
 
         try:
-            if filePath.endswith(".txt"):
+            if filePath.endswith(".bf"):
+                with open(filePath, "rb") as fp:
+                    addfind = BloomFilter.load(fp)
+            elif filePath.endswith(".txt"):
                 with open(filePath, "r") as file:
                     addfind = file.read().split()
             else:
                 raise ValueError("Unsupported file type")
             
-            BTC_TXT_FILE = filePath
+            BTC_BF_FILE = filePath
             
         except Exception as e:
             error_message = f"Error loading file: {str(e)}"
@@ -1764,13 +1770,13 @@ class GridFrame(QMainWindow):
         success_message = f"File loaded: {filePath}"
         QMessageBox.information(self, "File Loaded", success_message)
 
-        self.add_count_label.setText(self.count_addresses(BTC_TXT_FILE))
+        self.add_count_label.setText(self.count_addresses(BTC_BF_FILE))
 
-    def count_addresses(self, btc_txt_file=None):
-        if btc_txt_file is None:
-            btc_txt_file = BTC_TXT_FILE       
+    def count_addresses(self, btc_bf_file=None):
+        if btc_bf_file is None:
+            btc_bf_file = BTC_BF_FILE       
         try:
-            last_updated = os.path.getmtime(BTC_TXT_FILE)
+            last_updated = os.path.getmtime(BTC_BF_FILE)
             last_updated_datetime = datetime.datetime.fromtimestamp(last_updated)
             now = datetime.datetime.now()
             delta = now - last_updated_datetime
@@ -1812,6 +1818,7 @@ class GridFrame(QMainWindow):
             message = f'Currently checking <b>{locale.format_string("%d", len(addfind), grouping=True)}</b> addresses.'
 
         return message
+
 
 def main():
     app = QApplication([])

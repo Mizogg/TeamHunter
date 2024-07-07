@@ -27,6 +27,7 @@ def create_settings_file_if_not_exists():
                 "IMAGES_FOLDER": "images",
                 "MUSIC_FOLDER": "music",
                 "WINNER_FOLDER": "found",
+                "BTC_BF_FILE": "btc.bf",
                 "BTC_TXT_FILE": "btc.txt"
             }
         }

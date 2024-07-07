@@ -3,8 +3,6 @@
 @author: Team Mizogg
 """
 import os
-import datetime
-import time
 import sys
 import time
 import hashlib
@@ -24,9 +22,12 @@ from hdwallet import HDWallet
 from funct import (win_gui, telegram_gui, discord_gui, load_file, team_balance)
 from funct.console_gui import ConsoleWindow
 from config.config import *
-import locale
 from game.speaker import Speaker
 import itertools
+import datetime
+import time
+import locale
+from bloomfilter import BloomFilter
 
 addfind = load_file.load_addresses()
 TEL_ICON = "images/main/Telegram.png"
@@ -218,7 +219,7 @@ class RecoveryThread(QThread):
                 self.recoveryFinished.emit(f"Error occurred in mnemonic_main: {str(e)}")
                 pass
 
-        if self.ONLINE_button1.isChecked(False):
+        else:
             try:
                 hdwallet = HDWallet().from_mnemonic(words)
                 #derivations = ["m/44'/0'/0'/0", "m/0", "m/0'/0'", "m/0'/0", "m/44'/0'/0'"]
@@ -272,7 +273,6 @@ class GUIInstance(QMainWindow):
         self.counter = 0
         self.start_time = 0
         self.wordlist = wordlist
-        self.addfind = addfind
         self.recovery_thread = None
         self.executor = ThreadPoolExecutor()
         self.scanning = False
@@ -684,22 +684,25 @@ class GUIInstance(QMainWindow):
         msg_box.exec()
 
     def onOpen(self):
-        global addfind, BTC_TXT_FILE
+        global addfind, BTC_BF_FILE
         filePath, _ = QFileDialog.getOpenFileName(
-            self, "Open File", "", "Text Files (*.txt)"
+            self, "Open File", "", "BF Files (*.bf);;Text Files (*.txt)"
         )
 
         if not filePath:
             return
 
         try:
-            if filePath.endswith(".txt"):
+            if filePath.endswith(".bf"):
+                with open(filePath, "rb") as fp:
+                    addfind = BloomFilter.load(fp)
+            elif filePath.endswith(".txt"):
                 with open(filePath, "r") as file:
                     addfind = file.read().split()
             else:
                 raise ValueError("Unsupported file type")
             
-            BTC_TXT_FILE = filePath
+            BTC_BF_FILE = filePath
             
         except Exception as e:
             error_message = f"Error loading file: {str(e)}"
@@ -709,24 +712,13 @@ class GUIInstance(QMainWindow):
         success_message = f"File loaded: {filePath}"
         QMessageBox.information(self, "File Loaded", success_message)
 
-        self.add_count_label.setText(self.count_addresses(BTC_TXT_FILE))
+        self.add_count_label.setText(self.count_addresses(BTC_BF_FILE))
 
-    def exit_app(self):
-        QApplication.quit()
-
-    def open_telegram_settings(self):
-        settings_dialog = telegram_gui.Settings_telegram_Dialog(self)
-        settings_dialog.exec()
-    
-    def open_discord_settings(self):
-        settings_dialog = discord_gui.Settings_discord_Dialog(self)
-        settings_dialog.exec()
-
-    def count_addresses(self, btc_txt_file=None):
-        if btc_txt_file is None:
-            btc_txt_file = BTC_TXT_FILE       
+    def count_addresses(self, btc_bf_file=None):
+        if btc_bf_file is None:
+            btc_bf_file = BTC_BF_FILE       
         try:
-            last_updated = os.path.getmtime(BTC_TXT_FILE)
+            last_updated = os.path.getmtime(BTC_BF_FILE)
             last_updated_datetime = datetime.datetime.fromtimestamp(last_updated)
             now = datetime.datetime.now()
             delta = now - last_updated_datetime
@@ -768,6 +760,17 @@ class GUIInstance(QMainWindow):
             message = f'Currently checking <b>{locale.format_string("%d", len(addfind), grouping=True)}</b> addresses.'
 
         return message
+
+    def exit_app(self):
+        QApplication.quit()
+
+    def open_telegram_settings(self):
+        settings_dialog = telegram_gui.Settings_telegram_Dialog(self)
+        settings_dialog.exec()
+    
+    def open_discord_settings(self):
+        settings_dialog = discord_gui.Settings_discord_Dialog(self)
+        settings_dialog.exec()
 
     def load_config(self):
         try:
