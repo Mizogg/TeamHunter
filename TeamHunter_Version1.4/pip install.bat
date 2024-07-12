@@ -10,4 +10,6 @@ pip install numpy
 pip install keyboard
 pip install pygame
 pip install trotter
+pip install simplebloomfilter
+pip install bitarray==1.9.2
 pause
