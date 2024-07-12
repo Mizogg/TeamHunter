@@ -88,15 +88,18 @@ def found_save_off(path, caddr, uaddr, words, private_key, root_public_key, exte
 class RecoveryThread(QThread):
     recoveryFinished = pyqtSignal(str)
 
-    def __init__(self, div_input, rec_IN, mode, wordlist, update_keys_per_sec, ONLINE_button1):
-        super().__init__()
+    def __init__(self, div_input, rec_IN, mode, wordlist, update_keys_per_sec, ONLINE_button1, use_telegram_credentials_checkbox, use_discord_credentials_checkbox, win_checkbox, parent=None):
+        super().__init__(parent)
+        self.div_input = div_input
         self.rec_IN = rec_IN
         self.mode = mode
         self.wordlist = wordlist
         self.update_keys_per_sec = update_keys_per_sec
-        self.batch_size = 1
         self.ONLINE_button1 = ONLINE_button1
-        self.div_input = div_input
+        self.use_telegram_credentials_checkbox = use_telegram_credentials_checkbox
+        self.use_discord_credentials_checkbox = use_discord_credentials_checkbox
+        self.win_checkbox = win_checkbox
+        self.batch_size = 1
         
     def run(self):
         self.timer = QTimer()
@@ -135,7 +138,115 @@ class RecoveryThread(QThread):
         for letter in missing_letters:
             rec_IN_string = rec_IN_string.replace('*', letter, 1)
         return rec_IN_string
+    
+    def process_derivation_on(self, words, derivation, p):
+        try:
+            hdwallet = HDWallet().from_mnemonic(words)
+            wallet = hdwallet.from_mnemonic(words)
+            path = f"{derivation}/{p}"
+            hdwallet.from_path(path=path)
+            path_read = hdwallet.path()
+            private_key = hdwallet.private_key()
+            root_public_key = hdwallet.xpublic_key()
+            extended_private_key = hdwallet.xprivate_key()
+            root_extended_private_key = hdwallet.root_xprivate_key()
+            compressed_public_key = hdwallet.public_key(compressed=True)
+            uncompressed_public_key = '04' + hdwallet.public_key(compressed=False)
+            compressed_address_bytes = hashlib.new('ripemd160', hashlib.sha256(bytes.fromhex(compressed_public_key)).digest()).digest()
+            compressed_address = base58.b58encode_check(b'\x00' + compressed_address_bytes)
+            uncompressed_address_bytes = hashlib.new('ripemd160', hashlib.sha256(bytes.fromhex(uncompressed_public_key)).digest()).digest()
+            uncompressed_address = base58.b58encode_check(b'\x00' + uncompressed_address_bytes)
+            wif_private_key = base58.b58encode_check(b'\x80' + binascii.unhexlify(private_key)).decode()
+            wif_compressed_private_key = base58.b58encode_check(b'\x80' + binascii.unhexlify(private_key) + b'\x01').decode()
+            caddr = compressed_address.decode('utf-8')
+            uaddr = uncompressed_address.decode('utf-8')
+            balance_derivationc, totalReceived_derivationc, totalSent_derivationc, txs_derivationc = team_balance.check_balance(caddr)
+            balance_derivationu, totalReceived_derivationu, totalSent_derivationu, txs_derivationu = team_balance.check_balance(uaddr)
+            derived_info = {
+                "derivation_path": path,
+                "compressed_address": caddr,
+                "uncompressed_address": uaddr,
+                "balance_derivationc": balance_derivationc,
+                "totalReceived_derivationc": totalReceived_derivationc,
+                "totalSent_derivationc": totalSent_derivationc,
+                "txs_derivationc": txs_derivationc,
+                "balance_derivationu": balance_derivationu,
+                "totalReceived_derivationu": totalReceived_derivationu,
+                "totalSent_derivationu": totalSent_derivationu,
+                "txs_derivationu": txs_derivationu,
+                "mnemonic_words": words,
+                "private_key": private_key,
+                "root_public_key": root_public_key,
+                "extended_private_key": extended_private_key,
+                "root_extended_private_key": root_extended_private_key,
+                "compressed_public_key": compressed_public_key,
+                "uncompressed_public_key": uncompressed_public_key,
+                "wif_private_key": wif_private_key,
+                "wif_compressed_private_key": wif_compressed_private_key
+            }
+            if int(balance_derivationc) > 0 or int(txs_derivationc) > 0 or int(balance_derivationu) > 0 or int(txs_derivationu) > 0:
+                found_save_bal(path, caddr, balance_derivationc, totalReceived_derivationc, totalSent_derivationc, txs_derivationc, uaddr, balance_derivationu, totalReceived_derivationu, totalSent_derivationu, txs_derivationu, words, private_key, root_public_key, extended_private_key, root_extended_private_key, compressed_public_key, uncompressed_public_key, wif_private_key, wif_compressed_private_key)
+            if self.use_telegram_credentials_checkbox.isChecked():
+                telegram_gui.send_to_telegram(self, derived_info)
+            elif self.use_discord_credentials_checkbox.isChecked():
+                discord_gui.send_to_discord(self, derived_info)
+
+            return derived_info
+
+
+        except Exception as e:
+            self.recoveryFinished.emit(f'Error occurred in derivation {derivation}/{p}: {str(e)}')
+            return None
+
+    def process_derivation_off(self, words, derivation, p):
+        try:
+            hdwallet = HDWallet().from_mnemonic(words)
+            path = f"{derivation}/{p}"
+            hdwallet.from_path(path=path)
+            path_read = hdwallet.path()
+            private_key = hdwallet.private_key()
+            root_public_key = hdwallet.xpublic_key()
+            extended_private_key = hdwallet.xprivate_key()
+            root_extended_private_key = hdwallet.root_xprivate_key()
+            compressed_public_key = hdwallet.public_key(compressed=True)
+            uncompressed_public_key = '04' + hdwallet.public_key(compressed=False)
+            compressed_address_bytes = hashlib.new('ripemd160', hashlib.sha256(bytes.fromhex(compressed_public_key)).digest()).digest()
+            compressed_address = base58.b58encode_check(b'\x00' + compressed_address_bytes)
+            uncompressed_address_bytes = hashlib.new('ripemd160', hashlib.sha256(bytes.fromhex(uncompressed_public_key)).digest()).digest()
+            uncompressed_address = base58.b58encode_check(b'\x00' + uncompressed_address_bytes)
+            wif_private_key = base58.b58encode_check(b'\x80' + binascii.unhexlify(private_key)).decode()
+            wif_compressed_private_key = base58.b58encode_check(b'\x80' + binascii.unhexlify(private_key) + b'\x01').decode()
+            caddr = compressed_address.decode('utf-8')
+            uaddr = uncompressed_address.decode('utf-8')
+            derived_info = {
+                "derivation_path": path,
+                "compressed_address": caddr,
+                "uncompressed_address": uaddr,
+                "mnemonic_words": words,
+                "private_key": private_key,
+                "root_public_key": root_public_key,
+                "extended_private_key": extended_private_key,
+                "root_extended_private_key": root_extended_private_key,
+                "compressed_public_key": compressed_public_key,
+                "uncompressed_public_key": uncompressed_public_key,
+                "wif_private_key": wif_private_key,
+                "wif_compressed_private_key": wif_compressed_private_key
+            }
+            if caddr in addfind or uaddr in addfind:
+                found_save_off(path, caddr, uaddr, words, private_key, root_public_key, extended_private_key, root_extended_private_key, compressed_public_key, uncompressed_public_key, wif_private_key, wif_compressed_private_key)
+            elif self.use_telegram_credentials_checkbox.isChecked():
+                telegram_gui.send_to_telegram(self, derived_info)
+            elif self.use_discord_credentials_checkbox.isChecked():
+                discord_gui.send_to_discord(self, derived_info)
+            elif self.win_checkbox.isChecked():
+                winner_dialog = win_gui.WinnerDialog(words, self)
+                winner_dialog.exec()
+            return derived_info
             
+        except Exception as e:
+            self.recoveryFinished.emit(f'Error occurred in derivation {derivation}/{p}: {str(e)}')
+            return None
+
     def mnemonic_main(self, words):
         if self.ONLINE_button1.isChecked():
             try:
@@ -169,7 +280,7 @@ class RecoveryThread(QThread):
                         futures = []
                         for derivation in derivations:
                             for p in range(0, self.div_input):
-                                future = executor.submit(process_derivation_on, words, derivation, p)
+                                future = executor.submit(self.process_derivation_on, words, derivation, p)
                                 futures.append(future)
 
                         for future in concurrent.futures.as_completed(futures):
@@ -228,7 +339,7 @@ class RecoveryThread(QThread):
                     futures = []
                     for derivation in derivations:
                         for p in range(0, self.div_input):
-                            future = executor.submit(process_derivation_off, words, derivation, p)
+                            future = executor.submit(self.process_derivation_off, words, derivation, p)
                             futures.append(future)
 
                     for future in concurrent.futures.as_completed(futures):
@@ -276,6 +387,7 @@ class GUIInstance(QMainWindow):
         self.recovery_thread = None
         self.executor = ThreadPoolExecutor()
         self.scanning = False
+        recoveryFinished = pyqtSignal(str)
         self.initUI()
 
     def process_derivation_on(self, words, derivation, p):
@@ -336,6 +448,7 @@ class GUIInstance(QMainWindow):
 	    except Exception as e:
 	        self.recoveryFinished.emit(f'Error occurred in derivation {derivation}/{p}: {str(e)}')
 	        return None
+
     def process_derivation_off(self, words, derivation, p):
 	    try:
 	        hdwallet = HDWallet().from_mnemonic(words)
@@ -384,6 +497,7 @@ class GUIInstance(QMainWindow):
 	    except Exception as e:
 	        self.recoveryFinished.emit(f'Error occurred in derivation {derivation}/{p}: {str(e)}')
 	        return None
+
     def initUI(self):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
@@ -600,7 +714,18 @@ class GUIInstance(QMainWindow):
             div_input = int(self.derivation_choice1.currentText())
             rec_IN = self.txt_input_word.text()
             mode = 'sequential'
-            self.recovery_thread = RecoveryThread(div_input, rec_IN, mode, self.wordlist, self.update_keys_per_sec, self.ONLINE_button1)
+            self.recovery_thread = RecoveryThread(
+                div_input,
+                rec_IN,
+                mode,
+                self.wordlist,
+                self.update_keys_per_sec,
+                self.ONLINE_button1,
+                self.use_telegram_credentials_checkbox,
+                self.use_discord_credentials_checkbox,
+                self.win_checkbox
+            )
+            # Connect the signal from recovery thread to handler
             self.recovery_thread.recoveryFinished.connect(self.handle_recovery_result)
             self.recovery_thread.start()
             self.scanning = True
@@ -613,7 +738,18 @@ class GUIInstance(QMainWindow):
             div_input = int(self.derivation_choice1.currentText())
             rec_IN = self.txt_input_word.text()
             mode = 'random'
-            self.recovery_thread = RecoveryThread(div_input, rec_IN, mode, self.wordlist, self.update_keys_per_sec, self.ONLINE_button1)
+            self.recovery_thread = RecoveryThread(
+                div_input,
+                rec_IN,
+                mode,
+                self.wordlist,
+                self.update_keys_per_sec,
+                self.ONLINE_button1,
+                self.use_telegram_credentials_checkbox,
+                self.use_discord_credentials_checkbox,
+                self.win_checkbox
+            )
+            # Connect the signal from recovery thread to handler
             self.recovery_thread.recoveryFinished.connect(self.handle_recovery_result)
             self.recovery_thread.start()
             self.scanning = True
@@ -623,6 +759,15 @@ class GUIInstance(QMainWindow):
             QMessageBox.information(self, 'Recovery Finished', 'Key recovery process finished.')
         else:
             self.consoleWindow.append_output(result)
+
+    def show_winner_dialog(self, words):
+        dialog = win_gui.WinnerDialog(words, self)
+        dialog.exec()
+
+    def enter(self):
+        words = self.custom_phrase_edit.text()
+        self.mnemonic_btc(words)
+        self.counter += 1
 
     def read_mnms(self):
         self.word_index = 0
@@ -669,11 +814,6 @@ class GUIInstance(QMainWindow):
         if self.timer.isActive():
             self.scanning = False
             self.timer.stop()
-    
-    def enter(self):
-        words = self.custom_phrase_edit.text()
-        self.mnemonic_btc(words)
-        self.counter += 1
         
     def error_Result(self, message_error):
         msg_box = QMessageBox()
@@ -805,128 +945,132 @@ class GUIInstance(QMainWindow):
             self.counter += 1
 
     def mnemonic_btc(self, words):
-	    found = int(self.found_keys_scanned_edit.text())
-	    if self.ONLINE_button.isChecked():
-	        try:
-	            hdwallet = HDWallet().from_mnemonic(words)
-	            hdwallet.from_path("m/44'/0'/0'")
-	            account_extended_private_key = hdwallet.xprivate_key()
-	            account_extended_public_key = hdwallet.xpublic_key()
-	            balance_initial, totalReceived_initial, totalSent_initial, txs_initial = team_balance.check_xpub(account_extended_public_key)
-	            infobtc = f'''BITCOIN Mnemonic Words: 
-	{words}
-	Account Extended Private Key: 
-	{account_extended_private_key}
-	Account Extended Public Key: 
-	{account_extended_public_key}
+        found = int(self.found_keys_scanned_edit.text())
+        if self.ONLINE_button.isChecked():
+            try:
+                hdwallet = HDWallet().from_mnemonic(words)
+                hdwallet.from_path("m/44'/0'/0'")
+                account_extended_private_key = hdwallet.xprivate_key()
+                account_extended_public_key = hdwallet.xpublic_key()
+                balance_initial, totalReceived_initial, totalSent_initial, txs_initial = team_balance.check_xpub(account_extended_public_key)
+                infobtc = f'''BITCOIN Mnemonic Words: 
+    {words}
+    Account Extended Private Key: 
+    {account_extended_private_key}
+    Account Extended Public Key: 
+    {account_extended_public_key}
 
-	Balance: {balance_initial}  TotalReceived: {totalReceived_initial} TotalSent: {totalSent_initial} Txs: {txs_initial}
-	'''
-	            self.consoleWindow.append_output(infobtc)
-	            if balance_initial > 0 or totalReceived_initial > 0 or totalSent_initial > 0 or txs_initial > 0:
-	                found += 1
-	                self.found_keys_scanned_edit.setText(str(found))
-	                winner_save(words, account_extended_private_key, account_extended_public_key, balance_initial, totalReceived_initial, totalSent_initial, txs_initial)
-	                derivations = ["m/44'/0'/0'/0"]
-	                div_input = int(self.derivation_choice.currentText())
-	                with ThreadPoolExecutor(max_workers=10) as executor:
-	                    futures = []
-	                    for derivation in derivations:
-	                        for p in range(0, div_input):
-	                            future = executor.submit(self.process_derivation_on, words, derivation, p)
-	                            futures.append(future)
+    Balance: {balance_initial}  TotalReceived: {totalReceived_initial} TotalSent: {totalSent_initial} Txs: {txs_initial}
+    '''
+                self.consoleWindow.append_output(infobtc)
+                if balance_initial > 0 or totalReceived_initial > 0 or totalSent_initial > 0 or txs_initial > 0:
+                    found += 1
+                    self.found_keys_scanned_edit.setText(str(found))
+                    winner_save(words, account_extended_private_key, account_extended_public_key, balance_initial, totalReceived_initial, totalSent_initial, txs_initial)
+                    derivations = ["m/44'/0'/0'/0"]
+                    div_input = int(self.derivation_choice.currentText())
+                    with ThreadPoolExecutor(max_workers=10) as executor:
+                        futures = []
+                        for derivation in derivations:
+                            for p in range(0, div_input):
+                                future = executor.submit(self.process_derivation_on, words, derivation, p)
+                                futures.append(future)
 
-	                    for future in concurrent.futures.as_completed(futures):
-	                        derived_info = future.result()
-	                        if derived_info:
-	                            path = derived_info["derivation_path"]
-	                            caddr = derived_info["compressed_address"]
-	                            uaddr = derived_info["uncompressed_address"]
-	                            balance_derivationc = derived_info["balance_derivationc"]
-	                            totalReceived_derivationc = derived_info["totalReceived_derivationc"]
-	                            totalSent_derivationc = derived_info["totalSent_derivationc"]
-	                            txs_derivationc = derived_info["txs_derivationc"]
-	                            balance_derivationu = derived_info["balance_derivationu"]
-	                            totalReceived_derivationu = derived_info["totalReceived_derivationu"]
-	                            totalSent_derivationu = derived_info["totalSent_derivationu"]
-	                            txs_derivationu = derived_info["txs_derivationu"]
-	                            private_key = derived_info["private_key"]
-	                            root_public_key = derived_info["root_public_key"]
-	                            extended_private_key = derived_info["extended_private_key"]
-	                            root_extended_private_key = derived_info["root_extended_private_key"]
-	                            compressed_public_key = derived_info["compressed_public_key"]
-	                            uncompressed_public_key = derived_info["uncompressed_public_key"]
-	                            wif_private_key = derived_info["wif_private_key"]
-	                            wif_compressed_private_key = derived_info["wif_compressed_private_key"]
+                        for future in concurrent.futures.as_completed(futures):
+                            derived_info = future.result()
+                            if derived_info:
+                                path = derived_info["derivation_path"]
+                                caddr = derived_info["compressed_address"]
+                                uaddr = derived_info["uncompressed_address"]
+                                balance_derivationc = derived_info["balance_derivationc"]
+                                totalReceived_derivationc = derived_info["totalReceived_derivationc"]
+                                totalSent_derivationc = derived_info["totalSent_derivationc"]
+                                txs_derivationc = derived_info["txs_derivationc"]
+                                balance_derivationu = derived_info["balance_derivationu"]
+                                totalReceived_derivationu = derived_info["totalReceived_derivationu"]
+                                totalSent_derivationu = derived_info["totalSent_derivationu"]
+                                txs_derivationu = derived_info["txs_derivationu"]
+                                private_key = derived_info["private_key"]
+                                root_public_key = derived_info["root_public_key"]
+                                extended_private_key = derived_info["extended_private_key"]
+                                root_extended_private_key = derived_info["root_extended_private_key"]
+                                compressed_public_key = derived_info["compressed_public_key"]
+                                uncompressed_public_key = derived_info["uncompressed_public_key"]
+                                wif_private_key = derived_info["wif_private_key"]
+                                wif_compressed_private_key = derived_info["wif_compressed_private_key"]
 
-	                            if int(balance_derivationc) > 0 or int(txs_derivationc) > 0 or int(balance_derivationu) > 0 or int(txs_derivationu) > 0:
-	                                found += 1
-	                                self.found_keys_scanned_edit.setText(str(found))
-	                                found_save_bal(path, caddr, balance_derivationc, totalReceived_derivationc, totalSent_derivationc, txs_derivationc, uaddr, balance_derivationu, totalReceived_derivationu, totalSent_derivationu, txs_derivationu, words, private_key, root_public_key, extended_private_key, root_extended_private_key, compressed_public_key, uncompressed_public_key, wif_private_key, wif_compressed_private_key)
-	                            if self.use_telegram_credentials_checkbox.isChecked():
-	                                telegram_gui.send_to_telegram(self, derived_info)
-	                            if self.use_discord_credentials_checkbox.isChecked():
-	                                discord_gui.send_to_discord(self, derived_info)
-	                            if self.win_checkbox.isChecked():
-	                                winner_dialog = win_gui.WinnerDialog(words, self)
-	                                winner_dialog.exec()
-	        except Exception as e:
-	            message_error = f'Error occurred in mnemonic_btc: {str(e)}'
-	            self.error_Result(message_error)
-	            pass
-	    else:
-	        try:
-	            hdwallet = HDWallet().from_mnemonic(words)
-	            derivations = ["m/44'/0'/0'/0"]
-	            div_input = int(self.derivation_choice.currentText())
-	            with ThreadPoolExecutor(max_workers=10) as executor:
-	                futures = []
-	                for derivation in derivations:
-	                    for p in range(0, div_input):
-	                        future = executor.submit(self.process_derivation_off, words, derivation, p)
-	                        futures.append(future)
+                                if int(balance_derivationc) > 0 or int(txs_derivationc) > 0 or int(balance_derivationu) > 0 or int(txs_derivationu) > 0:
+                                    found += 1
+                                    self.found_keys_scanned_edit.setText(str(found))
+                                    found_save_bal(path, caddr, balance_derivationc, totalReceived_derivationc, totalSent_derivationc, txs_derivationc, uaddr, balance_derivationu, totalReceived_derivationu, totalSent_derivationu, txs_derivationu, words, private_key, root_public_key, extended_private_key, root_extended_private_key, compressed_public_key, uncompressed_public_key, wif_private_key, wif_compressed_private_key)
+                                if self.use_telegram_credentials_checkbox.isChecked():
+                                    telegram_gui.send_to_telegram(self, derived_info)
+                                if self.use_discord_credentials_checkbox.isChecked():
+                                    discord_gui.send_to_discord(self, derived_info)
+                                if self.win_checkbox.isChecked():
+                                    self.show_winner_dialog(words)
+                                    
+            except ValueError as e:
+                message_error = f'Invalid mnemonic words: {str(e)}'
+                self.consoleWindow.append_output(message_error)
+            except Exception as e:
+                message_error = f'Error occurred in mnemonic_btc: {str(e)}'
+                self.consoleWindow.append_output(message_error)
+        else:
+            try:
+                hdwallet = HDWallet().from_mnemonic(words)
+                derivations = ["m/44'/0'/0'/0"]
+                div_input = int(self.derivation_choice.currentText())
+                with ThreadPoolExecutor(max_workers=10) as executor:
+                    futures = []
+                    for derivation in derivations:
+                        for p in range(0, div_input):
+                            future = executor.submit(self.process_derivation_off, words, derivation, p)
+                            futures.append(future)
 
-	                for future in concurrent.futures.as_completed(futures):
-	                    derived_info = future.result()
-	                    if derived_info:
-	                        path = derived_info["derivation_path"]
-	                        caddr = derived_info["compressed_address"]
-	                        uaddr = derived_info["uncompressed_address"]
-	                        private_key = derived_info["private_key"]
-	                        root_public_key = derived_info["root_public_key"]
-	                        extended_private_key = derived_info["extended_private_key"]
-	                        root_extended_private_key = derived_info["root_extended_private_key"]
-	                        compressed_public_key = derived_info["compressed_public_key"]
-	                        uncompressed_public_key = derived_info["uncompressed_public_key"]
-	                        wif_private_key = derived_info["wif_private_key"]
-	                        wif_compressed_private_key = derived_info["wif_compressed_private_key"]
-	                        scaninfo = f'''Derivation Path: {path}
-	Compressed Address: {caddr}
-	Uncompressed Address: {uaddr}
-	Mnemonic words: {words}
-	Private Key: {private_key}
-	Root Public Key: {root_public_key}
-	Extended Private Key: {extended_private_key}
-	Root Extended Private Key: {root_extended_private_key}
-	Compressed Public Key: {compressed_public_key}
-	Uncompressed Public Key: {uncompressed_public_key}
-	WIF Private Key: {wif_private_key}
-	WIF Compressed Private Key: {wif_compressed_private_key}
-	'''
-	                        self.consoleWindow.append_output(scaninfo)
+                    for future in concurrent.futures.as_completed(futures):
+                        derived_info = future.result()
+                        if derived_info:
+                            path = derived_info["derivation_path"]
+                            caddr = derived_info["compressed_address"]
+                            uaddr = derived_info["uncompressed_address"]
+                            private_key = derived_info["private_key"]
+                            root_public_key = derived_info["root_public_key"]
+                            extended_private_key = derived_info["extended_private_key"]
+                            root_extended_private_key = derived_info["root_extended_private_key"]
+                            compressed_public_key = derived_info["compressed_public_key"]
+                            uncompressed_public_key = derived_info["uncompressed_public_key"]
+                            wif_private_key = derived_info["wif_private_key"]
+                            wif_compressed_private_key = derived_info["wif_compressed_private_key"]
+                            scaninfo = f'''Derivation Path: {path}
+    Compressed Address: {caddr}
+    Uncompressed Address: {uaddr}
+    Mnemonic words: {words}
+    Private Key: {private_key}
+    Root Public Key: {root_public_key}
+    Extended Private Key: {extended_private_key}
+    Root Extended Private Key: {root_extended_private_key}
+    Compressed Public Key: {compressed_public_key}
+    Uncompressed Public Key: {uncompressed_public_key}
+    WIF Private Key: {wif_private_key}
+    WIF Compressed Private Key: {wif_compressed_private_key}
+    '''
+                            self.consoleWindow.append_output(scaninfo)
 
-	                        if caddr in addfind or uaddr in addfind:
-	                            found += 1
-	                            self.found_keys_scanned_edit.setText(str(found))
-	                            found_save_off(path, caddr, uaddr, words, private_key, root_public_key, extended_private_key, root_extended_private_key, compressed_public_key, uncompressed_public_key, wif_private_key, wif_compressed_private_key)
-	                        if self.use_telegram_credentials_checkbox.isChecked():
-	                            telegram_gui.send_to_telegram(self, scaninfo)
-	                        if self.use_discord_credentials_checkbox.isChecked():
-	                            discord_gui.send_to_discord(self, scaninfo)
-	                        if self.win_checkbox.isChecked():
-	                            winner_dialog = win_gui.WinnerDialog(words, self)
-	                            winner_dialog.exec()
+                            if caddr in addfind or uaddr in addfind:
+                                found += 1
+                                self.found_keys_scanned_edit.setText(str(found))
+                                found_save_off(path, caddr, uaddr, words, private_key, root_public_key, extended_private_key, root_extended_private_key, compressed_public_key, uncompressed_public_key, wif_private_key, wif_compressed_private_key)
+                            if self.use_telegram_credentials_checkbox.isChecked():
+                                telegram_gui.send_to_telegram(self, scaninfo)
+                            if self.use_discord_credentials_checkbox.isChecked():
+                                discord_gui.send_to_discord(self, scaninfo)
+                            if self.win_checkbox.isChecked():
+                                 self.show_winner_dialog(words)
 
-	        except Exception as e:
-	            self.recoveryFinished.emit(f"Error occurred in mnemonic_main: {str(e)}")
-	            pass
+            except ValueError as e:
+                message_error = f'Invalid mnemonic words: {str(e)}'
+                self.consoleWindow.append_output(message_error)
+            except Exception as e:
+                message_error = f'Error occurred in mnemonic_btc: {str(e)}'
+                self.consoleWindow.append_output(message_error)
