@@ -1,22 +1,24 @@
-# Team-Hunter GUI Version 1.4
+# Team-Hunter GUI Version 1.5
 
-Less to install more features but with all the goodness of version 1.3
+New Features and Updates... Re add Simplebloomfilter, Kangaroo added and fixes..
 
-![image](https://github.com/Mizogg/TeamHunter/assets/88630056/22d3b561-9867-4b1e-8f08-ec0ea8b57b99)
+# kangaroo
+
+Find PrivateKey of corresponding Pubkey(s) using Pollard Kangaroo algo in GUI
+
+https://github.com/iceland2k14/kangaroo
+
+![image](https://github.com/user-attachments/assets/36bce5b4-d23d-40a7-a92f-014744e3ddec)
+[66.02 TeraKeys/s]
 
 
-# Team-Hunter GUI Version 1.3
+# keyhunt
+https://github.com/albertobsd/keyhunt
 
-![titlebig](https://github.com/Mizogg/TeamHunter/assets/88630056/393f60cb-fe1a-4547-8e1b-58ff4696c3d4)
+![image](https://github.com/user-attachments/assets/52006a9e-7e55-49f2-9b32-63efbc33892b)
 
+PUZZLE 135 Public key for the next winner 24 Pkeys/s only 3 CPU
 
-This Python application, named "Team Hunter GUI," provides a user-friendly interface for various cryptocurrency-related tools and functions.
-Users can access tools for Bitcoin-related operations, including BitCrack, KeyHunt, Vanbitcracken, Iceland2k14 Secp256k1, and conversion tools.
-The application supports both dark and light themes and offers a convenient way to switch between them.
-It also features a 16x16 grid tool, a range division tool in hexadecimal format, and allows users to open external websites.
-This application is built using PyQt6 and is designed to assist cryptocurrency enthusiasts in their endeavors.
-
-![image](https://github.com/Mizogg/TeamHunter/assets/88630056/b5ab2ffe-50db-4560-9c17-af75aa14d63b)
 
 # Requirements 
 
@@ -36,7 +38,6 @@ or
 ```
 PyQt6
 bit
-QDarkStyle
 requests
 PyQt6-WebEngine
 simplebloomfilter
@@ -61,6 +62,26 @@ python TeamHunter.py
 
 ![image](https://github.com/Mizogg/TeamHunter/assets/88630056/57144c43-48e7-4ba4-b0ad-afa89292d944)
 
+
+# Team-Hunter GUI Version 1.4
+
+Less to install more features but with all the goodness of version 1.3
+
+![image](https://github.com/Mizogg/TeamHunter/assets/88630056/22d3b561-9867-4b1e-8f08-ec0ea8b57b99)
+
+
+# Team-Hunter GUI Version 1.3
+
+![titlebig](https://github.com/Mizogg/TeamHunter/assets/88630056/393f60cb-fe1a-4547-8e1b-58ff4696c3d4)
+
+
+This Python application, named "Team Hunter GUI," provides a user-friendly interface for various cryptocurrency-related tools and functions.
+Users can access tools for Bitcoin-related operations, including BitCrack, KeyHunt, Vanbitcracken, Iceland2k14 Secp256k1, and conversion tools.
+The application supports both dark and light themes and offers a convenient way to switch between them.
+It also features a 16x16 grid tool, a range division tool in hexadecimal format, and allows users to open external websites.
+This application is built using PyQt6 and is designed to assist cryptocurrency enthusiasts in their endeavors.
+
+![image](https://github.com/Mizogg/TeamHunter/assets/88630056/b5ab2ffe-50db-4560-9c17-af75aa14d63b)
 
 # Credits
 
