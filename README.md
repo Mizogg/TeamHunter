@@ -2,7 +2,7 @@
 
 New Features and Updates... Re add Simplebloomfilter, Kangaroo added and fixes..
 
-# kangaroo
+# kangarooo
 
 Find PrivateKey of corresponding Pubkey(s) using Pollard Kangaroo algo in GUI
 
