@@ -1,6 +1,6 @@
 # TeamHunter v1.6
 
-![TeamHunter Logo](images/main/title.png)
+![title](https://github.com/user-attachments/assets/92769ad0-3b3a-448c-9107-bf6fafa8fb47)
 
 ## Overview
 
