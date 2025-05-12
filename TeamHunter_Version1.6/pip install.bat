@@ -4,7 +4,7 @@ pip install bit
 pip install requests
 pip install base58
 pip install ecdsa
-pip install hdwallet
+pip install hdwallet==2.2.1
 pip install mnemonic
 pip install numpy
 pip install keyboard
