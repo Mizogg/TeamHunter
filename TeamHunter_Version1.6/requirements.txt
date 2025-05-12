@@ -1,8 +1,11 @@
 PyQt6
 bit
 requests
-hdwallet
+hdwallet==2.2.1
 mnemonic
 numpy
 keyboard
 pygame
+simplebloomfilter
+bitarray==1.9.2
+trotter
